@@ -5,3 +5,5 @@
 매일 확인하는 관계날씨 서비스.
 
 현재 단계: STEP 2 모바일 UI 프로토타입
+
+Deployment sync: Cloudflare Pages Git connection restored.
