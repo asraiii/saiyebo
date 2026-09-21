@@ -1,11 +1,15 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#8fd2fa"><title>사이예보 — 오늘 우리 사이, 맑을까요?</title><link rel="stylesheet" href="styles.css?v=5"></head><body><main class="app">
-<section class="hero"><header><div class="logo"><span class="logo-weather"></span><div><b>사이예보</b><small>오늘, 우리 사이의 날씨는?</small></div></div><button>•••</button></header><div class="date" id="today"></div>
-<div class="hero-copy"><span>오늘 우리 사이는</span><h1>맑음</h1><p>오늘은 큰 기압 변화 없이<br>따뜻한 사이가 이어지겠습니다.</p><strong>27°</strong></div>
-<div class="landscape" aria-hidden="true"><i class="sun"></i><i class="cloud c1"></i><i class="cloud c2"></i><i class="hill"></i><i class="city"></i></div>
-<div class="summary"><div><span>최고</span><b class="hot">30°</b></div><div><span>최저</span><b class="cold">22°</b></div><div><span>애정지수</span><b class="love">85%</b></div><div><span>서운함지수</span><b>15%</b></div></div></section>
-<section class="body">
-<div class="card hourly-card"><div class="heading"><h2>시간별 사이예보</h2><span>오늘 하루, 이렇게 흘러가요 ›</span></div><div id="hourly" class="hourly"></div></div>
-<div class="split"><div class="card relation"><div class="heading"><h2>오늘의 관계특보</h2><span>자세히 보기 ›</span></div><div class="feature"><i>♥</i><div><b>애정 상승</b><p>서로에게 긍정적인 에너지가<br>더 잘 전달되는 날이에요.</p></div></div><div class="mini-grid"><div class="mini blue"><b>대화 양호</b><p>가벼운 대화도<br>좋은 흐름으로 이어져요.</p></div><div class="mini yellow"><b>오해 주의</b><p>사소한 말이<br>다르게 느껴질 수 있어요.</p></div></div></div>
-<div class="card weekly"><div class="heading"><h2>주간 사이예보</h2><span>›</span></div><div id="week"></div></div></div>
-<div class="quote"><span>오늘의 한마디</span><b>지금 이 순간도, 좋은 흐름이에요.</b><i>›</i></div>
-<button class="share" id="shareBtn">오늘 사이예보 공유하기</button><footer>사이예보 · 오늘 우리 사이, 맑을까요?</footer></section></main><script src="app.js?v=5"></script></body></html>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#6aaee1"><title>사이예보 — 오늘 우리 사이, 맑을까요?</title><meta name="description" content="매일 확인하는 우리 둘의 관계날씨"><link rel="stylesheet" href="styles.css?v=6"></head><body><main class="app">
+<section class="weather-stage">
+<header><div class="brand">사이예보</div><div class="date" id="today"></div><button class="more" aria-label="메뉴">•••</button></header>
+<div class="sky-copy"><p class="kicker">오늘 우리 사이는</p><h1>포근한 맑음</h1><div class="temp-line"><strong>27°</strong><span>체감 관계온도 28°<br><b>최고 30° · 최저 22°</b></span></div></div>
+<div class="living-sky" aria-hidden="true"><i class="sun"></i><i class="cloud one"></i><i class="cloud two"></i><i class="haze"></i></div>
+<div class="today-note">큰 기압 변화 없이 편안한 흐름이에요.<br>저녁에는 말투를 조금만 부드럽게.</div>
+</section>
+<section class="sheet">
+<div class="observation"><div><span>서운함 강수확률</span><b>20%</b></div><div><span>애정습도</span><b>76%</b></div><div><span>감정풍속</span><b>2.4<small>m/s</small></b></div></div>
+<section class="timeline section"><div class="section-head"><div><span>오늘의 흐름</span><h2>시간별 사이예보</h2></div><b>오늘</b></div><div id="hourly" class="hourly"></div><div class="flow-line"><i></i><em></em></div></section>
+<section class="warning"><div class="warning-icon"><i></i></div><div class="warning-copy"><span>오늘의 관계특보 · 20:00–22:00</span><h2>저녁에 서운함 구름이 조금 끼겠습니다.</h2><p>사소한 말이 평소보다 오래 남을 수 있어요.<br>해명보다 공감을 먼저 건네보세요.</p></div><b class="tag">주의</b></section>
+<section class="section week"><div class="section-head"><div><span>앞으로의 흐름</span><h2>7일 사이예보</h2></div><b>이번 주</b></div><div id="week"></div></section>
+<section class="tomorrow"><div><span>내일의 사이</span><h2>오늘보다 조금 더 따뜻해져요.</h2><p>내일 29° · 맑음</p></div><div class="tomorrow-sun"></div></section>
+<button class="share" id="shareBtn">오늘 사이예보 공유하기</button><footer>오늘 우리 사이, 맑을까요?</footer>
+</section></main><script src="app.js?v=6"></script></body></html>
