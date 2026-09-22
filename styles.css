@@ -82,3 +82,23 @@ nav{border-top:1px solid rgba(38,82,104,.08)!important;box-shadow:0 -4px 18px rg
 .tomorrow-card,.weekly,.records,.feeling{border-top:1px solid rgba(39,81,103,.08)!important;border-radius:0!important;background:rgba(255,255,255,.72)!important}
 .tomorrow-card,.weekly,.records,.feeling{padding-left:4px!important;padding-right:4px!important}
 .hourly{border-radius:20px!important}.share-card{border-radius:20px!important}.feel-buttons button{background:transparent!important;border:1px solid rgba(43,88,111,.16)!important}
+
+/* v11.0 structural visual reset — continuous weather sheet */
+.app{padding-left:0!important;padding-right:0!important}
+.top,.days,.hero{margin-left:20px!important;margin-right:20px!important}
+.days{margin-top:4px!important;padding:10px 0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.hero{min-height:330px!important;margin-top:0!important;border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}
+.weather-panel,.forecast-section{margin-left:0!important;margin-right:0!important;margin-top:0!important;padding:22px 20px!important;border:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important}
+.weather-panel{border-radius:28px 28px 0 0!important;padding-top:26px!important}
+.weather-panel+.forecast-section,.forecast-section+.forecast-section{border-top:1px solid #edf1f3!important}
+.section-head,.forecast-title{margin-bottom:18px!important}.section-head h2,.forecast-title h2,.feeling h2{font-size:18px!important}
+.metrics{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:0!important;padding:8px 0 4px!important}
+.metrics article{padding:0 12px!important;text-align:left!important;align-items:flex-start!important}.metrics article:first-child{padding-left:0!important}.metrics article:last-child{padding-right:0!important}.metrics .wx{margin-left:0!important}
+.advisory{margin-top:22px!important;padding:16px 0 0!important}
+.hour-scroll{margin-left:-20px!important;margin-right:-20px!important;padding:0 20px 6px!important;gap:10px!important}.hour-scroll article{min-width:72px!important;padding:13px 8px!important;background:#f5f8fa!important;border:0!important;border-radius:16px!important}.hour-scroll article.now{background:#e1f2fa!important}
+.tomorrow-card,.weekly,.records,.feeling{padding-left:20px!important;padding-right:20px!important;background:#fff!important}
+.week-row{min-height:48px!important;padding:0!important}.record-strip{padding-top:4px!important}.record-strip>div{padding:8px 12px!important}.record-strip>div:first-child{padding-left:0!important}.record-strip>div:last-child{padding-right:0!important}
+.feeling{padding-bottom:26px!important}.feel-buttons{margin-top:16px!important}.feel-buttons button{min-height:42px!important;border-radius:12px!important}
+.share-card{margin:12px 20px 104px!important;border-radius:20px!important}
+nav{left:50%!important;transform:translateX(-50%)!important;width:100%!important;max-width:470px!important}
+@media(max-width:390px){.top,.days,.hero{margin-left:18px!important;margin-right:18px!important}.weather-panel,.forecast-section{padding-left:18px!important;padding-right:18px!important}.hour-scroll{margin-left:-18px!important;margin-right:-18px!important;padding-left:18px!important;padding-right:18px!important}.share-card{margin-left:18px!important;margin-right:18px!important}}
