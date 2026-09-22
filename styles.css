@@ -143,3 +143,26 @@ body{background-attachment:scroll!important;background-size:100% 560px!important
 .hour-scroll article{display:grid!important;grid-template-rows:20px 30px 22px 20px!important;align-items:center!important;justify-items:center!important;gap:4px!important}
 .hour-scroll article>b,.hour-scroll article>strong,.hour-scroll article>small{display:flex!important;align-items:center!important;justify-content:center!important;height:100%!important;line-height:1.15!important;margin:0!important}
 .hour-scroll article>.dot-sun,.hour-scroll article>.dot-cloud,.hour-scroll article>.dot-rain,.hour-scroll article>.dot-moon{align-self:center!important;justify-self:center!important;margin:0!important}
+
+/* v12.5 one unified simple weather-glyph family */
+.weather-glyph{position:relative;display:inline-block!important;width:26px!important;height:26px!important;margin:0!important;box-sizing:border-box;flex:0 0 auto}
+.weather-glyph:before,.weather-glyph:after{content:"";position:absolute;box-sizing:border-box}
+.weather-glyph.clear:before{width:18px;height:18px;left:4px;top:4px;border-radius:50%;background:#f6bd4d;box-shadow:0 0 0 4px rgba(246,189,77,.13)}
+.weather-glyph.heat:before{width:19px;height:19px;left:3.5px;top:5px;border-radius:50%;background:#ef8b45;box-shadow:0 0 0 4px rgba(239,139,69,.13)}
+.weather-glyph.heat:after{content:"≈";left:5px;top:-9px;color:#ef8b45;font:700 18px/1 sans-serif;letter-spacing:-3px}
+.weather-glyph.partly:before{width:12px;height:12px;left:1px;top:2px;border-radius:50%;background:#f6bd4d}
+.weather-glyph.partly:after{width:20px;height:9px;left:6px;top:14px;border-radius:10px;background:#91aebb;box-shadow:3px -5px 0 -2px #91aebb,-3px -3px 0 -2px #91aebb}
+.weather-glyph.overcast:before{width:22px;height:10px;left:2px;top:13px;border-radius:10px;background:#849aa7;box-shadow:4px -6px 0 -2px #a8b8c1,-3px -3px 0 -2px #a8b8c1}
+.weather-glyph.rain:before{width:22px;height:10px;left:2px;top:5px;border-radius:10px;background:#7e9fac;box-shadow:3px -5px 0 -2px #7e9fac,-3px -3px 0 -2px #7e9fac}
+.weather-glyph.rain:after{width:3px;height:7px;left:5px;top:18px;border-radius:4px;background:#4ba7d5;box-shadow:7px 0 #4ba7d5,14px 0 #4ba7d5}
+.weather-glyph.storm:before{width:22px;height:10px;left:2px;top:3px;border-radius:10px;background:#607b8b;box-shadow:3px -5px 0 -2px #607b8b,-3px -3px 0 -2px #607b8b}
+.weather-glyph.storm:after{width:4px;height:12px;left:5px;top:16px;border-radius:4px;background:#398fc9;transform:rotate(20deg);box-shadow:7px 0 #398fc9,14px 0 #398fc9}
+.weather-glyph.snow:before{content:"✣";left:3px;top:0;color:#6ba9cf;font:700 22px/26px sans-serif}
+.weather-glyph.snow:after{content:"·";right:1px;top:4px;color:#9bc6dd;font:700 20px/1 sans-serif}
+.weather-glyph.blizzard:before{content:"✣";left:0;top:-2px;color:#668fa9;font:700 21px/26px sans-serif}
+.weather-glyph.blizzard:after{content:"≋";left:10px;top:10px;color:#7ea8bf;font:700 20px/1 sans-serif;transform:skewX(-14deg)}
+.hero-weather-icon{position:absolute!important;right:44px!important;top:94px!important;width:92px!important;height:92px!important;transform:scale(2.65);transform-origin:center}
+.tomorrow-glyph{width:36px!important;height:36px!important;transform:scale(1.25);transform-origin:center;margin-right:8px!important}
+.hour-scroll article>.weather-glyph{align-self:center!important;justify-self:center!important}
+.week-row>.weather-glyph{justify-self:center!important}
+@media(max-width:390px){.hero-weather-icon{right:38px!important;top:96px!important;transform:scale(2.45)}}
