@@ -138,3 +138,8 @@ body{background-attachment:scroll!important;background-size:100% 560px!important
 
 /* v12.0 representative weather taxonomy preview */
 .theme-preview{overflow-x:auto!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}.theme-preview::-webkit-scrollbar{display:none}.theme-preview button{flex:0 0 auto!important;white-space:nowrap!important}
+
+/* v12.1.1 hourly vertical rhythm fix — preserve approved simple icon style */
+.hour-scroll article{display:grid!important;grid-template-rows:20px 30px 22px 20px!important;align-items:center!important;justify-items:center!important;gap:4px!important}
+.hour-scroll article>b,.hour-scroll article>strong,.hour-scroll article>small{display:flex!important;align-items:center!important;justify-content:center!important;height:100%!important;line-height:1.15!important;margin:0!important}
+.hour-scroll article>.dot-sun,.hour-scroll article>.dot-cloud,.hour-scroll article>.dot-rain,.hour-scroll article>.dot-moon{align-self:center!important;justify-self:center!important;margin:0!important}
