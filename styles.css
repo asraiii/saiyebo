@@ -179,3 +179,22 @@ body{background-attachment:scroll!important;background-size:100% 560px!important
 .metric-icon.humidity i{display:block;position:absolute;width:16px;height:21px;left:9px;top:2px;background:#4ba8ed;border-radius:60% 40% 60% 40%;transform:rotate(45deg)}
 .metric-icon.wind:before,.metric-icon.wind:after,.metric-icon.wind i{content:"";position:absolute;height:3px;border-radius:3px;background:#42c8aa;left:2px}.metric-icon.wind:before{width:27px;top:7px}.metric-icon.wind:after{width:21px;top:14px}.metric-icon.wind i:first-child{width:14px;top:21px}
 @media(max-width:390px){.wxicon.hero-icon{right:36px;top:78px;transform:scale(2.4)}}
+
+/* v12.4 rebuild: crisp symbol-first weather icons, no pseudo-3D */
+.wxicon{display:none!important}.weather-symbol{position:relative;display:inline-block;width:40px;height:36px;flex:0 0 auto;vertical-align:middle}
+.weather-symbol:before,.weather-symbol:after{content:"";position:absolute;box-sizing:border-box}
+.weather-symbol.clear:before{width:21px;height:21px;border-radius:50%;background:#FFC52E;left:10px;top:7px;box-shadow:0 -14px 0 -8px #FFC52E,0 14px 0 -8px #FFC52E,14px 0 0 -8px #FFC52E,-14px 0 0 -8px #FFC52E,10px 10px 0 -8px #FFC52E,-10px -10px 0 -8px #FFC52E,10px -10px 0 -8px #FFC52E,-10px 10px 0 -8px #FFC52E}
+.weather-symbol.heat:before{width:22px;height:22px;border-radius:50%;background:#FF6338;left:9px;top:9px;box-shadow:0 0 0 5px rgba(255,99,56,.16)}
+.weather-symbol.heat:after{content:"≈";font:700 21px/1 sans-serif;color:#FF7A35;left:10px;top:-10px;letter-spacing:1px;transform:rotate(90deg)}
+.weather-symbol.partly:before{width:18px;height:18px;border-radius:50%;background:#FFC52E;left:3px;top:3px}
+.weather-symbol.partly:after{width:29px;height:13px;border-radius:12px;background:#F8FBFD;left:11px;top:18px;box-shadow:-2px -5px 0 -1px #F8FBFD,7px -7px 0 -2px #F8FBFD,0 2px 5px rgba(66,89,105,.12)}
+.weather-symbol.overcast:before{width:31px;height:14px;border-radius:13px;background:#8799AD;left:5px;top:16px;box-shadow:3px -8px 0 -2px #AEBAC8,-6px -5px 0 -2px #AEBAC8}
+.weather-symbol.rain:before{width:9px;height:14px;border-radius:60% 40% 60% 40%;background:#248DF0;left:4px;top:5px;transform:rotate(45deg);box-shadow:13px 8px 0 #248DF0,26px 0 0 #248DF0}
+.weather-symbol.storm:before{width:5px;height:31px;border-radius:5px;background:#1F7DEB;left:7px;top:2px;transform:rotate(27deg);box-shadow:12px 0 0 #1F7DEB,24px 0 0 #1F7DEB}
+.weather-symbol.storm:after{width:6px;height:6px;border-radius:50%;background:#5BB2FF;right:0;bottom:1px}
+.weather-symbol.snow:before{content:"❄";font:700 30px/1 sans-serif;color:#55A9F5;left:5px;top:2px}.weather-symbol.snow:after{content:"•";font:700 22px/1 sans-serif;color:#9BD0FA;right:2px;top:9px}
+.weather-symbol.blizzard:before{content:"❄";font:700 25px/1 sans-serif;color:#3D91E7;left:2px;top:0}.weather-symbol.blizzard:after{content:"≋";font:700 29px/1 sans-serif;color:#75B6EB;left:14px;top:11px;transform:skewX(-18deg)}
+.weather-symbol.small-icon{width:34px;height:30px;transform:scale(.86);transform-origin:center}.weather-symbol.medium-icon{width:46px;height:40px;transform:scale(1.18);transform-origin:center}
+.weather-symbol.hero-icon{position:absolute;right:48px;top:86px;width:96px;height:86px;transform:scale(2.45);transform-origin:center}
+.hour-scroll .weather-symbol{margin:3px auto 5px}.week-row .weather-symbol{justify-self:center}.tomorrow-main>.weather-symbol{margin-right:10px}
+@media(max-width:390px){.weather-symbol.hero-icon{right:42px;top:88px;transform:scale(2.25)}}
