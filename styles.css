@@ -135,3 +135,13 @@ body{background-attachment:scroll!important;background-size:100% 560px!important
 .app{background:transparent!important}
 .weather-panel{position:relative!important}
 @media(max-width:430px){body{background-size:100% 520px!important}.hero{min-height:315px!important}.weather-art{top:20px!important}}
+
+/* v11.7 continuous atmospheric page + single translucent information sheet */
+body{background-size:100% 100%!important;background-repeat:no-repeat!important;background-attachment:fixed!important;background-color:#8bcfea!important}
+.app{background:transparent!important}
+.weather-panel{margin-top:0!important;border-radius:30px 30px 0 0!important;background:rgba(255,255,255,.86)!important;-webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important}
+.forecast-section,.tomorrow-card,.weekly,.records,.feeling{background:rgba(255,255,255,.86)!important;-webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important}
+.weather-panel+.forecast-section,.forecast-section+.forecast-section{border-top-color:rgba(67,91,103,.10)!important}
+.share-card{background:rgba(255,255,255,.82)!important;-webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important;border:1px solid rgba(255,255,255,.42)!important}
+nav{background:rgba(255,255,255,.90)!important}
+@media(max-width:430px){body{background-size:100% 100%!important}.hero{min-height:315px!important}}
