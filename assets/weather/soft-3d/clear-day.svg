@@ -1,18 +1,14 @@
-<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="soft3d0" x="-40%" y="-40%" width="180%" height="200%" color-interpolation-filters="sRGB">
-<feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="blur"/>
-<feOffset in="blur" dx="0" dy="5.5" result="off"/>
-<feFlood flood-color="#17384d" flood-opacity=".38" result="shadowColor"/>
+<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="soft3d0" x="-35%" y="-35%" width="170%" height="185%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="2.4" result="blur"/>
+<feOffset in="blur" dx="0" dy="4" result="off"/>
+<feFlood flood-color="#17384d" flood-opacity=".30" result="shadowColor"/>
 <feComposite in="shadowColor" in2="off" operator="in" result="shadow"/>
-<feGaussianBlur in="SourceAlpha" stdDeviation="1.15" result="edgeBlur"/>
-<feSpecularLighting in="edgeBlur" surfaceScale="6.5" specularConstant=".9" specularExponent="24" lighting-color="#ffffff" result="spec">
-<feDistantLight azimuth="225" elevation="62"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="surface"/>
+<feSpecularLighting in="surface" surfaceScale="5" specularConstant=".62" specularExponent="20" lighting-color="#ffffff" result="spec">
+<feDistantLight azimuth="225" elevation="60"/>
 </feSpecularLighting>
 <feComposite in="spec" in2="SourceAlpha" operator="in" result="specClip"/>
-<feSpecularLighting in="blur" surfaceScale="4.2" specularConstant=".42" specularExponent="8" lighting-color="#fff4dc" result="softLight">
-<fePointLight x="-40" y="-55" z="95"/>
-</feSpecularLighting>
-<feComposite in="softLight" in2="SourceAlpha" operator="in" result="softClip"/>
-<feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/><feMergeNode in="softClip"/><feMergeNode in="specClip"/></feMerge>
+<feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/><feMergeNode in="specClip"/></feMerge>
 </filter></defs><g filter="url(#soft3d0)">
 <g id="clear-day">
 <g id="Sun">
