@@ -138,3 +138,25 @@ body{background-attachment:scroll!important;background-size:100% 560px!important
 
 /* v12.0 representative weather taxonomy preview */
 .theme-preview{overflow-x:auto!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}.theme-preview::-webkit-scrollbar{display:none}.theme-preview button{flex:0 0 auto!important;white-space:nowrap!important}
+
+/* v12.2 unified weather icon family */
+.weather-icon{position:relative;display:inline-block;width:42px;height:34px;flex:0 0 auto;vertical-align:middle}
+.weather-icon i{position:absolute;display:block}
+.wi-sun{width:22px;height:22px;border-radius:50%;background:#ffd45a;left:2px;top:1px;box-shadow:0 0 0 5px rgba(255,212,90,.16)}
+.wi-cloud{width:28px;height:12px;border-radius:12px;background:#fff;left:11px;top:16px;box-shadow:0 3px 8px rgba(65,93,109,.12)}
+.wi-cloud:before,.wi-cloud:after{content:"";position:absolute;border-radius:50%;background:inherit}
+.wi-cloud:before{width:15px;height:15px;left:4px;top:-7px}.wi-cloud:after{width:12px;height:12px;right:3px;top:-5px}
+.wi-drop{display:none!important;width:2px;height:7px;border-radius:2px;background:#3b9fd1;top:27px;transform:rotate(14deg)}.d1{left:16px}.d2{left:24px}.d3{left:32px}
+.wi-flake,.wi-bolt{display:none!important}
+.weather-icon.clear .wi-cloud{display:none}
+.weather-icon.partly .wi-cloud{background:#f7fbfd}
+.weather-icon.rain .wi-sun,.weather-icon.storm .wi-sun,.weather-icon.snow .wi-sun,.weather-icon.blizzard .wi-sun,.weather-icon.overcast .wi-sun{display:none}
+.weather-icon.rain .wi-cloud,.weather-icon.storm .wi-cloud{background:#c6d4dc}.weather-icon.rain .wi-drop,.weather-icon.storm .wi-drop{display:block!important}
+.weather-icon.overcast .wi-cloud{background:#c5d0d6;left:6px;top:13px;transform:scale(1.12)}
+.weather-icon.heat .wi-sun{width:26px;height:26px;background:#ffad45;box-shadow:0 0 0 7px rgba(255,173,69,.20)}
+.weather-icon.heat .wi-cloud{display:none}
+.weather-icon.storm .wi-cloud{background:#8fa3af}.weather-icon.storm .wi-bolt{display:block!important;width:9px;height:15px;background:#ffd75a;left:25px;top:23px;clip-path:polygon(55% 0,100% 0,64% 43%,92% 43%,20% 100%,43% 55%,10% 55%)}
+.weather-icon.snow .wi-cloud,.weather-icon.blizzard .wi-cloud{background:#eef7fb}.weather-icon.snow .wi-flake,.weather-icon.blizzard .wi-flake{display:block!important;color:#75b7d6;font-style:normal;top:25px;width:8px;height:8px}.weather-icon.snow .f1,.weather-icon.blizzard .f1{left:16px}.weather-icon.snow .f2,.weather-icon.blizzard .f2{left:29px}.weather-icon.snow .wi-flake:before,.weather-icon.blizzard .wi-flake:before{content:"✦";position:absolute;font-size:9px;line-height:8px}.weather-icon.blizzard .wi-cloud{background:#b8cbd6}.weather-icon.blizzard{filter:drop-shadow(0 2px 5px rgba(53,82,99,.16))}
+.small-icon{width:32px;height:28px;transform:scale(.78);transform-origin:center}.medium-icon{width:52px;height:42px;transform:scale(1.18);transform-origin:center}
+.hero-icon{position:absolute!important;right:24px;top:38px;width:210px;height:170px;transform:scale(3.6);transform-origin:center}.hero-icon .wi-cloud{box-shadow:0 8px 16px rgba(65,93,109,.10)}
+.hour-scroll .weather-icon{margin:2px auto 4px}.week-row .weather-icon{justify-self:center}.tomorrow-main>.weather-icon{margin-right:8px}
