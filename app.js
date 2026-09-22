@@ -8,6 +8,6 @@ storm:{body:"linear-gradient(180deg,#243444 0%,#465768 29%,#717D88 60%,#B5A39B 1
 snow:{body:"linear-gradient(180deg,#8CBBD5 0%,#C1DDEB 32%,#E9F4F8 66%,#FFFFFF 100%)",theme:"#8CBBD5"},
 blizzard:{body:"linear-gradient(180deg,#536D80 0%,#8097A7 31%,#C3D1D9 64%,#EEF3F6 100%)",theme:"#536D80"}
 };
-function applyWeather(name){const t=weatherThemes[name]||weatherThemes.clear;document.body.style.backgroundImage=t.body;document.querySelector('meta[name="theme-color"]').content=t.theme;document.documentElement.dataset.weather=name;document.querySelectorAll(".theme-preview button").forEach(b=>b.classList.toggle("on",b.dataset.theme===name));const hero=document.querySelector(".hero-weather-svg");if(hero){hero.dataset.weatherIcon=name;const use=hero.querySelector("use");if(use)use.setAttribute("href","assets/weather-icons.svg#weather-"+name);}const labels={clear:"포근한 맑음",heat:"뜨거운 폭염",partly:"포근한 구름 조금",overcast:"차분한 흐림",rain:"촉촉한 비",storm:"거센 폭우",snow:"포근한 눈",blizzard:"거센 폭설"};const title=document.querySelector(".hero h1");if(title)title.textContent=labels[name]||labels.clear}
+function applyWeather(name){const t=weatherThemes[name]||weatherThemes.clear;document.body.style.backgroundImage=t.body;document.querySelector('meta[name="theme-color"]').content=t.theme;document.documentElement.dataset.weather=name;document.querySelectorAll(".theme-preview button").forEach(b=>b.classList.toggle("on",b.dataset.theme===name))}
 document.querySelectorAll(".theme-preview button").forEach(b=>b.addEventListener("click",()=>applyWeather(b.dataset.theme)));
 applyWeather("clear");
