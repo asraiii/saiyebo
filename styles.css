@@ -174,3 +174,8 @@ body{background-attachment:scroll!important;background-size:100% 560px!important
 .small-master{width:30px;height:30px;transform:scale(.88);transform-origin:center}.medium-master{width:42px;height:42px;transform:scale(1.28);transform-origin:center;margin-right:12px!important}.hero-master{position:absolute!important;right:50px!important;top:88px!important;width:96px!important;height:96px!important;transform:scale(2.8);transform-origin:center}
 .hour-scroll .master-weather{align-self:center!important;justify-self:center!important;margin:0!important}.week-row .master-weather{justify-self:center!important;margin:0!important}
 @media(max-width:390px){.hero-master{right:42px!important;top:90px!important;transform:scale(2.55)}}
+
+/* v13.1 real SVG asset rendering: CSS only sizes/positions */
+.master-weather{display:none!important}.weather-svg{display:block;overflow:visible}.small-weather-svg{width:30px;height:30px;margin:0 auto}.medium-weather-svg{width:54px;height:54px;flex:0 0 auto;margin-right:8px}.hero-weather-svg{position:absolute;right:38px;top:60px;width:170px;height:170px}
+.hour-scroll .weather-svg{align-self:center;justify-self:center}.week-row .weather-svg{justify-self:center}
+@media(max-width:390px){.hero-weather-svg{right:30px;top:64px;width:158px;height:158px}}
