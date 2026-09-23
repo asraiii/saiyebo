@@ -1,14 +1,19 @@
-<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="soft3d0" x="-35%" y="-35%" width="170%" height="185%" color-interpolation-filters="sRGB">
-<feGaussianBlur in="SourceAlpha" stdDeviation="2.4" result="blur"/>
-<feOffset in="blur" dx="0" dy="4" result="off"/>
-<feFlood flood-color="#17384d" flood-opacity=".30" result="shadowColor"/>
-<feComposite in="shadowColor" in2="off" operator="in" result="shadow"/>
-<feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="surface"/>
-<feSpecularLighting in="surface" surfaceScale="5" specularConstant=".62" specularExponent="20" lighting-color="#ffffff" result="spec">
-<feDistantLight azimuth="225" elevation="60"/>
+<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="soft3d0" x="-40%" y="-40%" width="180%" height="195%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="2.7" result="shadowBlur"/>
+<feOffset in="shadowBlur" dx="0" dy="4.5" result="shadowOffset"/>
+<feFlood flood-color="#24445b" flood-opacity=".28" result="shadowColor"/>
+<feComposite in="shadowColor" in2="shadowOffset" operator="in" result="shadow"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="5.2" result="bodyBlur"/>
+<feSpecularLighting in="bodyBlur" surfaceScale="8" specularConstant=".38" specularExponent="9" lighting-color="#ffffff" result="broadLight">
+<feDistantLight azimuth="225" elevation="52"/>
 </feSpecularLighting>
-<feComposite in="spec" in2="SourceAlpha" operator="in" result="specClip"/>
-<feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/><feMergeNode in="specClip"/></feMerge>
+<feComposite in="broadLight" in2="SourceAlpha" operator="in" result="broadClip"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="detailBlur"/>
+<feSpecularLighting in="detailBlur" surfaceScale="4.5" specularConstant=".32" specularExponent="20" lighting-color="#ffffff" result="softGloss">
+<feDistantLight azimuth="220" elevation="62"/>
+</feSpecularLighting>
+<feComposite in="softGloss" in2="SourceAlpha" operator="in" result="glossClip"/>
+<feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/><feMergeNode in="broadClip"/><feMergeNode in="glossClip"/></feMerge>
 </filter></defs><g filter="url(#soft3d0)">
 <g id="clear-day">
 <g id="Sun">
