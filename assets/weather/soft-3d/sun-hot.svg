@@ -1,19 +1,23 @@
-<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="soft3d1" x="-40%" y="-40%" width="180%" height="195%" color-interpolation-filters="sRGB">
-<feGaussianBlur in="SourceAlpha" stdDeviation="2.7" result="shadowBlur"/>
-<feOffset in="shadowBlur" dx="0" dy="4.5" result="shadowOffset"/>
-<feFlood flood-color="#24445b" flood-opacity=".28" result="shadowColor"/>
-<feComposite in="shadowColor" in2="shadowOffset" operator="in" result="shadow"/>
-<feGaussianBlur in="SourceAlpha" stdDeviation="5.2" result="bodyBlur"/>
-<feSpecularLighting in="bodyBlur" surfaceScale="8" specularConstant=".38" specularExponent="9" lighting-color="#ffffff" result="broadLight">
-<feDistantLight azimuth="225" elevation="52"/>
+<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><filter id="soft3d1" x="-45%" y="-45%" width="190%" height="205%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="castBlur"/>
+<feOffset in="castBlur" dx="0" dy="5.5" result="castOff"/>
+<feFlood flood-color="#18384f" flood-opacity=".30" result="castColor"/>
+<feComposite in="castColor" in2="castOff" operator="in" result="castShadow"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="7.5" result="roundSurface"/>
+<feDiffuseLighting in="roundSurface" surfaceScale="13" diffuseConstant=".62" lighting-color="#ffffff" result="roundDiffuse">
+<feDistantLight azimuth="225" elevation="48"/>
+</feDiffuseLighting>
+<feComposite in="roundDiffuse" in2="SourceAlpha" operator="in" result="diffuseClip"/>
+<feSpecularLighting in="roundSurface" surfaceScale="15" specularConstant=".34" specularExponent="8" lighting-color="#ffffff" result="roundSpec">
+<feDistantLight azimuth="220" elevation="55"/>
 </feSpecularLighting>
-<feComposite in="broadLight" in2="SourceAlpha" operator="in" result="broadClip"/>
-<feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="detailBlur"/>
-<feSpecularLighting in="detailBlur" surfaceScale="4.5" specularConstant=".32" specularExponent="20" lighting-color="#ffffff" result="softGloss">
-<feDistantLight azimuth="220" elevation="62"/>
-</feSpecularLighting>
-<feComposite in="softGloss" in2="SourceAlpha" operator="in" result="glossClip"/>
-<feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/><feMergeNode in="broadClip"/><feMergeNode in="glossClip"/></feMerge>
+<feComposite in="roundSpec" in2="SourceAlpha" operator="in" result="specClip"/>
+<feGaussianBlur in="SourceAlpha" stdDeviation="4.5" result="innerBase"/>
+<feOffset in="innerBase" dx="2.2" dy="3.2" result="innerOff"/>
+<feComposite in="SourceAlpha" in2="innerOff" operator="out" result="innerEdge"/>
+<feFlood flood-color="#24465d" flood-opacity=".18" result="innerColor"/>
+<feComposite in="innerColor" in2="innerEdge" operator="in" result="innerShade"/>
+<feMerge><feMergeNode in="castShadow"/><feMergeNode in="SourceGraphic"/><feMergeNode in="diffuseClip"/><feMergeNode in="innerShade"/><feMergeNode in="specClip"/></feMerge>
 </filter></defs><g filter="url(#soft3d1)">
 <g id="clear-day">
 <g id="Sun">
