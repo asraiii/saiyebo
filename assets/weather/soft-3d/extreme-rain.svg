@@ -12,9 +12,9 @@
 </g>
 <g id="Precipitation">
 <g id="Raindrops">
-<path id="Raindrop 1" d="M52 83V95" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round" transform="translate(0, 8)"/>
-<path id="Raindrop 2" d="M64 83V95" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round" transform="translate(0, 0)"/>
-<path id="Raindrop 3" d="M76 83V95" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round" transform="translate(0, 8)"/>
+<path id="Raindrop 1" d="M52 83V95" stroke="url(#heavyRainGradient)" stroke-width="4" stroke-linecap="round" transform="translate(0, 8)"/>
+<path id="Raindrop 2" d="M64 83V95" stroke="url(#heavyRainGradient)" stroke-width="4" stroke-linecap="round" transform="translate(0, 0)"/>
+<path id="Raindrop 3" d="M76 83V95" stroke="url(#heavyRainGradient)" stroke-width="4" stroke-linecap="round" transform="translate(0, 8)"/>
 </g>
 </g>
 <g id="Lightning">
@@ -23,16 +23,23 @@
 </g>
 <defs>
 <linearGradient id="paint0_linear_1858_9951" x1="88.0003" y1="44" x2="88.0003" y2="68" gradientUnits="userSpaceOnUse">
-<stop stop-color="#B0BCCD"/>
-<stop offset="1" stop-color="#94A3B8"/>
+<stop stop-color="#AFC0D5"/>
+<stop offset=".52" stop-color="#8799B0"/>
+<stop offset="1" stop-color="#65758B"/>
 </linearGradient>
 <linearGradient id="paint1_linear_1858_9951" x1="64.0007" y1="39" x2="64.0007" y2="89" gradientUnits="userSpaceOnUse">
-<stop stop-color="#7C8CA2"/>
-<stop offset="1" stop-color="#64748B"/>
+<stop stop-color="#8FA0B7"/>
+<stop offset=".52" stop-color="#64748B"/>
+<stop offset="1" stop-color="#475569"/>
 </linearGradient>
 <linearGradient id="paint2_linear_1858_9951" x1="64.528" y1="66.0377" x2="84.4144" y2="77.4572" gradientUnits="userSpaceOnUse">
 <stop stop-color="#F7B23B"/>
 <stop offset="1" stop-color="#F6A823"/>
+</linearGradient>
+<linearGradient id="heavyRainGradient" x1="64" y1="83" x2="64" y2="103" gradientUnits="userSpaceOnUse">
+<stop stop-color="#4F86F7"/>
+<stop offset=".5" stop-color="#1D4ED8"/>
+<stop offset="1" stop-color="#123AA3"/>
 </linearGradient>
 <clipPath id="clip0_1858_9951">
 <rect width="128" height="128" fill="white"/>
