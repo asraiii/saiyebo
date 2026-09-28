@@ -156,3 +156,11 @@ body{background-attachment:scroll!important;background-size:100% 560px!important
 .dot-blizzard{display:inline-block;position:relative;width:28px;height:24px}.dot-blizzard:before{content:"✣";position:absolute;left:0;top:0;color:#6f9db5;font:700 20px/22px sans-serif}.dot-blizzard:after{content:"≋";position:absolute;right:0;bottom:-1px;color:#8eafbf;font:700 18px/18px sans-serif}
 .icon-lab .dot-sun,.icon-lab .dot-cloud,.icon-lab .dot-rain{margin:0!important}
 @media(max-width:390px){.icon-lab-grid{gap:12px 4px}.icon-lab-grid span{font-size:12px}}
+
+
+/* v13.0 final local weather icon integration */
+.hero-weather-icon{display:block;width:100%;height:100%;object-fit:contain;object-position:center;filter:none!important}
+.hour-scroll article>.forecast-weather-icon{display:block;width:30px;height:30px;object-fit:contain;margin:0!important;align-self:center;justify-self:center}
+.week-row>.forecast-weather-icon{display:block;width:28px;height:28px;object-fit:contain;margin:0!important}
+.tomorrow-weather-icon{display:block;width:52px;height:52px;object-fit:contain;flex:0 0 auto}
+@media(max-width:390px){.hour-scroll article>.forecast-weather-icon{width:28px;height:28px}.week-row>.forecast-weather-icon{width:26px;height:26px}.tomorrow-weather-icon{width:48px;height:48px}}
