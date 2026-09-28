@@ -1,3 +1,4 @@
+const weatherIcons={clear:"/assets/weather/soft-3d/clear-day.svg",heat:"/assets/weather/soft-3d/sun-hot.svg",partly:"/assets/weather/soft-3d/partly-cloudy-day.svg",overcast:"/assets/weather/soft-3d/overcast.svg",rain:"/assets/weather/soft-3d/rain.svg",storm:"/assets/weather/soft-3d/extreme-rain.svg",snow:"/assets/weather/soft-3d/snow.svg",blizzard:"/assets/weather/soft-3d/extreme-snow.svg"};
 const weatherThemes={
 clear:{body:"linear-gradient(180deg,#35B8F2 0%,#78D1F6 27%,#CDEFFF 58%,#FFF3B9 100%)",theme:"#35B8F2"},
 heat:{body:"linear-gradient(180deg,#F58A45 0%,#FFB85C 30%,#FFE08A 62%,#FFF4C7 100%)",theme:"#F58A45"},
@@ -8,6 +9,6 @@ storm:{body:"linear-gradient(180deg,#243444 0%,#465768 29%,#717D88 60%,#B5A39B 1
 snow:{body:"linear-gradient(180deg,#8CBBD5 0%,#C1DDEB 32%,#E9F4F8 66%,#FFFFFF 100%)",theme:"#8CBBD5"},
 blizzard:{body:"linear-gradient(180deg,#536D80 0%,#8097A7 31%,#C3D1D9 64%,#EEF3F6 100%)",theme:"#536D80"}
 };
-function applyWeather(name){const t=weatherThemes[name]||weatherThemes.clear;document.body.style.backgroundImage=t.body;document.querySelector('meta[name="theme-color"]').content=t.theme;document.documentElement.dataset.weather=name;document.querySelectorAll(".theme-preview button").forEach(b=>b.classList.toggle("on",b.dataset.theme===name))}
+function applyWeather(name){const t=weatherThemes[name]||weatherThemes.clear;document.body.style.backgroundImage=t.body;document.querySelector('meta[name="theme-color"]').content=t.theme;document.documentElement.dataset.weather=name;document.querySelectorAll(".theme-preview button").forEach(b=>b.classList.toggle("on",b.dataset.theme===name));const hero=document.querySelector('[data-weather-icon="hero"]');if(hero)hero.src=weatherIcons[name]||weatherIcons.clear}
 document.querySelectorAll(".theme-preview button").forEach(b=>b.addEventListener("click",()=>applyWeather(b.dataset.theme)));
 applyWeather("clear");
