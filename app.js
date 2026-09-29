@@ -1,4 +1,4 @@
-const weatherIcons={clear:"/assets/weather/soft-3d/clear-day.svg?v=14.6",heat:"/assets/weather/soft-3d/sun-hot.svg?v=14.6",partly:"/assets/weather/soft-3d/partly-cloudy-day.svg?v=14.6",overcast:"/assets/weather/soft-3d/overcast.svg?v=14.6",rain:"/assets/weather/soft-3d/rain.svg?v=14.6",storm:"/assets/weather/soft-3d/extreme-rain.svg?v=14.6",snow:"/assets/weather/soft-3d/snow.svg?v=14.6",blizzard:"/assets/weather/soft-3d/extreme-snow.svg?v=14.6"};
+const weatherIcons={clear:"/assets/weather/soft-3d/clear-day.svg?v=14.7",heat:"/assets/weather/soft-3d/sun-hot.svg?v=14.7",partly:"/assets/weather/soft-3d/partly-cloudy-day.svg?v=14.7",overcast:"/assets/weather/soft-3d/overcast.svg?v=14.7",rain:"/assets/weather/soft-3d/rain.svg?v=14.7",storm:"/assets/weather/soft-3d/extreme-rain.svg?v=14.7",snow:"/assets/weather/soft-3d/snow.svg?v=14.7",blizzard:"/assets/weather/soft-3d/extreme-snow.svg?v=14.7"};
 const weatherThemes={
 clear:{body:"linear-gradient(180deg,#2499D0 0%,#48B5E4 30%,#78CAE9 62%,#A7DDED 100%)",theme:"#2499D0"},
 heat:{body:"linear-gradient(180deg,#E66F32 0%,#F28A3E 30%,#F6AA55 62%,#F6C878 100%)",theme:"#E66F32"},
