@@ -310,3 +310,36 @@ html[data-weather="snow"]{
     right:-34px!important;
   }
 }
+
+
+/* v14.6 forecast surface contrast — support outline-free weather icons */
+:root{
+  --forecast-surface:#F1F6F8;
+  --forecast-card:#E8F1F5;
+  --forecast-card-now:#DCECF3;
+  --forecast-line:rgba(49,82,99,.10);
+}
+.weather-panel,
+.forecast-section{
+  background:var(--forecast-surface)!important;
+}
+.weather-panel+.forecast-section,
+.forecast-section+.forecast-section{
+  border-top:1px solid var(--forecast-line)!important;
+}
+.tomorrow-card,
+.weekly,
+.records,
+.feeling{
+  background:var(--forecast-surface)!important;
+}
+.hour-scroll article{
+  background:var(--forecast-card)!important;
+}
+.hour-scroll article.now{
+  background:var(--forecast-card-now)!important;
+  border-color:rgba(42,120,158,.14)!important;
+}
+.week-row{
+  border-top-color:var(--forecast-line)!important;
+}
