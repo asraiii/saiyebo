@@ -482,3 +482,49 @@ html[data-weather="snow"]{
     right:18px;
   }
 }
+
+
+/* v15.4 share layout containment fix */
+.share-card{
+  position:relative!important;
+  isolation:isolate!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  min-height:108px!important;
+  padding:30px 34px 122px!important;
+  overflow:visible!important;
+  background:var(--forecast-surface)!important;
+}
+.share-card::before{
+  content:""!important;
+  position:absolute!important;
+  z-index:0!important;
+  left:20px!important;
+  right:20px!important;
+  top:12px!important;
+  bottom:auto!important;
+  height:84px!important;
+  border-radius:18px!important;
+  background:var(--weather-accent)!important;
+  pointer-events:none!important;
+}
+.share-card>div,
+.share-card>.share-action{
+  position:relative!important;
+  z-index:1!important;
+}
+.share-card>div{
+  padding:0!important;
+}
+.share-card>.share-action{
+  margin:0!important;
+}
+@media(max-width:390px){
+  .share-card{
+    padding:30px 30px 122px!important;
+  }
+  .share-card::before{
+    left:18px!important;
+    right:18px!important;
+  }
+}
