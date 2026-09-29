@@ -3,7 +3,8 @@
 <g id="Sky">
 <g id="Sun">
 <circle id="Core" cx="39" cy="51" r="11" fill="url(#paint0_linear_1858_8241)" stroke="#F8AF18"/>
-<g id="Rays" fill="none" stroke="url(#partlySunRayGradient)" stroke-width="2.625" stroke-linecap="round">
+<g id="Rays" fill="none" stroke-linecap="round">
+<g stroke="#F8AF18" stroke-width="3.625">
 <line x1="39" y1="32.5" x2="39" y2="35"/>
 <line x1="52.0815" y1="37.9185" x2="50.3137" y2="39.6863"/>
 <line x1="57.5" y1="51" x2="55" y2="51"/>
@@ -12,6 +13,17 @@
 <line x1="25.9185" y1="64.0815" x2="27.6863" y2="62.3137"/>
 <line x1="20.5" y1="51" x2="23" y2="51"/>
 <line x1="25.9185" y1="37.9185" x2="27.6863" y2="39.6863"/>
+</g>
+<g stroke="url(#partlySunRayGradient)" stroke-width="2.625">
+<line x1="39" y1="32.5" x2="39" y2="35"/>
+<line x1="52.0815" y1="37.9185" x2="50.3137" y2="39.6863"/>
+<line x1="57.5" y1="51" x2="55" y2="51"/>
+<line x1="52.0815" y1="64.0815" x2="50.3137" y2="62.3137"/>
+<line x1="39" y1="69.5" x2="39" y2="67"/>
+<line x1="25.9185" y1="64.0815" x2="27.6863" y2="62.3137"/>
+<line x1="20.5" y1="51" x2="23" y2="51"/>
+<line x1="25.9185" y1="37.9185" x2="27.6863" y2="39.6863"/>
+</g>
 </g>
 </g>
 <g id="Clouds">
