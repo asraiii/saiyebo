@@ -3,7 +3,7 @@
 <g id="Sky">
 <g id="Clouds">
 <g id="Cloud">
-<path id="Cloud_2" d="M55.2623 48.4746C60.1227 40.6111 70.2975 37.38 78.8151 40.9434C87.3214 44.5023 92.138 54.0026 89.903 62.9648L89.7418 63.6143L90.4108 63.585C97.4203 63.2791 103.5 68.9917 103.5 76.0283C103.5 82.8395 97.7717 88.4997 90.9772 88.5H37.9537C31.1275 88.5018 25.2029 83.1709 24.5592 76.3604C23.9158 69.5518 28.7369 63.2124 35.443 61.9453L35.9264 61.8535L35.8424 61.3691C35.0256 56.6239 37.1258 51.7168 41.1051 49.0127C45.0951 46.3014 50.4459 46.1537 54.5797 48.6396L55.0026 48.8945L55.2623 48.4746Z" fill="url(#paint0_linear_1858_8860)" stroke="#E6EFFC" stroke-miterlimit="10"/>
+<path id="Cloud_2" d="M55.2623 48.4746C60.1227 40.6111 70.2975 37.38 78.8151 40.9434C87.3214 44.5023 92.138 54.0026 89.903 62.9648L89.7418 63.6143L90.4108 63.585C97.4203 63.2791 103.5 68.9917 103.5 76.0283C103.5 82.8395 97.7717 88.4997 90.9772 88.5H37.9537C31.1275 88.5018 25.2029 83.1709 24.5592 76.3604C23.9158 69.5518 28.7369 63.2124 35.443 61.9453L35.9264 61.8535L35.8424 61.3691C35.0256 56.6239 37.1258 51.7168 41.1051 49.0127C45.0951 46.3014 50.4459 46.1537 54.5797 48.6396L55.0026 48.8945L55.2623 48.4746Z" fill="url(#paint0_linear_1858_8860)" stroke="#B7CAD7" stroke-miterlimit="10"/>
 </g>
 </g>
 </g>
@@ -17,14 +17,14 @@
 </g>
 <defs>
 <linearGradient id="paint0_linear_1858_8860" x1="64.0008" y1="39" x2="64.0008" y2="89" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFFFFF"/>
-<stop offset=".52" stop-color="#F1F8FC"/>
-<stop offset="1" stop-color="#D7EAF3"/>
+<stop stop-color="#F8FCFF"/>
+<stop offset=".52" stop-color="#E5F2F8"/>
+<stop offset="1" stop-color="#C1DCE8"/>
 </linearGradient>
 <linearGradient id="snowflakeGradient" x1="64" y1="84" x2="64" y2="102" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFFFFF"/>
-<stop offset=".48" stop-color="#BFE9FF"/>
-<stop offset="1" stop-color="#74C7EE"/>
+<stop stop-color="#EAF8FF"/>
+<stop offset=".45" stop-color="#9DDBF6"/>
+<stop offset="1" stop-color="#3EA6D7"/>
 </linearGradient>
 <clipPath id="clip0_1858_8860">
 <rect width="128" height="128" fill="white"/>
