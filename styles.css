@@ -227,3 +227,34 @@ html[data-weather="blizzard"]{
 .hero .copy h1{color:var(--hero-title)!important}
 .hero .degree{color:var(--hero-temp)!important}
 .hero .copy p{color:var(--hero-sub)!important}
+
+
+/* v13.5 fixed white hero text */
+:root{
+  --hero-title:#FFFFFF;
+  --hero-temp:#FFFFFF;
+  --hero-sub:rgba(255,255,255,.86);
+  --hero-kicker:rgba(255,255,255,.82);
+}
+html[data-weather="overcast"],
+html[data-weather="rain"],
+html[data-weather="storm"],
+html[data-weather="blizzard"],
+html[data-weather="clear"],
+html[data-weather="heat"],
+html[data-weather="partly"],
+html[data-weather="snow"]{
+  --hero-title:#FFFFFF;
+  --hero-temp:#FFFFFF;
+  --hero-sub:rgba(255,255,255,.86);
+  --hero-kicker:rgba(255,255,255,.82);
+}
+.hero .copy,
+.hero .copy>span,
+.hero .copy h1,
+.hero .degree,
+.hero .copy p{
+  text-shadow:
+    0 1px 2px rgba(20,55,72,.24),
+    0 0 10px rgba(20,55,72,.10);
+}
