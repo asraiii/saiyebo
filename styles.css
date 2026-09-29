@@ -258,3 +258,55 @@ html[data-weather="snow"]{
     0 1px 2px rgba(20,55,72,.24),
     0 0 10px rgba(20,55,72,.10);
 }
+
+
+/* v13.6 hero collision guard for long forecast titles */
+.hero .copy{
+  width:48%!important;
+  max-width:48%!important;
+  min-width:0!important;
+}
+.hero .copy h1{
+  max-width:100%!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
+  text-wrap:balance;
+  line-height:1.16!important;
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden!important;
+}
+.weather-art{
+  width:250px!important;
+  right:-28px!important;
+}
+@media(max-width:390px){
+  .hero .copy{
+    width:48%!important;
+    max-width:48%!important;
+  }
+  .hero .copy h1{
+    font-size:27px!important;
+    line-height:1.16!important;
+  }
+  .weather-art{
+    width:215px!important;
+    right:-35px!important;
+    transform:none!important;
+  }
+}
+@media(max-width:360px){
+  .hero .copy{
+    width:49%!important;
+    max-width:49%!important;
+  }
+  .hero .copy h1{
+    font-size:25px!important;
+  }
+  .weather-art{
+    width:200px!important;
+    right:-34px!important;
+  }
+}
