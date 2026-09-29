@@ -2,7 +2,8 @@
 <g id="clear-day">
 <g id="Sun">
 <circle id="Core" cx="64" cy="63.9999" r="26" fill="url(#paint0_linear_1802_5186)" stroke="#F8AF18"/>
-<g id="Rays" fill="none" stroke="url(#sunRayGradient)" stroke-width="6" stroke-linecap="round">
+<g id="Rays" fill="none" stroke-linecap="round">
+<g stroke="#F8AF18" stroke-width="8">
 <line x1="64" y1="24" x2="64" y2="29"/>
 <line x1="92.2843" y1="35.7157" x2="88.7487" y2="39.2513"/>
 <line x1="104" y1="64" x2="99" y2="64"/>
@@ -11,6 +12,17 @@
 <line x1="35.7157" y1="92.2843" x2="39.2513" y2="88.7487"/>
 <line x1="24" y1="64" x2="29" y2="64"/>
 <line x1="35.7157" y1="35.7157" x2="39.2513" y2="39.2513"/>
+</g>
+<g stroke="url(#sunRayGradient)" stroke-width="6">
+<line x1="64" y1="24" x2="64" y2="29"/>
+<line x1="92.2843" y1="35.7157" x2="88.7487" y2="39.2513"/>
+<line x1="104" y1="64" x2="99" y2="64"/>
+<line x1="92.2843" y1="92.2843" x2="88.7487" y2="88.7487"/>
+<line x1="64" y1="104" x2="64" y2="99"/>
+<line x1="35.7157" y1="92.2843" x2="39.2513" y2="88.7487"/>
+<line x1="24" y1="64" x2="29" y2="64"/>
+<line x1="35.7157" y1="35.7157" x2="39.2513" y2="39.2513"/>
+</g>
 </g>
 </g>
 </g>
