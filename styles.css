@@ -382,3 +382,48 @@ html[data-weather="snow"]{
     padding:15px 12px!important;
   }
 }
+
+
+/* v15.1 remove rounded-sheet seam + restore bottom share placement */
+.hero{
+  margin-bottom:-1px!important;
+}
+.weather-panel{
+  overflow:visible!important;
+  isolation:auto!important;
+  border-radius:0!important;
+  clip-path:none!important;
+}
+.weather-panel::before{
+  content:none!important;
+}
+.weather-panel::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:-28px;
+  height:29px;
+  background:var(--forecast-surface);
+  border-radius:28px 28px 0 0;
+  pointer-events:none;
+  z-index:0;
+}
+.weather-panel>*{
+  position:relative;
+  z-index:1;
+}
+.share-card{
+  margin:12px 20px 104px!important;
+}
+@media(max-width:390px){
+  .weather-panel::after{
+    top:-26px;
+    height:27px;
+    border-radius:26px 26px 0 0;
+  }
+  .share-card{
+    margin-left:18px!important;
+    margin-right:18px!important;
+  }
+}
