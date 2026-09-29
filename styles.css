@@ -427,3 +427,58 @@ html[data-weather="snow"]{
     margin-right:18px!important;
   }
 }
+
+
+/* v15.3 bottom share belongs to forecast sheet and follows active weather */
+:root{--weather-accent:#2499D0}
+.share-card{
+  margin:0!important;
+  padding:18px 20px calc(104px + env(safe-area-inset-bottom))!important;
+  border-radius:0!important;
+  background:var(--forecast-surface)!important;
+  box-shadow:none!important;
+}
+.share-card>div,
+.share-card>.share-action{
+  position:relative;
+}
+.share-card{
+  display:grid!important;
+  grid-template-columns:1fr auto!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+.share-card::before{
+  content:"";
+  position:absolute;
+  left:20px;
+  right:20px;
+  top:12px;
+  bottom:104px;
+  border-radius:18px;
+  background:var(--weather-accent);
+  box-shadow:0 8px 20px rgba(23,76,105,.12);
+}
+.share-card>div{
+  padding:10px 0 10px 14px;
+  z-index:1;
+}
+.share-card>div span,
+.share-card>div strong{
+  color:#fff!important;
+}
+.share-card>div span{opacity:.78!important}
+.share-card>.share-action{
+  z-index:1;
+  margin-right:14px!important;
+}
+@media(max-width:390px){
+  .share-card{
+    padding-left:18px!important;
+    padding-right:18px!important;
+  }
+  .share-card::before{
+    left:18px;
+    right:18px;
+  }
+}
