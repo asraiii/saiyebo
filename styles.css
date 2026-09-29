@@ -195,3 +195,35 @@ html[data-weather="blizzard"]{
 .tomorrow-weather-icon{
   filter:drop-shadow(0 1px 1px rgba(47,86,105,.13))!important;
 }
+
+
+/* v13.4 fixed hero text color for consistent readability */
+:root{
+  --hero-title:#173F55;
+  --hero-temp:#173F55;
+  --hero-sub:#45697C;
+  --hero-kicker:#45697C;
+}
+html[data-weather="overcast"],
+html[data-weather="rain"],
+html[data-weather="storm"],
+html[data-weather="blizzard"]{
+  --hero-title:#173F55;
+  --hero-temp:#173F55;
+  --hero-sub:#45697C;
+  --hero-kicker:#45697C;
+}
+.hero .copy,
+.hero .copy>span,
+.hero .copy h1,
+.hero .degree,
+.hero .copy p{
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.78),
+    0 0 8px rgba(255,255,255,.42);
+}
+.hero .copy{color:var(--hero-title)!important}
+.hero .copy>span{color:var(--hero-kicker)!important}
+.hero .copy h1{color:var(--hero-title)!important}
+.hero .degree{color:var(--hero-temp)!important}
+.hero .copy p{color:var(--hero-sub)!important}
