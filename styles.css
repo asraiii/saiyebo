@@ -343,3 +343,42 @@ html[data-weather="snow"]{
 .week-row{
   border-top-color:var(--forecast-line)!important;
 }
+
+
+/* v15.0 seamless relationship panel + integrated share CTA */
+.weather-panel{
+  overflow:hidden!important;
+  isolation:isolate;
+  background:var(--forecast-surface)!important;
+}
+.weather-panel::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  background:var(--forecast-surface);
+  border-radius:inherit;
+}
+.weather-panel .share-card{
+  margin:24px 0 0!important;
+  padding:16px 14px!important;
+  border-radius:18px!important;
+  background:#238DB9!important;
+  box-shadow:0 8px 20px rgba(23,96,128,.12)!important;
+}
+.weather-panel .share-card span,
+.weather-panel .share-card strong{
+  color:#fff!important;
+}
+.weather-panel .share-card span{
+  opacity:.78!important;
+}
+.weather-panel .share-action{
+  flex:0 0 auto!important;
+}
+@media(max-width:390px){
+  .weather-panel .share-card{
+    margin-top:22px!important;
+    padding:15px 12px!important;
+  }
+}
