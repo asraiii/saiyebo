@@ -1,13 +1,13 @@
 const weatherIcons={clear:"/assets/weather/soft-3d/clear-day.svg?v=14.5",heat:"/assets/weather/soft-3d/sun-hot.svg?v=14.5",partly:"/assets/weather/soft-3d/partly-cloudy-day.svg?v=14.5",overcast:"/assets/weather/soft-3d/overcast.svg?v=14.5",rain:"/assets/weather/soft-3d/rain.svg?v=14.5",storm:"/assets/weather/soft-3d/extreme-rain.svg?v=14.5",snow:"/assets/weather/soft-3d/snow.svg?v=14.5",blizzard:"/assets/weather/soft-3d/extreme-snow.svg?v=14.5"};
 const weatherThemes={
-clear:{body:"linear-gradient(180deg,#35B8F2 0%,#78D1F6 27%,#CDEFFF 58%,#FFF3B9 100%)",theme:"#35B8F2"},
-heat:{body:"linear-gradient(180deg,#F58A45 0%,#FFB85C 30%,#FFE08A 62%,#FFF4C7 100%)",theme:"#F58A45"},
-partly:{body:"linear-gradient(180deg,#69A9D4 0%,#9CCDE6 28%,#DFECE7 59%,#FFE7AF 100%)",theme:"#69A9D4"},
-overcast:{body:"linear-gradient(180deg,#71808F 0%,#9EABB6 29%,#D1D4D1 60%,#EFE0CC 100%)",theme:"#71808F"},
-rain:{body:"linear-gradient(180deg,#315D79 0%,#5F89A1 30%,#9FBCCA 61%,#D8DED7 100%)",theme:"#315D79"},
-storm:{body:"linear-gradient(180deg,#243444 0%,#465768 29%,#717D88 60%,#B5A39B 100%)",theme:"#243444"},
-snow:{body:"linear-gradient(180deg,#8CBBD5 0%,#C1DDEB 32%,#E9F4F8 66%,#FFFFFF 100%)",theme:"#8CBBD5"},
-blizzard:{body:"linear-gradient(180deg,#536D80 0%,#8097A7 31%,#C3D1D9 64%,#EEF3F6 100%)",theme:"#536D80"}
+clear:{body:"linear-gradient(180deg,#2499D0 0%,#48B5E4 30%,#78CAE9 62%,#A7DDED 100%)",theme:"#2499D0"},
+heat:{body:"linear-gradient(180deg,#E66F32 0%,#F28A3E 30%,#F6AA55 62%,#F6C878 100%)",theme:"#E66F32"},
+partly:{body:"linear-gradient(180deg,#4F8EBA 0%,#6FA9CC 30%,#94C1D7 62%,#B9D5DF 100%)",theme:"#4F8EBA"},
+overcast:{body:"linear-gradient(180deg,#596B7B 0%,#738695 30%,#91A2AD 62%,#B3BEC4 100%)",theme:"#596B7B"},
+rain:{body:"linear-gradient(180deg,#284E68 0%,#3F6A84 30%,#648AA0 62%,#8EABB9 100%)",theme:"#284E68"},
+storm:{body:"linear-gradient(180deg,#202F3E 0%,#34485A 30%,#536779 62%,#7B8C99 100%)",theme:"#202F3E"},
+snow:{body:"linear-gradient(180deg,#5D88A5 0%,#739CB5 30%,#8FB2C5 62%,#AEC8D4 100%)",theme:"#5D88A5"},
+blizzard:{body:"linear-gradient(180deg,#40596D 0%,#587286 30%,#758D9E 62%,#97AAB6 100%)",theme:"#40596D"}
 };
 function applyWeather(name){const t=weatherThemes[name]||weatherThemes.clear;document.body.style.backgroundImage=t.body;document.querySelector('meta[name="theme-color"]').content=t.theme;document.documentElement.dataset.weather=name;document.querySelectorAll(".theme-preview button").forEach(b=>b.classList.toggle("on",b.dataset.theme===name));const hero=document.querySelector('[data-weather-icon="hero"]');if(hero)hero.src=weatherIcons[name]||weatherIcons.clear}
 document.querySelectorAll(".theme-preview button").forEach(b=>b.addEventListener("click",()=>applyWeather(b.dataset.theme)));
