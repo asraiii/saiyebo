@@ -1,7 +1,7 @@
 # SAIYEBO CHANGE CONTROL — CURRENT BASELINE
 
 ## Locked Today hierarchy
-Hero → 관계 기상도 → 오늘 하루 예보 → 내일 → 7일 → 기록 → 실제 관계 입력 → 공유 → 하단 내비게이션.
+Hero → 관계 기상도 → 오늘 하루 예보 → 내일 → 7일 → 기록 → 공유 → 하단 내비게이션.
 
 ## Locked visual direction
 - Real weather-app hierarchy, not a quiz/game layout.
@@ -50,3 +50,7 @@ The visible selector is removed. During QA use:
 `?weather=clear`, `heat`, `partly`, `overcast`, `rain`, `storm`, `snow`, `blizzard`.
 
 Do not call the Today screen fully locked until rendered visual regression is confirmed after deployment.
+
+## Product decision — 2026-09-30
+- `오늘 실제 우리 사이는 어땠나요?` feedback selector is removed from Today.
+- Keep daily actual-condition input only as a future candidate for the 기록 experience; do not re-add it to Today without a new product decision.
