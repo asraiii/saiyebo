@@ -49,8 +49,16 @@ Check the requested area plus adjacent regression risk. Maintain:
 The visible selector is removed. During QA use:
 `?weather=clear`, `heat`, `partly`, `overcast`, `rain`, `storm`, `snow`, `blizzard`.
 
-Do not call the Today screen fully locked until rendered visual regression is confirmed after deployment.
+Current status: code-level Today baseline is frozen at v17.4. Do not call the Today screen pixel-perfect or rendered-device verified until visual regression is confirmed on actual target viewports.
 
 ## Product decision — 2026-09-30
 - `오늘 실제 우리 사이는 어땠나요?` feedback selector is removed from Today.
 - Keep daily actual-condition input only as a future candidate for the 기록 experience; do not re-add it to Today without a new product decision.
+
+
+## Today v17.4 freeze
+- Main Today design structure is frozen for the next implementation phase.
+- Non-Hero typography uses the two-token system: `--text-sm:12px`, `--text-md:14px`; headings and numeric displays are semantic exceptions.
+- 7-day temperatures are explicitly labeled `최저` / `최고`; Hero uses the same minimum → maximum meaning.
+- Hourly forecast has no instructional text or arrow. Horizontal affordance is provided by partial next-card reveal.
+- Further Today visual changes should be regression fixes or explicit new product decisions, not opportunistic redesign.
