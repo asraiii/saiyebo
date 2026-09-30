@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2499D0">
+<title>사이예보 시작하기</title>
+<meta name="description" content="두 사람의 정보를 입력하고 오늘의 사이예보를 확인해보세요.">
+<link rel="stylesheet" href="/start/start.css?v=1.0">
+</head>
+<body>
+<main class="start-app">
+<header><a href="/" aria-label="사이예보 홈">사이예보</a><span>시작하기</span></header>
+<section class="intro">
+<small>오늘 우리 사이, 맑을까요?</small>
+<h1>두 사람의 정보를<br>알려주세요.</h1>
+<p>입력한 정보는 이 기기에만 저장되며<br>매일 같은 기준으로 관계 예보를 만들어요.</p>
+</section>
+<form id="couple-form" novalidate>
+<div class="field"><label for="myBirth">내 생년월일</label><input id="myBirth" name="myBirth" type="date" required autocomplete="bday"></div>
+<div class="field"><label for="partnerBirth">상대 생년월일</label><input id="partnerBirth" name="partnerBirth" type="date" required></div>
+<div class="field"><label for="startDate">관계 시작일</label><input id="startDate" name="startDate" type="date" required></div>
+<fieldset><legend>지금 우리 관계</legend><div class="relation-options"><label><input type="radio" name="relationshipType" value="some"><span>썸</span></label><label><input type="radio" name="relationshipType" value="dating" checked><span>연애</span></label></div></fieldset>
+<div class="names"><div class="field"><label for="myName">내 이름 <em>선택</em></label><input id="myName" name="myName" type="text" maxlength="20" placeholder="나"></div><div class="field"><label for="partnerName">상대 이름 <em>선택</em></label><input id="partnerName" name="partnerName" type="text" maxlength="20" placeholder="상대"></div></div>
+<p class="error" id="form-error" role="alert" aria-live="polite"></p>
+<button class="submit" type="submit">오늘의 사이예보 보기</button>
+</form>
+</main>
+<script src="/start/start.js?v=1.0"></script>
+</body>
+</html>
