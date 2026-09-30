@@ -106,7 +106,7 @@ function sanitizeCouple(raw){
   return validDateString(data.myBirth)&&validDateString(data.partnerBirth)&&validDateString(data.startDate)?data:null;
 }
 function loadCouple(){
-  try{return sanitizeCouple(JSON.parse(localStorage.getItem(STORAGE_KEY)))||DEMO_COUPLE}catch{return DEMO_COUPLE}
+  try{return sanitizeCouple(JSON.parse(localStorage.getItem(STORAGE_KEY)))}catch{return null}
 }
 function saveCouple(input){
   const data=sanitizeCouple(input);
@@ -147,8 +147,13 @@ function renderToday(profile,date=isoLocalDate()){
   return forecast;
 }
 const activeCouple=loadCouple();
-const activeForecast=renderToday(activeCouple);
+const previewMode=new URLSearchParams(location.search).has("preview");
+if(!activeCouple&&!previewMode){
+  location.replace("/start/");
+}else{
+  const activeForecast=renderToday(activeCouple||DEMO_COUPLE);
+  window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
+}
 window.SAIYEBO_PROFILE={load:loadCouple,save:saveCouple,key:STORAGE_KEY,demo:DEMO_COUPLE};
-window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
 
 window.SAIYEBO_ENGINE={makeDailySeed,generateDay,generateForecast};
