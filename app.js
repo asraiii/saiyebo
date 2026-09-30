@@ -1,3 +1,67 @@
+const WEATHER_KEYS=["clear","heat","partly","overcast","rain","storm","snow","blizzard"];
+const CONDITION_LABELS={clear:"맑음",heat:"폭염",partly:"구름 조금",overcast:"흐림",rain:"비",storm:"폭우",snow:"눈",blizzard:"폭설"};
+function hash32(input){
+  let h=2166136261;
+  for(let i=0;i<input.length;i++){h^=input.charCodeAt(i);h=Math.imul(h,16777619)}
+  return h>>>0;
+}
+function mulberry32(seed){
+  return function(){let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}
+}
+function isoLocalDate(date=new Date()){
+  const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+function normalizeCouple(input={}){
+  const clean=v=>String(v||"").trim().toLowerCase();
+  const people=[clean(input.myBirth),clean(input.partnerBirth)].sort();
+  return {people,start:clean(input.startDate),type:clean(input.relationshipType||"dating")};
+}
+function makeDailySeed(input,date=isoLocalDate()){
+  const c=normalizeCouple(input);
+  return hash32(`SAIYEBO|v1|${c.people.join("|")}|${c.start}|${c.type}|${date}`);
+}
+function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
+function weatherFromTemp(temp,rain){
+  if(rain>=82)return"storm";
+  if(rain>=58)return"rain";
+  if(temp>=34)return"heat";
+  if(temp<=3&&rain>=62)return"blizzard";
+  if(temp<=5&&rain>=38)return"snow";
+  if(rain>=38)return"overcast";
+  if(rain>=22)return"partly";
+  return"clear";
+}
+function generateDay(input,date=isoLocalDate()){
+  const rng=mulberry32(makeDailySeed(input,date));
+  const temp=Math.round(18+rng()*15);
+  const rain=Math.round(rng()*100);
+  const humidity=Math.round(48+rng()*43);
+  const wind=Math.round((.8+rng()*4.4)*10)/10;
+  const low=clamp(temp-Math.round(3+rng()*4),0,40);
+  const high=clamp(temp+Math.round(2+rng()*4),0,40);
+  const feels=clamp(temp+Math.round((humidity-68)/18-(wind-2.2)/2),0,40);
+  const weather=weatherFromTemp(temp,rain);
+  return{date,temp,feels,low,high,rain,humidity,wind,weather,label:CONDITION_LABELS[weather]};
+}
+function addDays(dateString,amount){
+  const [y,m,d]=dateString.split("-").map(Number),x=new Date(y,m-1,d+amount);
+  return isoLocalDate(x);
+}
+function generateForecast(input,date=isoLocalDate()){
+  const today=generateDay(input,date);
+  const hourly=[6,9,12,15,18,20,22,24].map((hour,i)=>{
+    const rng=mulberry32(makeDailySeed(input,`${date}|hour|${hour}`));
+    const curve=Math.round(Math.sin((i/7)*Math.PI)*5-2);
+    const temp=clamp(today.temp+curve+Math.round(rng()*2-1),0,40);
+    const rain=clamp(Math.round(today.rain*.55+rng()*42),0,100);
+    const weather=weatherFromTemp(temp,rain);
+    return{hour,temp,rain,weather,label:CONDITION_LABELS[weather]};
+  });
+  const week=Array.from({length:7},(_,i)=>generateDay(input,addDays(date,i)));
+  return{version:1,seed:makeDailySeed(input,date),today,hourly,tomorrow:week[1],week};
+}
+
 const weatherIcons={
   clear:"/assets/weather/soft-3d/clear-day.svg?v=16.6",
   heat:"/assets/weather/soft-3d/sun-hot.svg?v=16.6",
@@ -31,3 +95,5 @@ function applyWeather(name){
 }
 const requested=new URLSearchParams(location.search).get("weather");
 applyWeather(requested||"clear");
+
+window.SAIYEBO_ENGINE={makeDailySeed,generateDay,generateForecast};
