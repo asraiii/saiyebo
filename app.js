@@ -93,7 +93,62 @@ function applyWeather(name){
   const hero=document.querySelector('[data-weather-icon="hero"]');
   if(hero)hero.src=weatherIcons[key];
 }
-const requested=new URLSearchParams(location.search).get("weather");
-applyWeather(requested||"clear");
+const STORAGE_KEY="saiyebo:couple:v1";
+const DEMO_COUPLE={myBirth:"1992-05-14",partnerBirth:"1993-11-02",startDate:"2025-07-22",relationshipType:"dating",myName:"나",partnerName:"상대"};
+function validDateString(v){return /^\d{4}-\d{2}-\d{2}$/.test(String(v||""))}
+function sanitizeCouple(raw){
+  if(!raw||typeof raw!=="object")return null;
+  const data={
+    myBirth:String(raw.myBirth||"").trim(),partnerBirth:String(raw.partnerBirth||"").trim(),
+    startDate:String(raw.startDate||"").trim(),relationshipType:String(raw.relationshipType||"dating").trim(),
+    myName:String(raw.myName||"").trim().slice(0,20),partnerName:String(raw.partnerName||"").trim().slice(0,20)
+  };
+  return validDateString(data.myBirth)&&validDateString(data.partnerBirth)&&validDateString(data.startDate)?data:null;
+}
+function loadCouple(){
+  try{return sanitizeCouple(JSON.parse(localStorage.getItem(STORAGE_KEY)))||DEMO_COUPLE}catch{return DEMO_COUPLE}
+}
+function saveCouple(input){
+  const data=sanitizeCouple(input);
+  if(!data)throw new Error("Invalid couple profile");
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));return data;
+}
+function daysTogether(start,date){
+  const a=new Date(start+"T00:00:00"),b=new Date(date+"T00:00:00");
+  return Math.max(1,Math.floor((b-a)/86400000)+1);
+}
+function formatStartDate(v){const [y,m,d]=v.split("-");return `${y}. ${m}. ${d}부터`}
+function rainLevel(v){return v<35?"낮음":v<65?"보통":"높음"}
+function humidityLevel(v){return v<58?"건조":v<78?"충분":"가득"}
+function windLevel(v){return v<2.2?"잔잔":v<3.8?"산들":"강함"}
+function bindText(name,value){const el=document.querySelector(`[data-bind="${name}"]`);if(el)el.textContent=value}
+function renderToday(profile,date=isoLocalDate()){
+  const forecast=generateForecast(profile,date),t=forecast.today;
+  bindText("days-together",`D+${daysTogether(profile.startDate,date)}`);
+  bindText("start-date",formatStartDate(profile.startDate));
+  bindText("hero-title",t.label);bindText("hero-temp",t.temp);bindText("feels",t.feels);bindText("low",t.low);bindText("high",t.high);
+  bindText("rain",t.rain);bindText("rain-level",rainLevel(t.rain));bindText("humidity",t.humidity);bindText("humidity-level",humidityLevel(t.humidity));
+  bindText("wind",t.wind.toFixed(1));bindText("wind-level",windLevel(t.wind));bindText("tomorrow-temp",forecast.tomorrow.temp);
+  document.querySelectorAll("[data-hour-card]").forEach((card,i)=>{
+    const x=forecast.hourly[i];if(!x)return;
+    const b=card.querySelector("b"),img=card.querySelector("img"),strong=card.querySelector("strong"),small=card.querySelector("small");
+    if(b&&!card.classList.contains("now"))b.textContent=x.hour===24?"24시":`${String(x.hour).padStart(2,"0")}시`;
+    if(img)img.src=weatherIcons[x.weather];if(strong)strong.textContent=`${x.temp}°`;if(small)small.textContent=x.label;
+  });
+  const weekday=["일","월","화","수","목","금","토"];
+  document.querySelectorAll("[data-week-row]").forEach((row,i)=>{
+    const x=forecast.week[i];if(!x)return;
+    const parts=row.children,dt=new Date(x.date+"T00:00:00");
+    if(parts[0])parts[0].textContent=i===0?"오늘":weekday[dt.getDay()];
+    if(parts[1])parts[1].src=weatherIcons[x.weather];if(parts[2])parts[2].textContent=x.label;
+    if(parts[3])parts[3].textContent=`${x.low}°`;if(parts[4])parts[4].textContent=`${x.high}°`;
+  });
+  applyWeather(t.weather);
+  return forecast;
+}
+const activeCouple=loadCouple();
+const activeForecast=renderToday(activeCouple);
+window.SAIYEBO_PROFILE={load:loadCouple,save:saveCouple,key:STORAGE_KEY,demo:DEMO_COUPLE};
+window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
 
 window.SAIYEBO_ENGINE={makeDailySeed,generateDay,generateForecast};
