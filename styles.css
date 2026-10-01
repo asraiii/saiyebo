@@ -14,19 +14,19 @@ body{
 }
 button{font:inherit}
 .app{width:min(100%,470px);min-height:100vh;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 0 0;position:relative}
-.top,.days,.hero{margin-left:20px;margin-right:20px}
+.top,.hero{margin-left:20px;margin-right:20px}
 .top{height:54px;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;margin-bottom:17px}
 .brand{text-align:center;color:#fff;font-size:17px;font-weight:600;letter-spacing:-.035em}
 .round{width:38px;height:38px;border:1px solid rgba(255,255,255,.35);border-radius:13px;background:rgba(255,255,255,.28);color:#fff;backdrop-filter:blur(10px)}
 .round svg{width:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .days{height:67px;border-bottom:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:space-between;color:#fff;padding:0 2px 12px}
 .days p{margin:0;font-size:var(--text-sm);font-weight:400}.days p b{font-size:19px;font-weight:500;margin-left:5px}.date{font-size:var(--text-sm);opacity:.72}
-.hero{height:322px;min-height:322px;position:relative;color:#fff;padding-top:24px;overflow:hidden}
-.copy{position:relative;z-index:2;width:48%;max-width:48%;min-width:0;color:#fff}
-.copy>span{font-size:15px;font-weight:700;opacity:.9}.copy h1{font-size:31px;font-weight:700;margin:5px 0 0;letter-spacing:-.045em;line-height:1.16;word-break:keep-all;text-wrap:balance;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.hero{height:389px;min-height:389px;position:relative;color:#fff;padding-top:50px;overflow:hidden}
+.copy{position:relative;z-index:2;width:52%;max-width:52%;min-width:0;color:#fff}
+.hero-meta{height:38px;margin-bottom:8px;display:flex;flex-direction:column;gap:2px;font-size:var(--text-sm);font-weight:500;color:rgba(255,255,255,.82);white-space:nowrap}.hero-meta span:first-child{display:flex;align-items:baseline;gap:5px}.hero-meta b{font-size:16px;font-weight:600;color:#fff}.hero-kicker{font-size:15px;font-weight:700;opacity:.9}.copy h1{font-size:31px;font-weight:700;margin:5px 0 0;letter-spacing:-.045em;line-height:1.16;word-break:keep-all;text-wrap:balance;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .degree{font-size:78px;font-weight:500;line-height:.98;letter-spacing:-.055em;margin-top:3px}.degree sup{font-size:27px;vertical-align:top;margin-left:3px}.copy p{font-size:14px;font-weight:600;margin:10px 0;color:rgba(255,255,255,.9);white-space:nowrap}
-.copy,.copy>span,.copy h1,.degree,.copy p{text-shadow:0 1px 2px rgba(20,55,72,.24),0 0 10px rgba(20,55,72,.10)}
-.weather-art{position:absolute;width:250px;height:225px;right:-28px;top:20px;filter:drop-shadow(0 6px 10px rgba(57,101,124,.10))}
+.copy,.hero-kicker,.copy h1,.degree,.copy p{text-shadow:0 1px 2px rgba(20,55,72,.24),0 0 10px rgba(20,55,72,.10)}
+.weather-art{position:absolute;width:250px;height:225px;right:-28px;top:35px;filter:drop-shadow(0 6px 10px rgba(57,101,124,.10))}
 .hero-weather-icon{display:block;width:100%;height:100%;object-fit:contain}
 .forecast-sheet{position:relative;background:var(--forecast-surface);border-radius:28px 28px 0 0;overflow:hidden;margin-top:-1px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 .weather-panel,.forecast-section{margin:0;padding:22px 20px;background:transparent;border:0}
@@ -46,9 +46,9 @@ button{font:inherit}
 .share-card{position:relative;margin:0;padding:18px 20px 24px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;background:transparent}.share-card::before{content:"";position:absolute;inset:8px 20px 14px;border-radius:18px;background:var(--weather-accent);box-shadow:0 8px 20px rgba(23,76,105,.12)}.share-card>div,.share-action{position:relative;z-index:1}.share-card>div{padding:7px 0 7px 14px}.share-card span{display:block;font-size:var(--text-sm);color:rgba(255,255,255,.78)}.share-card strong{display:block;margin-top:3px;font-size:var(--text-md);color:#fff}.share-action{margin-right:14px;border:1px solid rgba(255,255,255,.38);border-radius:12px;background:rgba(255,255,255,.16);color:#fff;padding:9px 10px;display:flex;align-items:center;gap:5px;font-size:var(--text-sm)}.share-action svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7}
 nav{position:fixed;z-index:20;left:50%;bottom:0;transform:translateX(-50%);width:min(100%,470px);height:calc(72px + env(safe-area-inset-bottom));padding:7px 18px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(18px);border-top:1px solid rgba(49,82,99,.08)}
 nav button{border:0;background:transparent;color:#8A9CA6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}nav button.on{color:#197DA9}nav button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}nav button.on svg{stroke-width:2.1}nav span{font-size:var(--text-sm)}
-@media(max-width:430px){body{background-size:100% 570px}.hero{height:315px;min-height:315px}}
-@media(max-width:390px){.top,.days,.hero{margin-left:18px;margin-right:18px}.copy h1{font-size:27px}.degree{font-size:74px}.weather-art{width:215px;right:-35px}.weather-panel,.forecast-section{padding-left:18px;padding-right:18px}.hour-scroll{padding-left:18px;padding-right:18px;scroll-padding-inline:18px}.metrics article{grid-template-columns:30px 1fr;column-gap:6px;padding-left:8px;padding-right:8px}.metrics strong{font-size:15px}.week-head,.week-row{grid-template-columns:36px 26px 1fr 34px 34px;column-gap:6px}.share-card{padding-left:18px;padding-right:18px}.share-card::before{left:18px;right:18px}.forecast-weather-icon{width:28px;height:28px}.week-row .forecast-weather-icon{width:26px;height:26px}.tomorrow-weather-icon{width:44px;height:44px}}
-@media(max-width:360px){.copy{width:49%;max-width:49%}.copy h1{font-size:25px}.weather-art{width:200px;right:-34px}.metrics article{padding-left:5px;padding-right:5px}.metrics strong{font-size:14px}.share-card strong{font-size:12px}.share-action{padding:8px}}
+@media(max-width:430px){body{background-size:100% 570px}.hero{height:382px;min-height:382px}}
+@media(max-width:390px){.top,.hero{margin-left:18px;margin-right:18px}.copy{width:53%;max-width:53%}.copy h1{font-size:27px}.degree{font-size:74px}.weather-art{width:215px;right:-35px}.weather-panel,.forecast-section{padding-left:18px;padding-right:18px}.hour-scroll{padding-left:18px;padding-right:18px;scroll-padding-inline:18px}.metrics article{grid-template-columns:30px 1fr;column-gap:6px;padding-left:8px;padding-right:8px}.metrics strong{font-size:15px}.week-head,.week-row{grid-template-columns:36px 26px 1fr 34px 34px;column-gap:6px}.share-card{padding-left:18px;padding-right:18px}.share-card::before{left:18px;right:18px}.forecast-weather-icon{width:28px;height:28px}.week-row .forecast-weather-icon{width:26px;height:26px}.tomorrow-weather-icon{width:44px;height:44px}}
+@media(max-width:360px){.copy{width:54%;max-width:54%}.copy h1{font-size:25px}.weather-art{width:200px;right:-34px}.metrics article{padding-left:5px;padding-right:5px}.metrics strong{font-size:14px}.share-card strong{font-size:12px}.share-action{padding:8px}}
 @media(min-width:600px){body{background-size:100% 620px}.app{box-shadow:0 0 50px rgba(24,54,74,.08)}}
 
 @media(max-width:390px){.tomorrow-main{grid-template-columns:minmax(0,1fr) 86px;gap:8px}.tomorrow-weather{width:86px;min-width:86px;gap:4px}.tomorrow-temp{font-size:19px}.tomorrow-weather-icon{width:40px;height:40px}}
