@@ -246,7 +246,7 @@ async function shareSaiyebo(profile,forecast){
   const t=forecast.today;
   const names=profile&&profile.myName&&profile.partnerName?`${profile.myName} · ${profile.partnerName}`:"우리 사이";
   const text=`${names}의 오늘 사이예보는 ${t.label}, 관계온도 ${t.temp}°예요. 오늘 우리 사이, 맑을까요?`;
-  const url=new URL("/",location.origin).href;
+  const shared=new URL("/share/",location.origin);\n  shared.search=new URLSearchParams({w:t.weather,t:String(t.temp),lo:String(t.low),hi:String(t.high),r:String(t.rain),h:String(t.humidity),v:String(t.wind),l:t.label}).toString();\n  const url=shared.href;
   try{
     if(navigator.share){await navigator.share({title:"사이예보",text,url});return}
     if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(`${text}\n${url}`);showShareFeedback("링크 복사 완료");return}
