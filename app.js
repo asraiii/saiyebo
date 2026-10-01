@@ -222,14 +222,18 @@ function renderToday(profile,date=isoLocalDate()){
     if(b&&!card.classList.contains("now"))b.textContent=x.hour===24?"24시":`${String(x.hour).padStart(2,"0")}시`;
     if(img)img.src=weatherIcons[x.weather];if(strong)strong.textContent=`${x.temp}°`;if(small)small.textContent=x.label;
   });
-  const weekday=["일","월","화","수","목","금","토"];
-  document.querySelectorAll("[data-week-row]").forEach((row,i)=>{
-    const x=forecast.week[i];if(!x)return;
-    const parts=row.children,dt=new Date(x.date+"T00:00:00");
-    if(parts[0])parts[0].textContent=i===0?"오늘":weekday[dt.getDay()];
-    if(parts[1])parts[1].src=weatherIcons[x.weather];if(parts[2])parts[2].textContent=x.label;
-    if(parts[3])parts[3].textContent=`${x.low}°`;if(parts[4])parts[4].textContent=`${x.high}°`;
-  });
+  const futureWeek=forecast.week.slice(1);
+  const calmCount=futureWeek.filter(x=>["clear","partly"].includes(x.weather)).length;
+  const roughCount=futureWeek.filter(x=>["rain","storm","blizzard"].includes(x.weather)).length;
+  const warmCount=futureWeek.filter(x=>["heat"].includes(x.weather)).length;
+  let weekTitle="이번 주는 대체로 잔잔해요";
+  let weekCopy="큰 기복보다는 편안한 흐름이 이어질 가능성이 있어요. 자세한 사이예보는 그날 다시 확인해보세요.";
+  let weekIcon="partly";
+  if(roughCount>=3){weekTitle="이번 주는 기류 변화가 조금 있어요";weekCopy="중간중간 흐름이 달라질 수 있어요. 어느 날 변화가 오는지는 매일의 사이예보에서 확인해보세요.";weekIcon="overcast"}
+  else if(warmCount>=2){weekTitle="이번 주는 따뜻한 기류가 강해요";weekCopy="가까워지기 좋은 흐름이 보여요. 하루하루의 자세한 날씨는 그날 다시 열어보세요.";weekIcon="heat"}
+  else if(calmCount>=4){weekTitle="이번 주는 대체로 포근해요";weekCopy="편안한 기류가 우세해 보여요. 구체적인 날씨와 관계특보는 매일 새로 확인해보세요.";weekIcon="partly"}
+  bindText("week-outlook-title",weekTitle);bindText("week-outlook-copy",weekCopy);
+  const weekIconEl=document.querySelector('[data-bind-img="week-outlook-icon"]');if(weekIconEl)weekIconEl.src=weatherIcons[weekIcon];
   applyWeather(t.weather);
   return forecast;
 }
