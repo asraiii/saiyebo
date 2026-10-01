@@ -57,3 +57,8 @@ nav button{border:0;background:transparent;color:#8A9CA6;display:flex;flex-direc
 @media(max-width:430px){.hour-scroll article{flex-basis:76px;min-width:76px}}
 @media(max-width:390px){.hour-scroll article{flex-basis:74px;min-width:74px}}
 @media(max-width:360px){.hour-scroll article{flex-basis:72px;min-width:72px}}
+
+/* Hero weather motion */
+@keyframes heroWeatherFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero-weather-icon{animation:heroWeatherFloat 3.8s ease-in-out infinite;transform-origin:50% 50%;will-change:transform}
+@media(prefers-reduced-motion:reduce){.hero-weather-icon{animation:none}}
