@@ -97,15 +97,19 @@ const HISTORY_KEY="saiyebo:history:v1";
 function loadHistory(){
   try{const x=JSON.parse(localStorage.getItem(HISTORY_KEY));return Array.isArray(x)?x.filter(v=>v&&validDateString(v.date)):[]}catch{return[]}
 }
-function saveForecastHistory(forecast){
-  if(!forecast||!forecast.today)return;
-  const t=forecast.today,entry={date:t.date,temp:t.temp,low:t.low,high:t.high,rain:t.rain,humidity:t.humidity,wind:t.wind,weather:t.weather,label:t.label};
-  const history=loadHistory().filter(x=>x.date!==entry.date);
+function historyOwner(profile){
+  const c=normalizeCouple(profile);return hash32(`${c.people.join("|")}|${c.start}|${c.type}`).toString(36);
+}
+function saveForecastHistory(forecast,profile){
+  if(!forecast||!forecast.today||!profile)return;
+  const t=forecast.today,owner=historyOwner(profile),entry={owner,date:t.date,temp:t.temp,low:t.low,high:t.high,rain:t.rain,humidity:t.humidity,wind:t.wind,weather:t.weather,label:t.label};
+  const history=loadHistory().filter(x=>!(x.owner===owner&&x.date===entry.date));
   history.push(entry);history.sort((a,b)=>a.date.localeCompare(b.date));
   localStorage.setItem(HISTORY_KEY,JSON.stringify(history.slice(-400)));
 }
-function historyStats(history,date=isoLocalDate()){
-  const sorted=history.filter(x=>x.date<=date).sort((a,b)=>a.date.localeCompare(b.date));
+function historyStats(history,date=isoLocalDate(),profile=null){
+  const owner=profile?historyOwner(profile):null;
+  const sorted=history.filter(x=>x.date<=date&&(!owner||x.owner===owner)).sort((a,b)=>a.date.localeCompare(b.date));
   const clearish=x=>x&&["clear","heat","partly"].includes(x.weather);
   let streak=0;
   for(let i=sorted.length-1;i>=0;i--){if(clearish(sorted[i]))streak++;else break}
@@ -113,8 +117,8 @@ function historyStats(history,date=isoLocalDate()){
   const hottest=sorted.reduce((best,x)=>!best||x.temp>best.temp?x:best,null);
   return{streak,monthClear,hottest};
 }
-function renderHistorySummary(date=isoLocalDate()){
-  const s=historyStats(loadHistory(),date);
+function renderHistorySummary(date=isoLocalDate(),profile=null){
+  const s=historyStats(loadHistory(),date,profile);
   bindText("record-streak",`${s.streak}일`);
   bindText("record-month-clear",`${s.monthClear}일`);
   bindText("record-highest",s.hottest?s.hottest.date.slice(5).replace("-","."):"—");
@@ -235,11 +239,11 @@ if(!activeCouple&&!previewMode){
   location.replace("/start/");
 }else{
   const activeForecast=renderToday(activeCouple||DEMO_COUPLE);
-  if(activeCouple){saveForecastHistory(activeForecast);renderHistorySummary(activeForecast.today.date)}
+  if(activeCouple){saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple)}
   else{renderHistorySummary(activeForecast.today.date)}
   window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
 }
 window.SAIYEBO_PROFILE={load:loadCouple,save:saveCouple,key:STORAGE_KEY,demo:DEMO_COUPLE};
-window.SAIYEBO_HISTORY={load:loadHistory,stats:historyStats,key:HISTORY_KEY};
+window.SAIYEBO_HISTORY={load:loadHistory,stats:historyStats,key:HISTORY_KEY,owner:historyOwner};
 
 window.SAIYEBO_ENGINE={makeDailySeed,generateDay,generateForecast};
