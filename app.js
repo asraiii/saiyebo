@@ -51,7 +51,12 @@ function addDays(dateString,amount){
 function generateForecast(input,date=isoLocalDate()){
   const today=generateDay(input,date);
   const now=new Date(),isToday=date===isoLocalDate(now),currentHour=isToday?now.getHours():12;
-  const hourly=Array.from({length:9},(_,i)=>currentHour+i*3).filter(hour=>hour<=24).map((hour,i)=>{
+  let hours;
+  if(!isToday)hours=Array.from({length:10},(_,i)=>6+i*2).filter(hour=>hour<=24);
+  else if(currentHour<6)hours=[currentHour,...Array.from({length:10},(_,i)=>6+i*2).filter(hour=>hour<=24)];
+  else hours=[currentHour,...Array.from({length:10},(_,i)=>6+i*2).filter(hour=>hour>currentHour&&hour<=24)];
+  hours=[...new Set(hours)];
+  const hourly=hours.map((hour,i)=>{
     const rng=mulberry32(makeDailySeed(input,`${date}|hour|${hour}`));
     const curve=Math.round(Math.sin((Math.min(hour,24)/24)*Math.PI)*5-2);
     const temp=clamp(today.temp+curve+Math.round(rng()*2-1),0,40);
