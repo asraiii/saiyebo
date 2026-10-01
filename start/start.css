@@ -18,3 +18,7 @@ fieldset{border:0;padding:18px 0 20px;margin:0;border-top:1px solid var(--line)}
 @media(max-width:390px){header,.intro{margin-left:18px;margin-right:18px}.intro h1{font-size:35px}.intro-weather{width:195px;height:140px;margin-bottom:-12px}form{padding-left:26px;padding-right:26px}}
 @media(max-width:360px){.intro h1{font-size:32px}.intro{height:295px}.intro-weather{width:180px;height:132px;margin-bottom:-10px}.intro p{font-size:var(--text-sm)}form{padding-left:22px;padding-right:22px}}
 @media(min-width:600px){body{background-size:100% 520px}.start-app{box-shadow:0 0 50px rgba(24,54,74,.08)}}
+
+@keyframes heroWeatherFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.intro-weather img{animation:heroWeatherFloat 3.8s ease-in-out infinite;transform-origin:50% 50%;will-change:transform}
+@media(prefers-reduced-motion:reduce){.intro-weather img{animation:none}}
