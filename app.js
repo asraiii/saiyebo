@@ -50,9 +50,9 @@ function addDays(dateString,amount){
 }
 function generateForecast(input,date=isoLocalDate()){
   const today=generateDay(input,date);
-  const hourly=[6,9,12,15,18,20,22,24].map((hour,i)=>{
+  const hourly=[6,9,12,14,15,18,20,22,24].map((hour,i)=>{
     const rng=mulberry32(makeDailySeed(input,`${date}|hour|${hour}`));
-    const curve=Math.round(Math.sin((i/7)*Math.PI)*5-2);
+    const curve=Math.round(Math.sin((i/8)*Math.PI)*5-2);
     const temp=clamp(today.temp+curve+Math.round(rng()*2-1),0,40);
     const rain=clamp(Math.round(today.rain*.55+rng()*42),0,100);
     const weather=weatherFromTemp(temp,rain);
@@ -95,7 +95,11 @@ function applyWeather(name){
 }
 const STORAGE_KEY="saiyebo:couple:v1";
 const DEMO_COUPLE={myBirth:"1992-05-14",partnerBirth:"1993-11-02",startDate:"2025-07-22",relationshipType:"dating",myName:"나",partnerName:"상대"};
-function validDateString(v){return /^\d{4}-\d{2}-\d{2}$/.test(String(v||""))}
+function validDateString(v){
+  const s=String(v||"");if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;
+  const [y,m,d]=s.split("-").map(Number),x=new Date(y,m-1,d);
+  return x.getFullYear()===y&&x.getMonth()===m-1&&x.getDate()===d;
+}
 function sanitizeCouple(raw){
   if(!raw||typeof raw!=="object")return null;
   const data={
@@ -103,7 +107,11 @@ function sanitizeCouple(raw){
     startDate:String(raw.startDate||"").trim(),relationshipType:String(raw.relationshipType||"dating").trim(),
     myName:String(raw.myName||"").trim().slice(0,20),partnerName:String(raw.partnerName||"").trim().slice(0,20)
   };
-  return validDateString(data.myBirth)&&validDateString(data.partnerBirth)&&validDateString(data.startDate)?data:null;
+  if(!validDateString(data.myBirth)||!validDateString(data.partnerBirth)||!validDateString(data.startDate))return null;
+  if(!["some","dating"].includes(data.relationshipType))return null;
+  const today=isoLocalDate();
+  if(data.myBirth>today||data.partnerBirth>today||data.startDate>today)return null;
+  return data;
 }
 function loadCouple(){
   try{return sanitizeCouple(JSON.parse(localStorage.getItem(STORAGE_KEY)))}catch{return null}
@@ -114,8 +122,9 @@ function saveCouple(input){
   localStorage.setItem(STORAGE_KEY,JSON.stringify(data));return data;
 }
 function daysTogether(start,date){
-  const a=new Date(start+"T00:00:00"),b=new Date(date+"T00:00:00");
-  return Math.max(1,Math.floor((b-a)/86400000)+1);
+  const [sy,sm,sd]=start.split("-").map(Number),[ey,em,ed]=date.split("-").map(Number);
+  const diff=Math.floor((Date.UTC(ey,em-1,ed)-Date.UTC(sy,sm-1,sd))/86400000);
+  return Math.max(1,diff+1);
 }
 function formatStartDate(v){const [y,m,d]=v.split("-");return `${y}. ${m}. ${d}부터`}
 function rainLevel(v){return v<35?"낮음":v<65?"보통":"높음"}
