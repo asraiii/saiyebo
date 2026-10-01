@@ -243,22 +243,19 @@ function renderToday(profile,date=isoLocalDate()){
   return forecast;
 }
 async function shareSaiyebo(profile,forecast){
-  const t=forecast.today;
-  const names=profile&&profile.myName&&profile.partnerName?`${profile.myName} · ${profile.partnerName}`:"우리 사이";
+  const t=forecast.today,names=profile&&profile.myName&&profile.partnerName?`${profile.myName} · ${profile.partnerName}`:"우리 사이";
   const text=`${names}의 오늘 사이예보는 ${t.label}, 관계온도 ${t.temp}°예요. 오늘 우리 사이, 맑을까요?`;
-  const shared=new URL("/share/",location.origin);
-  const tomorrowText=tomorrowCopy(t,forecast.tomorrow),futureWeek=forecast.week.slice(1),calmCount=futureWeek.filter(x=>["clear","partly"].includes(x.weather)).length,roughCount=futureWeek.filter(x=>["rain","storm","blizzard"].includes(x.weather)).length,warmCount=futureWeek.filter(x=>x.weather==="heat").length;
-  let weekTitle="이번 주는 대체로 잔잔해요",weekCopy="큰 기복보다는 편안한 흐름이 이어질 가능성이 있어요. 자세한 사이예보는 그날 다시 확인해보세요.",weekIcon="partly";
-  if(roughCount>=3){weekTitle="이번 주는 기류 변화가 조금 있어요";weekCopy="중간중간 흐름이 달라질 수 있어요. 어느 날 변화가 오는지는 매일의 사이예보에서 확인해보세요.";weekIcon="overcast"}
-  else if(warmCount>=2){weekTitle="이번 주는 따뜻한 기류가 강해요";weekCopy="가까워지기 좋은 흐름이 보여요. 하루하루의 자세한 날씨는 그날 다시 열어보세요.";weekIcon="heat"}
-  else if(calmCount>=4){weekTitle="이번 주는 대체로 포근해요";weekCopy="편안한 기류가 우세해 보여요. 구체적인 날씨와 관계특보는 매일 새로 확인해보세요.";weekIcon="partly"}
-  const advisory=advisoryCopy(forecast);
-  shared.search=new URLSearchParams({w:t.weather,t:String(t.temp),lo:String(t.low),hi:String(t.high),r:String(t.rain),h:String(t.humidity),v:String(t.wind),l:t.label,n:names,at:advisory.title,ac:advisory.copy,tw:forecast.tomorrow.weather,tt:tomorrowText.title,tc:tomorrowText.copy,ww:weekIcon,wt:weekTitle,wc:weekCopy}).toString();
-  const url=shared.href;
+  const weatherCode={clear:"c",heat:"h",partly:"p",overcast:"o",rain:"r",storm:"s",snow:"n",blizzard:"b"};
+  const futureWeek=forecast.week.slice(1),calm=futureWeek.filter(x=>["clear","partly"].includes(x.weather)).length,rough=futureWeek.filter(x=>["rain","storm","blizzard"].includes(x.weather)).length,warm=futureWeek.filter(x=>x.weather==="heat").length;
+  const weekCode=rough>=3?"o":warm>=2?"h":calm>=4?"p":"p";
+  const risky=forecast.hourly.find(x=>["overcast","rain","storm","snow","blizzard"].includes(x.weather));
+  const advisoryHour=risky&&risky.weather!==t.weather?risky.hour:25,advisoryWeather=risky&&risky.weather!==t.weather?weatherCode[risky.weather]:"x";
+  const payload=[weatherCode[t.weather],t.temp,t.feels,t.low,t.high,t.rain,t.humidity,Math.round(t.wind*10),weatherCode[forecast.tomorrow.weather],forecast.tomorrow.temp,weekCode,advisoryHour,advisoryWeather].join(".");
+  const url=new URL("/share/",location.origin);url.searchParams.set("d",payload);
   try{
-    if(navigator.share){await navigator.share({title:"사이예보",text,url});return}
-    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(`${text}\n${url}`);showShareFeedback("링크 복사 완료");return}
-    const area=document.createElement("textarea");area.value=`${text}\n${url}`;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();showShareFeedback("링크 복사 완료");
+    if(navigator.share){await navigator.share({title:"사이예보",text,url:url.href});return}
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(`${text}\n${url.href}`);showShareFeedback("링크 복사 완료");return}
+    const area=document.createElement("textarea");area.value=`${text}\n${url.href}`;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();showShareFeedback("링크 복사 완료");
   }catch(error){if(error&&error.name==="AbortError")return;showShareFeedback("공유할 수 없어요")}
 }
 function showShareFeedback(message){
