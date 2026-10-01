@@ -93,6 +93,32 @@ function applyWeather(name){
   const hero=document.querySelector('[data-weather-icon="hero"]');
   if(hero)hero.src=weatherIcons[key];
 }
+const HISTORY_KEY="saiyebo:history:v1";
+function loadHistory(){
+  try{const x=JSON.parse(localStorage.getItem(HISTORY_KEY));return Array.isArray(x)?x.filter(v=>v&&validDateString(v.date)):[]}catch{return[]}
+}
+function saveForecastHistory(forecast){
+  if(!forecast||!forecast.today)return;
+  const t=forecast.today,entry={date:t.date,temp:t.temp,low:t.low,high:t.high,rain:t.rain,humidity:t.humidity,wind:t.wind,weather:t.weather,label:t.label};
+  const history=loadHistory().filter(x=>x.date!==entry.date);
+  history.push(entry);history.sort((a,b)=>a.date.localeCompare(b.date));
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(history.slice(-400)));
+}
+function historyStats(history,date=isoLocalDate()){
+  const sorted=history.filter(x=>x.date<=date).sort((a,b)=>a.date.localeCompare(b.date));
+  const clearish=x=>x&&["clear","heat","partly"].includes(x.weather);
+  let streak=0;
+  for(let i=sorted.length-1;i>=0;i--){if(clearish(sorted[i]))streak++;else break}
+  const month=date.slice(0,7),monthClear=sorted.filter(x=>x.date.startsWith(month)&&clearish(x)).length;
+  const hottest=sorted.reduce((best,x)=>!best||x.temp>best.temp?x:best,null);
+  return{streak,monthClear,hottest};
+}
+function renderHistorySummary(date=isoLocalDate()){
+  const s=historyStats(loadHistory(),date);
+  bindText("record-streak",`${s.streak}일`);
+  bindText("record-month-clear",`${s.monthClear}일`);
+  bindText("record-highest",s.hottest?s.hottest.date.slice(5).replace("-","."):"—");
+}
 const STORAGE_KEY="saiyebo:couple:v1";
 const DEMO_COUPLE={myBirth:"1992-05-14",partnerBirth:"1993-11-02",startDate:"2025-07-22",relationshipType:"dating",myName:"나",partnerName:"상대"};
 function validDateString(v){
@@ -209,8 +235,11 @@ if(!activeCouple&&!previewMode){
   location.replace("/start/");
 }else{
   const activeForecast=renderToday(activeCouple||DEMO_COUPLE);
+  if(activeCouple){saveForecastHistory(activeForecast);renderHistorySummary(activeForecast.today.date)}
+  else{renderHistorySummary(activeForecast.today.date)}
   window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
 }
 window.SAIYEBO_PROFILE={load:loadCouple,save:saveCouple,key:STORAGE_KEY,demo:DEMO_COUPLE};
+window.SAIYEBO_HISTORY={load:loadHistory,stats:historyStats,key:HISTORY_KEY};
 
 window.SAIYEBO_ENGINE={makeDailySeed,generateDay,generateForecast};
