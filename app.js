@@ -242,6 +242,26 @@ function renderToday(profile,date=isoLocalDate()){
   applyWeather(t.weather);
   return forecast;
 }
+async function shareSaiyebo(profile,forecast){
+  const t=forecast.today;
+  const names=profile&&profile.myName&&profile.partnerName?`${profile.myName} · ${profile.partnerName}`:"우리 사이";
+  const text=`${names}의 오늘 사이예보는 ${t.label}, 관계온도 ${t.temp}°예요. 오늘 우리 사이, 맑을까요?`;
+  const url=new URL("/",location.origin).href;
+  try{
+    if(navigator.share){await navigator.share({title:"사이예보",text,url});return}
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(`${text}\n${url}`);showShareFeedback("링크 복사 완료");return}
+    const area=document.createElement("textarea");area.value=`${text}\n${url}`;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();showShareFeedback("링크 복사 완료");
+  }catch(error){if(error&&error.name==="AbortError")return;showShareFeedback("공유할 수 없어요")}
+}
+function showShareFeedback(message){
+  const button=document.querySelector(".share-action");if(!button)return;
+  const label=button.querySelector("span");if(!label)return;
+  const original=label.dataset.original||label.textContent;label.dataset.original=original;label.textContent=message;
+  clearTimeout(showShareFeedback.timer);showShareFeedback.timer=setTimeout(()=>{label.textContent=original},1800);
+}
+function bindShare(profile,forecast){
+  document.querySelectorAll(".share,.share-action").forEach(button=>button.addEventListener("click",()=>shareSaiyebo(profile,forecast)));
+}
 const activeCouple=loadCouple();
 const previewMode=new URLSearchParams(location.search).has("preview");
 if(!activeCouple&&!previewMode){
@@ -251,6 +271,7 @@ if(!activeCouple&&!previewMode){
   if(activeCouple){saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple)}
   else{renderHistorySummary(activeForecast.today.date)}
   window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
+  bindShare(activeCouple||DEMO_COUPLE,activeForecast);
 }
 window.SAIYEBO_PROFILE={load:loadCouple,save:saveCouple,key:STORAGE_KEY,demo:DEMO_COUPLE};
 window.SAIYEBO_HISTORY={load:loadHistory,stats:historyStats,key:HISTORY_KEY,owner:historyOwner};
