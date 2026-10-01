@@ -131,6 +131,50 @@ function rainLevel(v){return v<35?"낮음":v<65?"보통":"높음"}
 function humidityLevel(v){return v<58?"건조":v<78?"충분":"가득"}
 function windLevel(v){return v<2.2?"잔잔":v<3.8?"산들":"강함"}
 function bindText(name,value){const el=document.querySelector(`[data-bind="${name}"]`);if(el)el.textContent=value}
+function relationshipStatus(t){
+  if(t.rain>=75||t.wind>=4.4)return"주의";
+  if(t.rain>=45||t.wind>=3.4)return"변화";
+  if(t.humidity>=78&&t.rain<35)return"따뜻";
+  return"안정";
+}
+const WEATHER_COPY={
+  clear:["맑은 흐름이 이어져요","편안한 말 한마디가 잘 닿는 날이에요."],
+  heat:["애정 온도가 높아져요","좋은 감정도 너무 앞서지 않게 천천히 전해보세요."],
+  partly:["구름이 살짝 지나가요","작은 오해는 오래 두지 말고 가볍게 풀어보세요."],
+  overcast:["잠깐 흐려질 수 있어요","상대의 말을 한 번 더 들어주면 금방 개어요."],
+  rain:["서운함 비가 내릴 수 있어요","짧은 답보다 마음을 조금 더 설명해보세요."],
+  storm:["서운함 폭우에 주의해요","감정이 커질 땐 결론보다 서로의 마음부터 확인해보세요."],
+  snow:["마음이 조금 느려지는 날이에요","서두르지 말고 따뜻한 표현을 먼저 건네보세요."],
+  blizzard:["감정이 얼어붙지 않게 조심해요","대화를 밀어붙이기보다 잠시 여유를 두는 편이 좋아요."]
+};
+function advisoryCopy(forecast){
+  const t=forecast.today;
+  const risky=forecast.hourly.filter(x=>["overcast","rain","storm","snow","blizzard"].includes(x.weather));
+  const first=risky[0],base=WEATHER_COPY[t.weather]||WEATHER_COPY.clear;
+  let title=base[0],copy=base[1];
+  if(first&&first.weather!==t.weather){
+    const when=first.hour===24?"자정":`${first.hour}시 이후`;
+    title=`${when} ${CONDITION_LABELS[first.weather]} 기운이 보여요`;
+  }
+  if(t.wind>=4.4)copy="감정의 바람이 강해요. 바로 반응하기보다 한 번 고르고 말해보세요.";
+  else if(t.humidity<58)copy="애정습도가 낮아요. 평소보다 표현을 한마디 더 보태보세요.";
+  return{status:relationshipStatus(t),title,copy};
+}
+function tomorrowCopy(today,tomorrow){
+  const diff=tomorrow.temp-today.temp;
+  const tempText=diff>=3?"오늘보다 관계온도가 올라가요":diff<=-3?"오늘보다 관계온도가 차분해져요":"오늘과 비슷한 온도예요";
+  const weatherText={
+    clear:"맑은 흐름이라 편하게 마음을 나누기 좋아요.",
+    heat:"애정 온도가 높아요. 서로의 속도도 함께 살펴보세요.",
+    partly:"작은 구름은 있지만 대체로 부드러운 흐름이에요.",
+    overcast:"조금 흐릴 수 있어요. 오해는 짧게 풀어주세요.",
+    rain:"서운함 비 가능성이 있어요. 표현을 아끼지 않는 게 좋아요.",
+    storm:"감정 변화가 큰 날이에요. 중요한 대화는 천천히 해보세요.",
+    snow:"마음의 속도가 느려질 수 있어요. 따뜻하게 기다려주세요.",
+    blizzard:"차가운 기류가 강해요. 서로에게 여유를 남겨주세요."
+  };
+  return{title:tempText,copy:weatherText[tomorrow.weather]||weatherText.clear};
+}
 function renderToday(profile,date=isoLocalDate()){
   const forecast=generateForecast(profile,date),t=forecast.today;
   bindText("days-together",`D+${daysTogether(profile.startDate,date)}`);
@@ -138,6 +182,10 @@ function renderToday(profile,date=isoLocalDate()){
   bindText("hero-title",t.label);bindText("hero-temp",t.temp);bindText("feels",t.feels);bindText("low",t.low);bindText("high",t.high);
   bindText("rain",t.rain);bindText("rain-level",rainLevel(t.rain));bindText("humidity",t.humidity);bindText("humidity-level",humidityLevel(t.humidity));
   bindText("wind",t.wind.toFixed(1));bindText("wind-level",windLevel(t.wind));bindText("tomorrow-temp",forecast.tomorrow.temp);
+  const advisory=advisoryCopy(forecast),tomorrowText=tomorrowCopy(t,forecast.tomorrow);
+  bindText("status",advisory.status);bindText("advisory-title",advisory.title);bindText("advisory-copy",advisory.copy);
+  bindText("tomorrow-title",tomorrowText.title);bindText("tomorrow-copy",tomorrowText.copy);
+  const tomorrowIcon=document.querySelector('[data-bind-img="tomorrow-icon"]');if(tomorrowIcon)tomorrowIcon.src=weatherIcons[forecast.tomorrow.weather];
   document.querySelectorAll("[data-hour-card]").forEach((card,i)=>{
     const x=forecast.hourly[i];if(!x)return;
     const b=card.querySelector("b"),img=card.querySelector("img"),strong=card.querySelector("strong"),small=card.querySelector("small");
