@@ -111,8 +111,12 @@ function historyStats(history,date=isoLocalDate(),profile=null){
   const owner=profile?historyOwner(profile):null;
   const sorted=history.filter(x=>x.date<=date&&(!owner||x.owner===owner)).sort((a,b)=>a.date.localeCompare(b.date));
   const clearish=x=>x&&["clear","heat","partly"].includes(x.weather);
-  let streak=0;
-  for(let i=sorted.length-1;i>=0;i--){if(clearish(sorted[i]))streak++;else break}
+  let streak=0,expected=date;
+  for(let i=sorted.length-1;i>=0;i--){
+    const x=sorted[i];
+    if(x.date!==expected||!clearish(x))break;
+    streak++;expected=addDays(expected,-1);
+  }
   const month=date.slice(0,7),monthClear=sorted.filter(x=>x.date.startsWith(month)&&clearish(x)).length;
   const hottest=sorted.reduce((best,x)=>!best||x.temp>best.temp?x:best,null);
   return{streak,monthClear,hottest};
@@ -207,11 +211,9 @@ function tomorrowCopy(today,tomorrow){
 }
 function renderToday(profile,date=isoLocalDate()){
   const forecast=generateForecast(profile,date),t=forecast.today;
-  bindText("days-together",`D+${daysTogether(profile.startDate,date)}`);
-  bindText("start-date",formatStartDate(profile.startDate));
   bindText("hero-title",t.label);bindText("hero-temp",t.temp);bindText("feels",t.feels);bindText("low",t.low);bindText("high",t.high);
   bindText("rain",t.rain);bindText("rain-level",rainLevel(t.rain));bindText("humidity",t.humidity);bindText("humidity-level",humidityLevel(t.humidity));
-  bindText("wind",t.wind.toFixed(1));bindText("wind-level",windLevel(t.wind));bindText("tomorrow-temp",forecast.tomorrow.temp);
+  bindText("wind",t.wind.toFixed(1));bindText("wind-level",windLevel(t.wind));
   const advisory=advisoryCopy(forecast),tomorrowText=tomorrowCopy(t,forecast.tomorrow);
   bindText("status",advisory.status);bindText("advisory-title",advisory.title);bindText("advisory-copy",advisory.copy);
   bindText("tomorrow-title",tomorrowText.title);bindText("tomorrow-copy",tomorrowText.copy);
