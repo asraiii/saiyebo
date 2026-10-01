@@ -1,7 +1,7 @@
 # SAIYEBO CHANGE CONTROL — CURRENT BASELINE
 
 ## Locked Today hierarchy
-Hero → 관계 기상도 → 오늘 하루 예보 → 내일 → 7일 → 기록 → 공유 → 하단 내비게이션.
+Hero → 관계 기상도 → 오늘 하루 예보 → 내일의 사이예보 → 이번 주 관계 기류 → 기록 → 공유 → 하단 내비게이션.
 
 ## Locked visual direction
 - Real weather-app hierarchy, not a quiz/game layout.
@@ -59,6 +59,7 @@ Current status: code-level Today baseline is frozen at v17.4. Do not call the To
 ## Today v17.4 freeze
 - Main Today design structure is frozen for the next implementation phase.
 - Non-Hero typography uses the two-token system: `--text-sm:12px`, `--text-md:14px`; headings and numeric displays are semantic exceptions.
-- 7-day temperatures are explicitly labeled `최저` / `최고`; Hero uses the same minimum → maximum meaning.
 - Hourly forecast has no instructional text or arrow. Horizontal affordance is provided by partial next-card reveal.
+- 내일은 아이콘 + 방향성 문구만 노출하고 온도는 노출하지 않는다.
+- 이번 주는 7일 개별 예보를 공개하지 않고 전체 관계 기류만 요약한다. 구체적인 미래 날짜별 날씨를 다시 노출하려면 새로운 제품 결정이 필요하다.
 - Further Today visual changes should be regression fixes or explicit new product decisions, not opportunistic redesign.
