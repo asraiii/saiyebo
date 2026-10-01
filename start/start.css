@@ -1,7 +1,7 @@
 :root{--text-sm:12px;--text-md:14px;--ink:#18364A;--muted:#64869A;--line:rgba(49,82,99,.10);--surface:#F1F6F8;--card:#E8F1F5;--accent:#2499D0}
 *{box-sizing:border-box}
 html{background:#DFF4FF}
-body{margin:0;min-height:100vh;color:var(--ink);letter-spacing:-.035em;font-family:system-ui,-apple-system,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#2499D0 0%,#48B5E4 30%,#78CAE9 62%,#A7DDED 100%);background-size:100% 430px;background-repeat:no-repeat;background-color:var(--surface)}
+body{margin:0;min-height:100vh;color:var(--ink);letter-spacing:-.035em;font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,Roboto,"Helvetica Neue","Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#2499D0 0%,#48B5E4 30%,#78CAE9 62%,#A7DDED 100%);background-size:100% 430px;background-repeat:no-repeat;background-color:var(--surface)}
 button,input{font:inherit}
 .start-app{width:min(100%,470px);min-height:100vh;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 0 0;position:relative}
 header,.intro{margin-left:20px;margin-right:20px;color:#fff}
