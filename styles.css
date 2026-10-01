@@ -17,7 +17,7 @@ button{font:inherit}
 .top,.hero{margin-left:20px;margin-right:20px}
 .top{height:54px;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;margin-bottom:17px}
 .brand{text-align:center;color:#fff;font-size:17px;font-weight:600;letter-spacing:-.035em}
-.round{width:38px;height:38px;border:1px solid rgba(255,255,255,.35);border-radius:13px;background:rgba(255,255,255,.28);color:#fff;backdrop-filter:blur(10px)}
+.round{width:38px;height:38px;border:0;background:transparent;color:#fff;padding:0;display:flex;align-items:center;justify-content:center}
 .round svg{width:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .days{height:67px;border-bottom:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:space-between;color:#fff;padding:0 2px 12px}
 .days p{margin:0;font-size:var(--text-sm);font-weight:400}.days p b{font-size:19px;font-weight:500;margin-left:5px}.date{font-size:var(--text-sm);opacity:.72}
