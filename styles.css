@@ -22,11 +22,11 @@ button{font:inherit}
 .days{height:67px;border-bottom:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:space-between;color:#fff;padding:0 2px 12px}
 .days p{margin:0;font-size:var(--text-sm);font-weight:400}.days p b{font-size:19px;font-weight:500;margin-left:5px}.date{font-size:var(--text-sm);opacity:.72}
 .hero{height:309px;min-height:309px;position:relative;color:#fff;overflow:hidden}
-.copy{position:absolute;z-index:2;width:52%;max-width:52%;min-width:0;color:#fff;top:35px;height:225px;display:flex;flex-direction:column;justify-content:center;padding-top:10px}
+.copy{position:absolute;z-index:2;width:52%;max-width:52%;min-width:0;color:#fff;top:25px;height:225px;display:flex;flex-direction:column;justify-content:center;padding-top:10px}
 .hero-kicker{font-size:15px;font-weight:700;opacity:.9}.copy h1{font-size:31px;font-weight:700;margin:5px 0 0;letter-spacing:-.045em;line-height:1.16;word-break:keep-all;text-wrap:balance;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .degree{font-size:78px;font-weight:500;line-height:.98;letter-spacing:-.055em;margin-top:3px}.degree sup{font-size:27px;vertical-align:top;margin-left:3px}.copy p{font-size:14px;font-weight:600;margin:10px 0;color:rgba(255,255,255,.9);white-space:nowrap}
 .copy,.hero-kicker,.copy h1,.degree,.copy p{text-shadow:0 1px 2px rgba(20,55,72,.24),0 0 10px rgba(20,55,72,.10)}
-.weather-art{position:absolute;width:250px;height:225px;right:-28px;top:35px;filter:drop-shadow(0 6px 10px rgba(57,101,124,.10))}
+.weather-art{position:absolute;width:250px;height:225px;right:-28px;top:25px;filter:drop-shadow(0 6px 10px rgba(57,101,124,.10))}
 .hero-weather-icon{display:block;width:100%;height:100%;object-fit:contain}
 .forecast-sheet{position:relative;background:var(--forecast-surface);border-radius:28px 28px 0 0;overflow:hidden;margin-top:-1px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 .weather-panel,.forecast-section{margin:0;padding:22px 20px;background:transparent;border:0}
