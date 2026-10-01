@@ -51,18 +51,15 @@ function addDays(dateString,amount){
 function generateForecast(input,date=isoLocalDate()){
   const today=generateDay(input,date);
   const now=new Date(),isToday=date===isoLocalDate(now),currentHour=isToday?now.getHours():12;
-  let hours;
-  if(!isToday)hours=Array.from({length:10},(_,i)=>6+i*2).filter(hour=>hour<=24);
-  else if(currentHour<6)hours=[currentHour,...Array.from({length:10},(_,i)=>6+i*2).filter(hour=>hour<=24)];
-  else hours=[currentHour,...Array.from({length:10},(_,i)=>6+i*2).filter(hour=>hour>currentHour&&hour<=24)];
-  hours=[...new Set(hours)];
-  const hourly=hours.map((hour,i)=>{
+  const baseHours=Array.from({length:13},(_,i)=>i*2);
+  const hours=isToday?[...new Set([...baseHours,currentHour])].sort((a,b)=>a-b):baseHours;
+  const hourly=hours.map(hour=>{
     const rng=mulberry32(makeDailySeed(input,`${date}|hour|${hour}`));
     const curve=Math.round(Math.sin((Math.min(hour,24)/24)*Math.PI)*5-2);
     const temp=clamp(today.temp+curve+Math.round(rng()*2-1),0,40);
     const rain=clamp(Math.round(today.rain*.55+rng()*42),0,100);
     const weather=weatherFromTemp(temp,rain);
-    return{hour,temp,rain,weather,label:CONDITION_LABELS[weather],isNow:isToday&&i===0};
+    return{hour,temp,rain,weather,label:CONDITION_LABELS[weather],isNow:isToday&&hour===currentHour};
   });
   const week=Array.from({length:7},(_,i)=>generateDay(input,addDays(date,i)));
   return{version:1,seed:makeDailySeed(input,date),today,hourly,tomorrow:week[1],week};
@@ -224,14 +221,12 @@ function renderToday(profile,date=isoLocalDate()){
   bindText("status",advisory.status);bindText("advisory-title",advisory.title);bindText("advisory-copy",advisory.copy);
   bindText("tomorrow-title",tomorrowText.title);bindText("tomorrow-copy",tomorrowText.copy);
   const tomorrowIcon=document.querySelector('[data-bind-img="tomorrow-icon"]');if(tomorrowIcon)tomorrowIcon.src=weatherIcons[forecast.tomorrow.weather];
-  document.querySelectorAll("[data-hour-card]").forEach((card,i)=>{
-    const x=forecast.hourly[i];
-    if(!x){card.hidden=true;card.classList.remove("now");return}
-    card.hidden=false;card.classList.toggle("now",x.isNow);
-    const b=card.querySelector("b"),img=card.querySelector("img"),strong=card.querySelector("strong"),small=card.querySelector("small");
-    if(b)b.textContent=x.isNow?"지금":x.hour===24?"24시":`${String(x.hour).padStart(2,"0")}시`;
-    if(img)img.src=weatherIcons[x.weather];if(strong)strong.textContent=`${x.temp}°`;if(small)small.textContent=x.label;
-  });
+  const hourScroll=document.querySelector(".hour-scroll");
+  if(hourScroll){
+    hourScroll.innerHTML=forecast.hourly.map(x=>`<article data-hour-card class="${x.isNow?"now":""}"><b>${x.isNow?"지금":x.hour===24?"24시":String(x.hour).padStart(2,"0")+"시"}</b><img class="forecast-weather-icon" src="${weatherIcons[x.weather]}" alt=""><strong>${x.temp}°</strong><small>${x.label}</small></article>`).join("");
+    const nowCard=hourScroll.querySelector(".now");
+    if(nowCard)requestAnimationFrame(()=>{hourScroll.scrollLeft=Math.max(0,nowCard.offsetLeft-(hourScroll.clientWidth-nowCard.offsetWidth)/2)});
+  }
   const futureWeek=forecast.week.slice(1);
   const calmCount=futureWeek.filter(x=>["clear","partly"].includes(x.weather)).length;
   const roughCount=futureWeek.filter(x=>["rain","storm","blizzard"].includes(x.weather)).length;
