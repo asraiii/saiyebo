@@ -50,13 +50,14 @@ function addDays(dateString,amount){
 }
 function generateForecast(input,date=isoLocalDate()){
   const today=generateDay(input,date);
-  const hourly=[6,9,12,14,15,18,20,22,24].map((hour,i)=>{
+  const now=new Date(),isToday=date===isoLocalDate(now),currentHour=isToday?now.getHours():12;
+  const hourly=Array.from({length:9},(_,i)=>currentHour+i*3).filter(hour=>hour<=24).map((hour,i)=>{
     const rng=mulberry32(makeDailySeed(input,`${date}|hour|${hour}`));
-    const curve=Math.round(Math.sin((i/8)*Math.PI)*5-2);
+    const curve=Math.round(Math.sin((Math.min(hour,24)/24)*Math.PI)*5-2);
     const temp=clamp(today.temp+curve+Math.round(rng()*2-1),0,40);
     const rain=clamp(Math.round(today.rain*.55+rng()*42),0,100);
     const weather=weatherFromTemp(temp,rain);
-    return{hour,temp,rain,weather,label:CONDITION_LABELS[weather]};
+    return{hour,temp,rain,weather,label:CONDITION_LABELS[weather],isNow:isToday&&i===0};
   });
   const week=Array.from({length:7},(_,i)=>generateDay(input,addDays(date,i)));
   return{version:1,seed:makeDailySeed(input,date),today,hourly,tomorrow:week[1],week};
@@ -219,9 +220,11 @@ function renderToday(profile,date=isoLocalDate()){
   bindText("tomorrow-title",tomorrowText.title);bindText("tomorrow-copy",tomorrowText.copy);
   const tomorrowIcon=document.querySelector('[data-bind-img="tomorrow-icon"]');if(tomorrowIcon)tomorrowIcon.src=weatherIcons[forecast.tomorrow.weather];
   document.querySelectorAll("[data-hour-card]").forEach((card,i)=>{
-    const x=forecast.hourly[i];if(!x)return;
+    const x=forecast.hourly[i];
+    if(!x){card.hidden=true;card.classList.remove("now");return}
+    card.hidden=false;card.classList.toggle("now",x.isNow);
     const b=card.querySelector("b"),img=card.querySelector("img"),strong=card.querySelector("strong"),small=card.querySelector("small");
-    if(b&&!card.classList.contains("now"))b.textContent=x.hour===24?"24시":`${String(x.hour).padStart(2,"0")}시`;
+    if(b)b.textContent=x.isNow?"지금":x.hour===24?"24시":`${String(x.hour).padStart(2,"0")}시`;
     if(img)img.src=weatherIcons[x.weather];if(strong)strong.textContent=`${x.temp}°`;if(small)small.textContent=x.label;
   });
   const futureWeek=forecast.week.slice(1);
