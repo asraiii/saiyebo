@@ -77,13 +77,13 @@ const weatherIcons={
 };
 const weatherThemes={
   clear:{body:"linear-gradient(180deg,#2499D0 0%,#48B5E4 30%,#78CAE9 62%,#A7DDED 100%)",theme:"#2499D0"},
-  heat:{body:"linear-gradient(180deg,#E06A2E 0%,#EB8740 30%,#F3A65B 62%,#F8C985 100%)",theme:"#E06A2E"},
-  partly:{body:"linear-gradient(180deg,#5D91AF 0%,#79A8C0 30%,#9BBECD 62%,#C0D5DC 100%)",theme:"#5D91AF"},
-  overcast:{body:"linear-gradient(180deg,#536574 0%,#697C8A 30%,#8798A3 62%,#AAB6BC 100%)",theme:"#536574"},
-  rain:{body:"linear-gradient(180deg,#376A8A 0%,#4D7F9D 30%,#709CB4 62%,#9AB9C8 100%)",theme:"#376A8A"},
-  storm:{body:"linear-gradient(180deg,#183A52 0%,#294F68 30%,#416982 62%,#6F8FA1 100%)",theme:"#183A52"},
-  snow:{body:"linear-gradient(180deg,#77A6BF 0%,#91BACD 30%,#AED0DC 62%,#CFE4EA 100%)",theme:"#77A6BF"},
-  blizzard:{body:"linear-gradient(180deg,#466C86 0%,#5C829B 30%,#7B9DB1 62%,#A2BBC8 100%)",theme:"#466C86"}
+  heat:{body:"linear-gradient(180deg,#2C83C5 0%,#459FD5 30%,#72B9DF 62%,#A2D5E9 100%)",theme:"#2C83C5"},
+  partly:{body:"linear-gradient(180deg,#6698B4 0%,#83AEC3 30%,#A5C5D2 62%,#C7DCE3 100%)",theme:"#6698B4"},
+  overcast:{body:"linear-gradient(180deg,#465763 0%,#5B6D79 30%,#74858F 62%,#98A5AC 100%)",theme:"#465763"},
+  rain:{body:"linear-gradient(180deg,#356F91 0%,#4F88A8 30%,#74A6BD 62%,#A0C5D2 100%)",theme:"#356F91"},
+  storm:{body:"linear-gradient(180deg,#142B3B 0%,#203C4F 30%,#34566C 62%,#5C7788 100%)",theme:"#142B3B"},
+  snow:{body:"linear-gradient(180deg,#91BFD2 0%,#ADD1DE 30%,#C6E0E8 62%,#DCECF0 100%)",theme:"#91BFD2"},
+  blizzard:{body:"linear-gradient(180deg,#385F7A 0%,#4C748E 30%,#6D91A6 62%,#94AFBD 100%)",theme:"#385F7A"}
 };
 function applyWeather(name){
   const key=weatherThemes[name]?name:"clear";
