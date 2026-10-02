@@ -77,7 +77,7 @@ const weatherIcons={
 };
 const weatherThemes={
   clear:{body:"linear-gradient(180deg,#147FB8 0%,#2699CB 30%,#45ADD6 62%,#68BDDC 100%)",theme:"#147FB8"},
-  heat:{body:"linear-gradient(180deg,#9E3F67 0%,#B95370 30%,#CF6D78 62%,#DE8B86 100%)",theme:"#9E3F67"},
+  heat:{body:"linear-gradient(180deg,#B94A20 0%,#D96724 30%,#E98A2F 62%,#F1AC4A 100%)",theme:"#B94A20"},
   partly:{body:"linear-gradient(180deg,#477F9D 0%,#6096B1 30%,#7EACC0 62%,#9DC0CE 100%)",theme:"#477F9D"},
   overcast:{body:"linear-gradient(180deg,#53575D 0%,#666B71 30%,#7C8186 62%,#92979A 100%)",theme:"#53575D"},
   rain:{body:"linear-gradient(180deg,#21647F 0%,#267A91 30%,#3291A2 62%,#55A9B3 100%)",theme:"#21647F"},
