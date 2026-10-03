@@ -24,3 +24,5 @@ fieldset{border:0;padding:18px 0 20px;margin:0;border-top:1px solid var(--line)}
 @media(prefers-reduced-motion:reduce){.intro-weather img{animation:none}}
 
 header a:focus-visible,.submit:focus-visible{outline:2px solid #fff;outline-offset:3px}.submit:focus-visible{outline-color:#197DA9}
+
+.site-info-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;padding:14px 0 6px;border-top:1px solid var(--line);font-size:var(--text-sm)}.site-info-links a{color:var(--muted);text-decoration:none}.site-info-links a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
