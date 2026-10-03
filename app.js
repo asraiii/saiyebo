@@ -251,7 +251,7 @@ async function shareSaiyebo(profile,forecast){
   const weekCode=rough>=3?"o":warm>=2?"h":calm>=4?"p":"c";
   const risky=forecast.hourly.find(x=>["overcast","rain","storm","snow","blizzard"].includes(x.weather));
   const advisoryHour=risky&&risky.weather!==t.weather?risky.hour:25,advisoryWeather=risky&&risky.weather!==t.weather?weatherCode[risky.weather]:"x";
-  const payload=[weatherCode[t.weather],t.temp,t.feels,t.low,t.high,t.rain,t.humidity,Math.round(t.wind*10),weatherCode[forecast.tomorrow.weather],forecast.tomorrow.temp,weekCode,advisoryHour,advisoryWeather].join(".");
+  const relationCode=profile.relationshipType==="some"?"s":"d",relationDays=daysTogether(profile.startDate,t.date);const payload=[weatherCode[t.weather],t.temp,t.feels,t.low,t.high,t.rain,t.humidity,Math.round(t.wind*10),weatherCode[forecast.tomorrow.weather],forecast.tomorrow.temp,weekCode,advisoryHour,advisoryWeather,relationCode,relationDays].join(".");
   const url=new URL("/share/",location.origin);url.searchParams.set("d",payload);
   try{
     if(navigator.share){await navigator.share({title:"사이예보",text,url:url.href});return}
