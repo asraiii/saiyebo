@@ -61,6 +61,6 @@ nav button{border:0;background:transparent;color:#8A9CA6;display:flex;flex-direc
 .hero-weather-icon{animation:heroWeatherFloat 3.2s ease-in-out infinite;transform-origin:50% 50%;will-change:transform}
 @media(prefers-reduced-motion:reduce){.hero-weather-icon{animation:none}}
 
-.site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;padding:8px 20px 92px;font-size:var(--text-sm)}.site-links a{color:#718089;text-decoration:none}.site-links a:focus-visible{text-decoration:underline;outline:2px solid currentColor;outline-offset:3px}
+.site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;padding:14px 20px calc(84px + env(safe-area-inset-bottom));font-size:var(--text-sm);background:var(--forecast-surface)}.site-links a{color:#718089;text-decoration:none}.site-links a:focus-visible{text-decoration:underline;outline:2px solid currentColor;outline-offset:3px}
 
 .round:focus-visible,.share-action:focus-visible,nav button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
