@@ -61,9 +61,10 @@ function generateForecast(input,date=isoLocalDate()){
     const weather=weatherFromTemp(temp,rain);
     return{hour,temp,rain,weather,label:CONDITION_LABELS[weather],isNow:isToday&&hour===currentHour};
   });
-  if(hourly.length){
-    today.low=Math.min(...hourly.map(x=>x.temp));
-    today.high=Math.max(...hourly.map(x=>x.temp));
+  const rangeHours=hourly.filter(x=>activeHours.includes(x.hour));
+  if(rangeHours.length){
+    today.low=Math.min(...rangeHours.map(x=>x.temp));
+    today.high=Math.max(...rangeHours.map(x=>x.temp));
   }
   const week=Array.from({length:7},(_,i)=>generateDay(input,addDays(date,i)));
   return{version:1,seed:makeDailySeed(input,date),today,hourly,tomorrow:week[1],week};
