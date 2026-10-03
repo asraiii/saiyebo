@@ -13,11 +13,12 @@
 <header><a href="/" aria-label="사이예보 홈">사이예보</a></header>
 <section class="intro"><div class="intro-copy"><small>사이예보 시작</small><h1>오늘 우리 사이,<br>맑을까요?</h1><p>두 사람의 정보로<br>오늘의 관계 날씨를 확인해보세요.</p></div><div class="intro-weather" aria-hidden="true"><img src="/assets/weather/soft-3d/partly-cloudy-day.svg?v=16.6" alt=""></div></section>
 <form id="couple-form" novalidate>
+<p class="profile-note" id="profile-note" hidden><strong>설정 변경 안내</strong><span>이름만 바꾸면 기존 기록이 유지돼요.<br>생년월일, 관계, 시작일을 바꾸면 새로운 관계 설정으로 기록돼요.</span></p>
 <section class="person-block"><div class="field"><label for="myName">내 이름</label><input id="myName" name="myName" type="text" maxlength="20" placeholder="선택"></div><div class="field"><label for="myBirth">내 생년월일</label><input id="myBirth" name="myBirth" type="date" required autocomplete="bday"></div></section>
 <section class="person-block"><div class="field"><label for="partnerName">상대 이름</label><input id="partnerName" name="partnerName" type="text" maxlength="20" placeholder="선택"></div><div class="field"><label for="partnerBirth">상대 생년월일</label><input id="partnerBirth" name="partnerBirth" type="date" required></div></section>
 <fieldset><legend>지금 우리 관계</legend><div class="relation-options"><label><input type="radio" name="relationshipType" value="some"><span>썸</span></label><label><input type="radio" name="relationshipType" value="dating" checked><span>연애</span></label></div></fieldset>
 <div class="field start-date-field"><label for="startDate">관계 시작일</label><input id="startDate" name="startDate" type="date" required></div>
-<p class="profile-note" id="profile-note" hidden>이름만 바꾸면 기존 기록이 유지돼요. 생년월일, 관계, 시작일을 바꾸면 새로운 관계 설정으로 기록돼요.</p><p class="error" id="form-error" role="alert" aria-live="polite"></p>
+<p class="error" id="form-error" role="alert" aria-live="polite"></p>
 <button class="submit" type="submit">오늘의 사이예보 보기</button>
 </form><footer class="site-info-links" aria-label="서비스 정보"><a href="/about/">서비스 소개</a><a href="/guide/">이용안내</a><a href="/privacy/">개인정보처리방침</a></footer>
 </main>
