@@ -10,7 +10,7 @@ header{height:54px;display:flex;align-items:center;justify-content:center;margin
 form{position:relative;background:var(--surface);border-radius:28px 28px 0 0;padding:26px 32px calc(32px + env(safe-area-inset-bottom));min-height:calc(100vh - 460px)}
 .person-block{padding:18px 0 2px;margin-bottom:14px;background:transparent;border-radius:0}.field{display:grid;gap:7px;margin-bottom:16px}.field label,legend{font-size:var(--text-md);font-weight:600}.field label em{font-size:var(--text-sm);font-style:normal;color:var(--muted);font-weight:400;margin-left:4px}
 input[type=date],input[type=text]{width:100%;height:48px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);padding:0 13px;outline:none;font-size:var(--text-md)}input:focus{border-color:#58A9CF;box-shadow:0 0 0 3px rgba(36,153,208,.10)}
-fieldset{border:0;padding:18px 0 20px;margin:0;border-top:1px solid var(--line)}legend{padding:0;margin:0 0 10px}.relation-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.relation-options input{position:absolute;opacity:0;pointer-events:none}.relation-options span{height:48px;border:1px solid var(--line);border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-md)}.relation-options input:checked+span{border-color:var(--accent);background:#DCECF3;color:#197DA9;font-weight:700}
+fieldset{border:0;padding:18px 0 20px;margin:0;border-top:1px solid var(--line)}legend{padding:0;margin:0 0 10px}.relation-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.relation-options input{position:absolute;opacity:0;pointer-events:none}.relation-options span{height:48px;border:1px solid var(--line);border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:var(--text-md)}.relation-options input:checked+span{border-color:var(--accent);background:#DCECF3;color:#197DA9;font-weight:700}.relation-options input:focus-visible+span{outline:2px solid #197DA9;outline-offset:3px}
 .start-date-field{padding-top:18px;border-top:1px solid var(--line)}
 .error{min-height:18px;margin:0 0 8px;color:#C84F5E;font-size:var(--text-sm)}
 .submit{width:100%;height:54px;border:0;border-radius:15px;background:var(--accent);color:#fff;font-size:var(--text-md);font-weight:700;box-shadow:0 8px 20px rgba(23,76,105,.14)}
@@ -22,3 +22,5 @@ fieldset{border:0;padding:18px 0 20px;margin:0;border-top:1px solid var(--line)}
 @keyframes heroWeatherFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 .intro-weather img{animation:heroWeatherFloat 3.2s ease-in-out infinite;transform-origin:50% 50%;will-change:transform}
 @media(prefers-reduced-motion:reduce){.intro-weather img{animation:none}}
+
+header a:focus-visible,.submit:focus-visible{outline:2px solid #fff;outline-offset:3px}.submit:focus-visible{outline-color:#197DA9}
