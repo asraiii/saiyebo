@@ -214,6 +214,7 @@ function tomorrowCopy(today,tomorrow){
 }
 function renderToday(profile,date=isoLocalDate()){
   const forecast=generateForecast(profile,date),t=forecast.today;
+  const names=[profile.myName,profile.partnerName].map(v=>String(v||"").trim()).filter(Boolean);bindText("couple-names",names.length?names.join(" · "):"우리 사이");bindText("relationship-days",`${profile.relationshipType==="some"?"썸":"연애"} ${daysTogether(profile.startDate,date)}일째`);
   bindText("hero-title",t.label);bindText("hero-temp",t.temp);bindText("feels",t.feels);bindText("low",t.low);bindText("high",t.high);
   bindText("rain",t.rain);bindText("rain-level",rainLevel(t.rain));bindText("humidity",t.humidity);bindText("humidity-level",humidityLevel(t.humidity));
   bindText("wind",t.wind.toFixed(1));bindText("wind-level",windLevel(t.wind));
