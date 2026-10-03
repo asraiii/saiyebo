@@ -67,7 +67,7 @@ function generateForecast(input,date=isoLocalDate()){
 
 const weatherIcons={
   clear:"/assets/weather/soft-3d/clear-day.svg?v=16.6",
-  heat:"/assets/weather/soft-3d/sun-hot.svg?v=16.6",
+  heat:"/assets/weather/soft-3d/sun-hot.svg?v=16.7",
   partly:"/assets/weather/soft-3d/partly-cloudy-day.svg?v=16.6",
   overcast:"/assets/weather/soft-3d/overcast.svg?v=16.6",
   rain:"/assets/weather/soft-3d/rain.svg?v=16.6",
@@ -77,7 +77,7 @@ const weatherIcons={
 };
 const weatherThemes={
   clear:{body:"linear-gradient(180deg,#147FB8 0%,#2699CB 30%,#45ADD6 62%,#68BDDC 100%)",theme:"#147FB8"},
-  heat:{body:"linear-gradient(180deg,#A93616 0%,#C84B1C 30%,#DE6424 62%,#EA7C2D 100%)",theme:"#A93616"},
+  heat:{body:"linear-gradient(180deg,#7F2918 0%,#9B341A 30%,#B6431D 62%,#C95723 100%)",theme:"#7F2918"},
   partly:{body:"linear-gradient(180deg,#477F9D 0%,#6096B1 30%,#7EACC0 62%,#9DC0CE 100%)",theme:"#477F9D"},
   overcast:{body:"linear-gradient(180deg,#53575D 0%,#666B71 30%,#7C8186 62%,#92979A 100%)",theme:"#53575D"},
   rain:{body:"linear-gradient(180deg,#21647F 0%,#267A91 30%,#3291A2 62%,#55A9B3 100%)",theme:"#21647F"},
