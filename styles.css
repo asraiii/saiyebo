@@ -9,7 +9,7 @@ html{background:#DFF4FF}
 body{
   margin:0;min-height:100vh;color:var(--ink);letter-spacing:-.035em;
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,Roboto,"Helvetica Neue","Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
-  background:linear-gradient(180deg,#2499D0 0%,#48B5E4 30%,#78CAE9 62%,#A7DDED 100%);
+  background:linear-gradient(180deg,#2398D0 0%,#4AB1DE 30%,#83C9DE 62%,#D8CC78 100%);
   background-size:100% 600px;background-repeat:no-repeat;background-color:var(--forecast-surface)
 }
 button{font:inherit}
