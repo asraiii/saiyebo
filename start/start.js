@@ -22,9 +22,14 @@ form.addEventListener("submit",e=>{
     startDate:String(fd.get("startDate")||""),relationshipType:String(fd.get("relationshipType")||"dating"),
     myName:String(fd.get("myName")||"").trim().slice(0,20),partnerName:String(fd.get("partnerName")||"").trim().slice(0,20)
   };
-  if(!validDate(data.myBirth)||!validDate(data.partnerBirth)||!validDate(data.startDate)){error.textContent="세 날짜를 모두 입력해주세요.";return}
-  if(data.myBirth>today||data.partnerBirth>today||data.startDate>today){error.textContent="미래 날짜는 입력할 수 없어요.";return}
-  if(!["some","dating"].includes(data.relationshipType)){error.textContent="현재 관계를 선택해주세요.";return}
+  const dateFields=["myBirth","partnerBirth","startDate"];
+  const missing=dateFields.find(k=>!data[k]);
+  if(missing){error.textContent="세 날짜를 모두 입력해주세요.";form.elements[missing].focus();return}
+  const invalid=dateFields.find(k=>!validDate(data[k]));
+  if(invalid){error.textContent="날짜를 다시 확인해주세요.";form.elements[invalid].focus();return}
+  const future=dateFields.find(k=>data[k]>today);
+  if(future){error.textContent="미래 날짜는 입력할 수 없어요.";form.elements[future].focus();return}
+  if(!["some","dating"].includes(data.relationshipType)){error.textContent="현재 관계를 선택해주세요.";const first=form.querySelector('input[name="relationshipType"]');if(first)first.focus();return}
   localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
   location.href="/";
 });
