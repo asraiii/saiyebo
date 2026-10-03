@@ -70,3 +70,10 @@ Current status: code-level Today baseline is frozen at v17.4. Do not call the To
 - Keep the relationship-temperature generation range stable unless a separate product decision changes it.
 - Weather classification order must preserve distinct heat / snow / blizzard states while retaining the approved eight-state visual palettes and copy.
 - Share compact payload must preserve the same weekly-outlook state as Today and must reject malformed or out-of-range values before rendering.
+
+
+## Share privacy/data lock — 2026-10-03
+- Share URLs must never include names, birth dates, or the raw relationship start date.
+- Share URLs may include the relationship type and the already-derived inclusive relationship day count for display.
+- Current compact payload supports legacy 13-field links and the privacy-safe 15-field format.
+- Shared Today weather, temperature, feels-like, low/high, metrics, tomorrow direction, weekly outlook, and advisory must remain consistent with the source Today forecast.
