@@ -56,7 +56,7 @@ function generateForecast(input,date=isoLocalDate()){
   const hourly=hours.map(hour=>{
     const rng=mulberry32(makeDailySeed(input,`${date}|hour|${hour}`));
     const curve=Math.round(Math.sin((Math.min(hour,24)/24)*Math.PI)*5-2);
-    const temp=clamp(today.temp+curve+Math.round(rng()*2-1),0,40);
+    const temp=clamp(today.temp+curve+Math.round(rng()*2-1),today.low,today.high);
     const rain=clamp(Math.round(today.rain*.55+rng()*42),0,100);
     const weather=weatherFromTemp(temp,rain);
     return{hour,temp,rain,weather,label:CONDITION_LABELS[weather],isNow:isToday&&hour===currentHour};
