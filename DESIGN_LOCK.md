@@ -63,3 +63,10 @@ Current status: code-level Today baseline is frozen at v17.4. Do not call the To
 - 내일은 아이콘 + 방향성 문구만 노출하고 온도는 노출하지 않는다.
 - 이번 주는 7일 개별 예보를 공개하지 않고 전체 관계 기류만 요약한다. 구체적인 미래 날짜별 날씨를 다시 노출하려면 새로운 제품 결정이 필요하다.
 - Further Today visual changes should be regression fixes or explicit new product decisions, not opportunistic redesign.
+
+
+## Weather engine reachability lock — 2026-10-03
+- All eight production weather states must remain reachable from the deterministic daily engine; QA-only availability is not sufficient.
+- Keep the relationship-temperature generation range stable unless a separate product decision changes it.
+- Weather classification order must preserve distinct heat / snow / blizzard states while retaining the approved eight-state visual palettes and copy.
+- Share compact payload must preserve the same weekly-outlook state as Today and must reject malformed or out-of-range values before rendering.
