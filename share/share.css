@@ -2,6 +2,8 @@
 body{background-size:100% 600px}
 .share-result-cta{margin-top:0}
 .share-start{position:relative;z-index:1;margin-right:14px;border:1px solid rgba(255,255,255,.38);border-radius:12px;background:rgba(255,255,255,.16);color:#fff;padding:9px 12px;text-decoration:none;font-size:var(--text-sm);font-weight:600}
-.privacy{text-align:center;color:#8297A1;font-size:11px;margin:-4px 20px 22px}
+.privacy{text-align:center;color:#8297A1;font-size:var(--text-sm);margin:-4px 20px 12px}
 @media(max-width:390px){.share-start{margin-right:12px}}
 @media(max-width:360px){.share-start{padding:8px}}
+
+.site-info-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;padding:14px 20px 22px;border-top:1px solid var(--forecast-line);font-size:var(--text-sm)}.site-info-links a{color:var(--muted);text-decoration:none}.site-info-links a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
