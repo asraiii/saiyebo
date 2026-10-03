@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /icon-preview.html
+Disallow: /share/
 
 Sitemap: https://saiyebo.pages.dev/sitemap.xml
