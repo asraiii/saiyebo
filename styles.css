@@ -26,7 +26,7 @@ button{font:inherit}
 .copy,.hero-kicker,.copy h1,.degree,.copy p{text-shadow:0 1px 2px rgba(20,55,72,.24),0 0 10px rgba(20,55,72,.10)}
 .weather-art{position:absolute;width:250px;height:225px;right:-28px;top:25px;filter:drop-shadow(0 6px 10px rgba(57,101,124,.10))}
 .hero-weather-icon{display:block;width:100%;height:100%;object-fit:contain}
-.forecast-sheet{position:relative;background:var(--forecast-surface);border-radius:28px 28px 0 0;overflow:hidden;margin-top:-1px;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+.forecast-sheet{position:relative;background:var(--forecast-surface);border-radius:28px 28px 0 0;overflow:hidden;margin-top:-1px;padding-bottom:0}
 .weather-panel,.forecast-section{margin:0;padding:22px 20px;background:transparent;border:0}
 .weather-panel{padding-top:26px;padding-bottom:24px}
 .forecast-section{border-top:1px solid var(--forecast-line)}
@@ -61,6 +61,6 @@ nav button{border:0;background:transparent;color:#8A9CA6;display:flex;flex-direc
 .hero-weather-icon{animation:heroWeatherFloat 3.2s ease-in-out infinite;transform-origin:50% 50%;will-change:transform}
 @media(prefers-reduced-motion:reduce){.hero-weather-icon{animation:none}}
 
-.site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;padding:14px 20px calc(84px + env(safe-area-inset-bottom));font-size:var(--text-sm);background:var(--forecast-surface)}.site-links a{color:#718089;text-decoration:none}.site-links a:focus-visible{text-decoration:underline;outline:2px solid currentColor;outline-offset:3px}
+.site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin-top:24px;padding:0 20px calc(84px + env(safe-area-inset-bottom));font-size:var(--text-sm);background:var(--forecast-surface)}.site-links a{color:#718089;text-decoration:none}.site-links a:focus-visible{text-decoration:underline;outline:2px solid currentColor;outline-offset:3px}
 
 .round:focus-visible,.share-action:focus-visible,nav button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
