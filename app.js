@@ -76,8 +76,8 @@ const weatherIcons={
   blizzard:"/assets/weather/soft-3d/extreme-snow.svg?v=16.6"
 };
 const weatherThemes={
-  clear:{body:"linear-gradient(180deg,#147FB8 0%,#35A0CF 30%,#72BED4 62%,#D4C56A 100%)",theme:"#147FB8"},
-  heat:{body:"linear-gradient(180deg,#A83A1B 0%,#C44B1D 30%,#D85F20 62%,#E57529 100%)",theme:"#A83A1B"},
+  clear:{body:"linear-gradient(180deg,#2398D0 0%,#4AB1DE 30%,#83C9DE 62%,#D8CC78 100%)",theme:"#2398D0"},
+  heat:{body:"linear-gradient(180deg,#C34A20 0%,#D85B22 30%,#E86F26 62%,#F08732 100%)",theme:"#C34A20"},
   partly:{body:"linear-gradient(180deg,#477F9D 0%,#6096B1 30%,#7EACC0 62%,#9DC0CE 100%)",theme:"#477F9D"},
   overcast:{body:"linear-gradient(180deg,#53575D 0%,#666B71 30%,#7C8186 62%,#92979A 100%)",theme:"#53575D"},
   rain:{body:"linear-gradient(180deg,#21647F 0%,#267A91 30%,#3291A2 62%,#55A9B3 100%)",theme:"#21647F"},
