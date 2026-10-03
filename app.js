@@ -24,11 +24,11 @@ function makeDailySeed(input,date=isoLocalDate()){
 function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
 function weatherFromTemp(temp,rain){
   if(rain>=82)return"storm";
+  if(temp<=20&&rain>=62)return"blizzard";
   if(rain>=58)return"rain";
-  if(temp>=34)return"heat";
-  if(temp<=3&&rain>=62)return"blizzard";
-  if(temp<=5&&rain>=38)return"snow";
+  if(temp<=20&&rain>=38)return"snow";
   if(rain>=38)return"overcast";
+  if(temp>=31)return"heat";
   if(rain>=22)return"partly";
   return"clear";
 }
