@@ -18,14 +18,14 @@
 </g>
 <defs>
 <linearGradient id="paint0_linear_1802_5186" x1="64" y1="43.9999" x2="64" y2="83.9999" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFD19A"/>
-<stop offset=".48" stop-color="#FB923C"/>
-<stop offset="1" stop-color="#EA580C"/>
+<stop stop-color="#FFE98A"/>
+<stop offset=".48" stop-color="#FBBF24"/>
+<stop offset="1" stop-color="#E99A0C"/>
 </linearGradient>
 <linearGradient id="hotRayGradient" x1="64" y1="16" x2="64" y2="112" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFB65C"/>
-<stop offset=".55" stop-color="#F97316"/>
-<stop offset="1" stop-color="#D94A08"/>
+<stop stop-color="#FFD966"/>
+<stop offset=".55" stop-color="#F8AF18"/>
+<stop offset="1" stop-color="#E99A0C"/>
 </linearGradient>
 <linearGradient id="heatArrowGradient" x1="78" y1="94" x2="98" y2="74" gradientUnits="userSpaceOnUse">
 <stop stop-color="#60A5FA"/>
