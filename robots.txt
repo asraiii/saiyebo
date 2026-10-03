@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /icon-preview.html
+
+Sitemap: https://saiyebo.pages.dev/sitemap.xml
