@@ -8,7 +8,7 @@ function validDate(v){
 function localToday(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
 function loadExisting(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))}catch{return null}}
 function hydrate(){
-  const data=loadExisting();if(!data||typeof data!=="object")return;
+  const data=loadExisting();if(!data||typeof data!=="object")return;const note=document.querySelector("#profile-note");if(note)note.hidden=false;
   ["myBirth","partnerBirth","startDate","myName","partnerName"].forEach(k=>{if(form.elements[k]&&data[k])form.elements[k].value=data[k]});
   const relValue=["some","dating"].includes(data.relationshipType)?data.relationshipType:"dating";const rel=form.querySelector(`input[name="relationshipType"][value="${relValue}"]`);if(rel)rel.checked=true;
 }
