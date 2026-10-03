@@ -6,4 +6,4 @@ body{background-size:100% 600px}
 @media(max-width:390px){.share-start{margin-right:12px}}
 @media(max-width:360px){.share-start{padding:8px}}
 
-.site-info-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;padding:14px 20px 22px;border-top:1px solid var(--forecast-line);font-size:var(--text-sm)}.site-info-links a{color:var(--muted);text-decoration:none}.site-info-links a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.site-info-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin-top:24px;padding:0 20px 24px;font-size:var(--text-sm)}.site-info-links a{color:var(--muted);text-decoration:none}.site-info-links a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
