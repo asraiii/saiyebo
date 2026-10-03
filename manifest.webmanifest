@@ -1,0 +1,12 @@
+{
+  "name": "사이예보 SAIYEBO",
+  "short_name": "사이예보",
+  "description": "오늘 우리 사이, 맑을까요? 두 사람의 관계를 날씨처럼 확인하는 사이예보.",
+  "lang": "ko",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F1F6F8",
+  "theme_color": "#2398D0",
+  "orientation": "portrait-primary"
+}
