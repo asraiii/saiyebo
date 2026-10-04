@@ -15,8 +15,8 @@ fieldset{border:0;padding:18px 0 20px;margin:0;border-top:1px solid var(--line)}
 .profile-note{margin:0 0 14px;color:var(--ink);font-size:var(--text-md);line-height:1.55;word-break:keep-all}.profile-note strong,.profile-note span{display:block}.profile-note strong{margin-bottom:5px;font-weight:700}.profile-note span{font-weight:500}.profile-note[hidden]{display:none}.error{min-height:18px;margin:0 0 8px;color:#C84F5E;font-size:var(--text-sm)}
 .submit{width:100%;height:54px;border:0;border-radius:15px;background:var(--accent);color:#fff;font-size:var(--text-md);font-weight:700;box-shadow:0 8px 20px rgba(23,76,105,.14)}
 @media(max-width:430px){body{background-size:100% 570px}.intro{height:302px;min-height:302px}}
-@media(max-width:390px){header,.intro{margin-left:18px;margin-right:18px}.intro-copy{width:49%;max-width:49%}.intro h1{font-size:27px}.intro-weather{width:215px;height:225px;right:-35px;top:25px}form{padding-left:26px;padding-right:26px}}
-@media(max-width:360px){.intro-copy{width:50%;max-width:50%}.intro h1{font-size:25px}.intro-weather{width:200px;height:225px;right:-34px;top:25px}.intro p{font-size:var(--text-sm)}form{padding-left:22px;padding-right:22px}}
+@media(max-width:390px){header,.intro{margin-left:18px;margin-right:18px}.intro-copy{width:49%;max-width:49%}.intro h1{font-size:27px}.intro-weather{width:250px;height:225px;right:-28px;top:25px}form{padding-left:26px;padding-right:26px}}
+@media(max-width:360px){.intro-copy{width:50%;max-width:50%}.intro h1{font-size:25px}.intro-weather{width:250px;height:225px;right:-28px;top:25px}.intro p{font-size:var(--text-sm)}form{padding-left:22px;padding-right:22px}}
 @media(min-width:600px){body{background-size:100% 620px}.start-app{box-shadow:0 0 50px rgba(24,54,74,.08)}}
 
 @keyframes heroWeatherFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
