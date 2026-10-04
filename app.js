@@ -250,8 +250,8 @@ function renderToday(profile,date=isoLocalDate()){
   return forecast;
 }
 async function shareSaiyebo(profile,forecast){
-  const t=forecast.today,names=profile&&profile.myName&&profile.partnerName?`${profile.myName} · ${profile.partnerName}`:"우리 사이";
-  const text=`${names}의 오늘 사이예보는 ${t.label}, 관계온도 ${t.temp}°예요. 오늘 우리 사이, 맑을까요?`;
+  const t=forecast.today;
+  const text=`우리 사이의 오늘 사이예보는 ${t.label}, 관계온도 ${t.temp}°예요. 오늘 우리 사이, 맑을까요?`;
   const weatherCode={clear:"c",heat:"h",partly:"p",overcast:"o",rain:"r",storm:"s",snow:"n",blizzard:"b"};
   const futureWeek=forecast.week.slice(1),calm=futureWeek.filter(x=>["clear","partly"].includes(x.weather)).length,rough=futureWeek.filter(x=>["rain","storm","blizzard"].includes(x.weather)).length,warm=futureWeek.filter(x=>x.weather==="heat").length;
   const weekCode=rough>=3?"o":warm>=2?"h":calm>=4?"p":"c";
