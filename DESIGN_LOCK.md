@@ -85,3 +85,11 @@ Current status: code-level Today baseline is frozen at v17.4. Do not call the To
 - A dynamically inserted non-canonical current-hour card must remain within that canonical Hero low/high range and must not change the daily range.
 - Names are display-only personalization. They must not affect DailySeed, history ownership, Share URL payloads, or the native/copied Share message.
 - Shared text uses generic `우리 사이` wording even when both names are stored locally.
+
+
+## Product IA lock — 2026-10-04
+- Primary navigation is now: Today / Calendar / Report / Settings.
+- Calendar and Report reuse the existing local relationship-weather history; no server/database was added.
+- /history/ is legacy and redirects to /calendar/.
+- Calendar is the date-level record surface; Report is the aggregate/month-over-month analysis surface.
+- Both personalized surfaces remain noindex,follow.
