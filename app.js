@@ -65,6 +65,7 @@ function generateForecast(input,date=isoLocalDate()){
   if(rangeHours.length){
     today.low=Math.min(...rangeHours.map(x=>x.temp));
     today.high=Math.max(...rangeHours.map(x=>x.temp));
+    hourly.forEach(x=>{if(!activeHours.includes(x.hour))x.temp=clamp(x.temp,today.low,today.high)});
   }
   const week=Array.from({length:7},(_,i)=>generateDay(input,addDays(date,i)));
   return{version:1,seed:makeDailySeed(input,date),today,hourly,tomorrow:week[1],week};
