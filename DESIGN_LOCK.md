@@ -93,3 +93,11 @@ Current status: code-level Today baseline is frozen at v17.4. Do not call the To
 - /history/ is legacy and redirects to /calendar/.
 - Calendar is the date-level record surface; Report is the aggregate/month-over-month analysis surface.
 - Both personalized surfaces remain noindex,follow.
+
+
+## Calendar / Report meaning lock — 2026-10-05
+- Calendar is not only forecast history: it is the daily reflection surface. On a saved forecast date, users can record actual relationship feeling (good / normal / bad) and an optional one-line memo.
+- Reflection data is local-only under saiyebo:reflection:v1 and keyed by the same relationship owner identity. Existing saiyebo:history:v1 data remains unchanged.
+- Report combines forecast history with actual reflections. It may show actual good-day ratio, forecast-vs-actual signals, month-over-month actual feeling change, and forecast highlights.
+- Do not claim a relationship pattern from fewer than 3 actual reflection days.
+- Calendar and Report remain personalized noindex surfaces.
