@@ -203,6 +203,31 @@ function advisoryCopy(forecast){
   else if(t.humidity<58)copy="애정습도가 낮아요. 평소보다 표현을 한마디 더 보태보세요.";
   return{status:relationshipStatus(t),title,copy};
 }
+function dailyBriefing(forecast){
+  const t=forecast.today;
+  const candidates=forecast.hourly.filter(x=>x.hour>=6&&x.hour<=22);
+  const scored=candidates.map(x=>({x,score:(100-x.rain)+(x.weather==="clear"?24:x.weather==="partly"?14:x.weather==="heat"?8:0)-Math.abs(x.temp-t.temp)*2})).sort((a,b)=>b.score-a.score);
+  const best=scored[0]&&scored[0].x;
+  const time=best?(best.isNow?"지금":String(best.hour).padStart(2,"0")+"시 무렵"):"오늘";
+  let timeCopy="급하게 결론내기보다 서로의 이야기를 천천히 나눠보세요.";
+  if(best){
+    if(["clear","partly"].includes(best.weather))timeCopy=best.label+" 흐름이 보여요. 부담 없는 이야기부터 꺼내보기 좋아요.";
+    else if(best.weather==="heat")timeCopy="마음이 빠르게 전달될 수 있어요. 좋은 감정도 상대의 속도에 맞춰보세요.";
+    else timeCopy="오늘 중에서는 비교적 흐름이 잔잔한 시간이에요. 짧게 안부부터 시작해보세요.";
+  }
+  let expression="고마웠던 일을 하나 말해보세요";
+  let expressionCopy="구체적인 한마디가 평소보다 따뜻하게 닿을 수 있어요.";
+  if(t.humidity<58){expression="마음을 한마디 더 표현해보세요";expressionCopy="표현이 부족하게 느껴질 수 있는 날이라 짧은 애정 표현이 도움이 돼요."}
+  else if(t.rain>=58){expression="내 마음부터 부드럽게 설명해보세요";expressionCopy="상대의 의도를 추측하기보다 내가 어떻게 느꼈는지 먼저 말해보세요."}
+  else if(t.weather==="heat"){expression="좋아하는 마음을 천천히 전해보세요";expressionCopy="좋은 감정도 한꺼번에 쏟기보다 상대의 반응을 살피며 전해보세요."}
+  else if(["snow","blizzard"].includes(t.weather)){expression="따뜻한 안부를 먼저 건네보세요";expressionCopy="답을 재촉하기보다 편하게 기다릴 수 있는 말을 건네보세요."}
+  let caution="짧은 답을 나쁜 뜻으로 단정하기";
+  let cautionCopy="한 번의 반응보다 오늘의 전체 대화 흐름을 보는 편이 좋아요.";
+  if(t.wind>=3.8){caution="감정이 올라온 순간 바로 답하기";cautionCopy="바람이 강한 날이에요. 바로 반응하기보다 한 번 생각하고 말해보세요."}
+  else if(t.rain>=65){caution="서운함을 참다가 한꺼번에 말하기";cautionCopy="마음에 걸리는 점은 작을 때 차분하게 설명하는 편이 좋아요."}
+  else if(t.humidity>=78&&t.rain<35){caution="좋은 흐름을 당연하게 넘기기";cautionCopy="편안한 날일수록 고맙다는 표현을 하나 남겨보세요."}
+  return{time,timeCopy,expression,expressionCopy,caution,cautionCopy};
+}
 function tomorrowCopy(today,tomorrow){
   const diff=tomorrow.temp-today.temp;
   const tempText=diff>=3?"오늘보다 관계온도가 올라가요":diff<=-3?"오늘보다 관계온도가 차분해져요":"오늘과 비슷한 온도예요";
@@ -224,8 +249,8 @@ function renderToday(profile,date=isoLocalDate()){
   bindText("hero-title",t.label);bindText("hero-temp",t.temp);bindText("feels",t.feels);bindText("low",t.low);bindText("high",t.high);
   bindText("rain",t.rain);bindText("rain-level",rainLevel(t.rain));bindText("humidity",t.humidity);bindText("humidity-level",humidityLevel(t.humidity));
   bindText("wind",t.wind.toFixed(1));bindText("wind-level",windLevel(t.wind));
-  const advisory=advisoryCopy(forecast),tomorrowText=tomorrowCopy(t,forecast.tomorrow);
-  bindText("status",advisory.status);bindText("advisory-title",advisory.title);bindText("advisory-copy",advisory.copy);
+  const advisory=advisoryCopy(forecast),brief=dailyBriefing(forecast),tomorrowText=tomorrowCopy(t,forecast.tomorrow);
+  bindText("status",advisory.status);bindText("advisory-title",advisory.title);bindText("advisory-copy",advisory.copy);bindText("brief-time",brief.time);bindText("brief-time-copy",brief.timeCopy);bindText("brief-expression",brief.expression);bindText("brief-expression-copy",brief.expressionCopy);bindText("brief-caution",brief.caution);bindText("brief-caution-copy",brief.cautionCopy);
   bindText("tomorrow-title",tomorrowText.title);bindText("tomorrow-copy",tomorrowText.copy);
   const tomorrowIcon=document.querySelector('[data-bind-img="tomorrow-icon"]');if(tomorrowIcon)tomorrowIcon.src=weatherIcons[forecast.tomorrow.weather];
   const hourScroll=document.querySelector(".hour-scroll");
