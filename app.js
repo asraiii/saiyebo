@@ -274,13 +274,15 @@ function showShareFeedback(message){
 function bindShare(profile,forecast){
   document.querySelectorAll(".share,.share-action").forEach(button=>button.addEventListener("click",()=>shareSaiyebo(profile,forecast)));
 }
+
+const REFLECTION_KEY="saiyebo:reflection:v1";function loadReflections(){try{const x=JSON.parse(localStorage.getItem(REFLECTION_KEY));return Array.isArray(x)?x:[]}catch{return[]}}function bindDailyReflection(profile,date=isoLocalDate()){if(!profile)return;const owner=historyOwner(profile),existing=loadReflections().find(x=>x&&x.owner===owner&&x.date===date),buttons=[...document.querySelectorAll("[data-reflection-mood]")],memo=document.querySelector("[data-reflection-memo]"),state=document.querySelector("[data-reflection-state]"),save=document.querySelector("[data-reflection-save]");if(!buttons.length||!memo||!save)return;let mood=existing&&existing.mood||"";memo.value=existing&&existing.memo||"";buttons.forEach(b=>{b.classList.toggle("on",b.dataset.reflectionMood===mood);b.addEventListener("click",()=>{mood=b.dataset.reflectionMood;buttons.forEach(x=>x.classList.toggle("on",x===b));state.textContent=""})});if(existing)state.textContent="오늘 저장된 기록이에요.";save.addEventListener("click",()=>{if(!mood){state.textContent="오늘의 체감을 먼저 선택해주세요.";return}const entry={owner,date,mood,memo:String(memo.value||"").trim().slice(0,80),updatedAt:Date.now()},all=loadReflections().filter(x=>!(x&&x.owner===owner&&x.date===date));all.push(entry);localStorage.setItem(REFLECTION_KEY,JSON.stringify(all.slice(-800)));state.textContent="오늘 기록에 저장했어요."})}
 const activeCouple=loadCouple();
 const previewMode=new URLSearchParams(location.search).has("preview");
 if(!activeCouple&&!previewMode){
   location.replace("/start/");
 }else{
   const activeForecast=renderToday(activeCouple||DEMO_COUPLE);
-  if(activeCouple){saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple)}
+  if(activeCouple){saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple);bindDailyReflection(activeCouple,activeForecast.today.date)}
   else{renderHistorySummary(activeForecast.today.date)}
   window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
   bindShare(activeCouple||DEMO_COUPLE,activeForecast);
