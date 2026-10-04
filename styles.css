@@ -64,3 +64,5 @@ nav button{border:0;background:transparent;color:#8A9CA6;display:flex;flex-direc
 .site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin-top:24px;padding:0 20px calc(84px + env(safe-area-inset-bottom));font-size:var(--text-sm);background:var(--forecast-surface)}.site-links a{color:#718089;text-decoration:none}.site-links a:focus-visible{text-decoration:underline;outline:2px solid currentColor;outline-offset:3px}
 
 .round:focus-visible,.share-action:focus-visible,nav button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+.daily-brief{padding-top:24px;padding-bottom:24px}.brief-list{display:grid;gap:0;margin-top:14px}.brief-list article{padding:15px 0;border-top:1px solid var(--forecast-line)}.brief-list article:first-child{border-top:0;padding-top:4px}.brief-list small{display:block;font-size:var(--text-sm);color:var(--muted)}.brief-list strong{display:block;margin-top:4px;font-size:var(--text-md);font-weight:600;line-height:1.45;word-break:keep-all}.brief-list p{margin:4px 0 0;font-size:var(--text-sm);line-height:1.55;color:var(--muted);word-break:keep-all}
