@@ -77,3 +77,11 @@ Current status: code-level Today baseline is frozen at v17.4. Do not call the To
 - Share URLs may include the relationship type and the already-derived inclusive relationship day count for display.
 - Current compact payload supports legacy 13-field links and the privacy-safe 15-field format.
 - Shared Today weather, temperature, feels-like, low/high, metrics, tomorrow direction, weekly outlook, and advisory must remain consistent with the source Today forecast.
+
+
+## Current production integrity lock — 2026-10-04
+- Main Today runtime baseline is currently `app.js?v=21.8`; the older v17.4 note is a historical visual freeze, not the active script version.
+- Daily Hero low/high are derived from the fixed canonical 06:00–24:00 two-hour forecast set so the range remains stable throughout the day.
+- A dynamically inserted non-canonical current-hour card must remain within that canonical Hero low/high range and must not change the daily range.
+- Names are display-only personalization. They must not affect DailySeed, history ownership, Share URL payloads, or the native/copied Share message.
+- Shared text uses generic `우리 사이` wording even when both names are stored locally.
