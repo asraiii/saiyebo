@@ -65,4 +65,4 @@ nav button{border:0;background:transparent;color:#8A9CA6;display:flex;flex-direc
 
 .round:focus-visible,.share-action:focus-visible,nav button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 
-.nav-glyph{font-size:20px!important;line-height:20px;color:currentColor}
+.nav-glyph{font-size:20px;line-height:20px;color:currentColor}
