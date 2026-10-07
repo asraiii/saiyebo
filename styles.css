@@ -5,15 +5,15 @@
   --forecast-line:rgba(49,82,99,.10)
 }
 *{box-sizing:border-box}
-html{background:#DFF4FF}
+html{width:100%;max-width:100%;overflow-x:hidden;background:#DFF4FF}
 body{
-  margin:0;min-height:100vh;color:var(--ink);letter-spacing:-.035em;
+  width:100%;max-width:100%;overflow-x:hidden;margin:0;min-height:100vh;color:var(--ink);letter-spacing:-.035em;
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,Roboto,"Helvetica Neue","Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
   background:linear-gradient(180deg,#2398D0 0%,#4AB1DE 30%,#83C9DE 62%,#D8CC78 100%);
   background-size:100% 600px;background-repeat:no-repeat;background-color:var(--forecast-surface)
 }
 button{font:inherit}
-.app{width:min(100%,470px);min-height:100vh;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 0 0;position:relative}
+.app{width:100%;max-width:470px;min-height:100vh;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 0 0;position:relative}
 .top,.hero{margin-left:20px;margin-right:20px}
 .top{height:54px;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;margin-bottom:17px}
 .brand{text-align:center;color:#fff;font-size:17px;font-weight:600;letter-spacing:-.035em}
@@ -60,7 +60,7 @@ nav button{border:0;background:transparent;color:#8A9CA6;display:flex;flex-direc
 .hero-weather-icon{animation:heroWeatherFloat 3.2s ease-in-out infinite;transform-origin:50% 50%;will-change:transform}
 @media(prefers-reduced-motion:reduce){.hero-weather-icon{animation:none}}
 
-.site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin-top:24px;padding:0 20px calc(84px + env(safe-area-inset-bottom));font-size:var(--text-sm);background:var(--forecast-surface)}.site-links a{color:#718089;text-decoration:none}.site-links a:focus-visible{text-decoration:underline;outline:2px solid currentColor;outline-offset:3px}
+.site-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin-top:24px;padding:0 20px calc(104px + env(safe-area-inset-bottom));font-size:var(--text-sm);background:var(--forecast-surface)}.site-links a{color:#718089;text-decoration:none}.site-links a:focus-visible{text-decoration:underline;outline:2px solid currentColor;outline-offset:3px}
 
 .round:focus-visible,.share-action:focus-visible,nav button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 
