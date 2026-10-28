@@ -30,6 +30,12 @@ form.addEventListener("submit",e=>{
   const future=dateFields.find(k=>data[k]>today);
   if(future){error.textContent="미래 날짜는 입력할 수 없어요.";form.elements[future].focus();return}
   if(!["some","dating"].includes(data.relationshipType)){error.textContent="현재 관계를 선택해주세요.";const first=form.querySelector('input[name="relationshipType"]');if(first)first.focus();return}
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+  }catch{
+    error.textContent="저장할 수 없어요. 브라우저 저장 공간이나 개인정보 보호 설정을 확인해주세요.";
+    error.setAttribute("role","alert");
+    return;
+  }
   location.href="/";
 });
