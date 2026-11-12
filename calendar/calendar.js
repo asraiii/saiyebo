@@ -31,11 +31,16 @@ function bindReflectionEditor(){
     if(form.hidden||!map.has(selected)){feedback.textContent="예보가 저장된 날짜를 선택해주세요.";return}
     if(!["good","normal","bad"].includes(selectedReflectionMood)){feedback.textContent="이날의 체감을 먼저 선택해주세요.";return}
     const entry={owner:id,date:selected,mood:selectedReflectionMood,memo:String(memo.value||"").trim().slice(0,80),updatedAt:Date.now()};
-    const stored=read(RK,[]);
-    const keep=(Array.isArray(stored)?stored:[]).filter(x=>!(x&&x.owner===id&&x.date===selected));
-    keep.push(entry);
-    try{localStorage.setItem(RK,JSON.stringify(keep))}
-    catch{feedback.textContent="기록을 저장할 수 없어요. 브라우저 저장 공간이나 개인정보 보호 설정을 확인해주세요.";return}
+    try{
+      const raw=localStorage.getItem(RK),stored=raw===null?[]:JSON.parse(raw);
+      if(!Array.isArray(stored))throw new Error("Invalid reflection records");
+      const keep=stored.filter(x=>!(x&&x.owner===id&&x.date===selected));
+      keep.push(entry);
+      localStorage.setItem(RK,JSON.stringify(keep));
+    }catch{
+      feedback.textContent="기록을 저장할 수 없어요. 저장 공간·설정이나 기존 기록 상태를 확인해주세요. 기존 데이터는 유지돼요.";
+      return;
+    }
     const index=reflections.findIndex(x=>x.date===selected);
     if(index!==-1)reflections.splice(index,1);
     reflections.push(entry);
