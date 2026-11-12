@@ -1,7 +1,7 @@
 /* Share-only behavior. All forecast visuals/layout come from /styles.css. */
 body{background-size:100% 600px}
 .share-result-cta{margin-top:0}
-.share-start{position:relative;z-index:1;margin-right:14px;border:1px solid rgba(255,255,255,.38);border-radius:12px;background:rgba(255,255,255,.16);color:#fff;padding:9px 12px;text-decoration:none;font-size:var(--text-sm);font-weight:600}
+.share-start{position:relative;z-index:1;margin-right:14px;border:1px solid rgba(255,255,255,.38);border-radius:12px;background:rgba(0,0,0,.10);color:#fff;padding:9px 12px;text-decoration:none;font-size:var(--text-sm);font-weight:600}
 .privacy{text-align:center;color:#516B79;font-size:var(--text-sm);margin:-4px 20px 12px}
 @media(max-width:390px){.share-start{margin-right:12px}}
 @media(max-width:360px){.share-start{padding:8px}}
