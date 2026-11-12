@@ -309,12 +309,13 @@ if(!activeCouple&&!previewMode){
   // Keep the root page indexable and useful before visitors opt into local personalization.
   // Public entry is static HTML; unrelated saved history is not read or displayed.
 }else{
-  document.body.classList.add("saiyebo-today");
   const activeForecast=renderToday(activeCouple||DEMO_COUPLE);
   if(activeCouple){const historySaved=saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple);if(!historySaved){const status=document.querySelector("[data-history-save-state]");if(status){status.hidden=false;status.textContent="오늘의 사이예보를 저장하지 못했어요. 저장 공간이나 기존 기록 상태를 확인해주세요. 기존 데이터는 유지돼요."}}bindDailyReflection(activeCouple,activeForecast.today.date)}
   else{renderHistorySummary(activeForecast.today.date)}
   window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
   bindShare(activeCouple||DEMO_COUPLE,activeForecast);
+  // Only hide the public fallback once the personalized page has initialized successfully.
+  document.body.classList.add("saiyebo-today");
 }
 window.SAIYEBO_PROFILE={load:loadCouple,save:saveCouple,key:STORAGE_KEY,demo:DEMO_COUPLE};
 window.SAIYEBO_HISTORY={load:loadHistory,stats:historyStats,key:HISTORY_KEY,owner:historyOwner};
