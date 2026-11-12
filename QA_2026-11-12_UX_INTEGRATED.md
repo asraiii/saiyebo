@@ -251,3 +251,22 @@
 - 위 GitHub SVG 내용을 검증 HTML에 데이터 URI로 포함하여 **새 검증용 화면**을 Chromium에서 재생성. 320/360/375/390/430/470/768/834/1024/1280/1440/1920px 모두 `img.complete=true` 및 `naturalWidth=150`, 가로 스크롤 없음, 시작 CTA 52px 높이 확인 PASS.
 - 새 검증 화면 320px/390px 이미지 제작 및 320px 이미지 육안 확인. 이전 빈 사각형 스크린샷은 유효한 아이콘 QA 자료가 아니므로 사용하지 않음.
 - 검증용 HTML/이미지 수정이며 사이트 원본 SVG·코드·운영 `main`에는 변경 없음. 운영 웹사이트의 HTTP 이미지 응답 및 실제 브라우저 표시 상태는 여전히 NOT VERIFIED.
+
+## RED TEAM 회귀: 첫 방문 CSS의 공유 페이지 침범·실패 안전 화면 (2026-11-12)
+
+### 1) 실제 소스에서 발견한 공유 페이지 표시 결함
+- 최근 첫 방문 공개 소개 기능의 `styles.css`에 `body:not(.saiyebo-today) .app > :not([data-public-entry]){display:none}` 규칙이 추가되었음.
+- `share/index.html`도 `<main class="app">`와 같은 공용 `styles.css`를 사용하고, `body`에 `saiyebo-today` 클래스를 추가하지 않음. 따라서 최신 CSS가 적용되면 공유 페이지의 header/hero 등 주요 자식이 모두 `display:none`이 될 수 있는 **교차 페이지 회귀 결함** 확인.
+- 고침: `index.html` 루트만 `<main class="app saiyebo-home">`으로 표시하고 숨김 선택자를 `.saiyebo-home`으로 범위 제한. `share/index.html`의 `main.app`은 그대로 두며 공유 CSS 참조를 `/styles.css?v=23.1`로 변경. 홈페이지 CSS도 `styles.css?v=23.1`로 갱신.
+- 실제 Chromium의 독립 DOM/CSS 테스트 4가지 경우 × 320/390/768/1440px = **16건 PASS**: 구 규칙에서 공유 화면 숨김 재현, 새 규칙에서 공유 header/hero 노출, 무설정 홈에서는 소개만 노출, 정상 Today 상태에서는 Today만 노출.
+- **제한:** 공유 페이지 실제 전체 HTML·전체 CSS·브라우저 외부 리소스를 불러와 테스트한 것이 아닌 위험 선택자와 핵심 DOM을 구성한 테스트. 실제 공유 URL 운영·기기 E2E는 NOT VERIFIED.
+
+### 2) Today 초기화 실패 시 정상 화면 보존
+- 과거 초기화 순서에서는 활성 프로필이 있으면 `renderToday` 전에 `document.body.classList.add("saiyebo-today")`로 공개 소개를 숨겼음. 렌더링 중 오류를 주입했을 때 소개는 이미 숨겨지고 Today 일부만 남는 상태를 소스 실행으로 재현.
+- 고침: `renderToday`, 기존 이력 처리, 기록 이벤트 설정 및 공유 이벤트 연결이 모두 끝난 후 마지막에 `saiyebo-today` 클래스를 적용. 예보 엔진·입력 모델·저장 데이터 형식은 변경하지 않음.
+- 수정된 실제 `app.js`를 모의 DOM/저장소에서 7가지 경우로 실행하여 **7/7 PASS**: 첫 방문/손상 프로필/무설정 미리보기/정상 프로필/스토리지 용량 부족/예보 렌더 오류 주입/공유 이벤트 초기화 오류 주입. 오류를 주입한 상태에서 공개 소개가 숨겨지지 않음.
+- 새 앱 스크립트 참조 `app.js?v=23.1`. 공개 HTML/기존 Today HTML 및 모든 8종 SVG 원본은 수정하지 않음.
+
+### 배포 보호
+- 모든 변경은 `fix/reflection-a11y-share-feedback-20261112` 브랜치에만 저장됨. `main` 병합·Cloudflare 배포·기존 사용자 데이터 변경 없음.
+- 기존 독립 이미지 검증은 실제 운영 화면 스크린샷이 아니며, 원격 브랜치 전체 레이아웃·운영 HTTP 응답에 대한 판정은 NOT VERIFIED.
