@@ -112,9 +112,16 @@ function historyOwner(profile){
 function saveForecastHistory(forecast,profile){
   if(!forecast||!forecast.today||!profile)return false;
   const t=forecast.today,owner=historyOwner(profile),entry={owner,date:t.date,temp:t.temp,low:t.low,high:t.high,rain:t.rain,humidity:t.humidity,wind:t.wind,weather:t.weather,label:t.label};
-  const history=loadHistory().filter(x=>!(x.owner===owner&&x.date===entry.date));
-  history.push(entry);history.sort((a,b)=>a.date.localeCompare(b.date));
-  try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history));return true}catch{ /* Preserve existing records on storage failure. */ return false}
+  try{
+    const raw=localStorage.getItem(HISTORY_KEY),stored=raw===null?[]:JSON.parse(raw);
+    if(!Array.isArray(stored))return false;
+    const history=stored.filter(x=>!(x&&x.owner===owner&&x.date===entry.date));
+    history.push(entry);
+    const dateOf=x=>x&&typeof x.date==="string"?x.date:"";
+    history.sort((a,b)=>dateOf(a).localeCompare(dateOf(b)));
+    localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
+    return true;
+  }catch{ /* Do not overwrite unreadable data or discard existing records on quota errors. */ return false}
 }
 function historyStats(history,date=isoLocalDate(),profile=null){
   const owner=profile?historyOwner(profile):null;
@@ -294,14 +301,14 @@ function bindShare(profile,forecast){
   document.querySelectorAll(".share,.share-action").forEach(button=>button.addEventListener("click",()=>shareSaiyebo(profile,forecast)));
 }
 
-const REFLECTION_KEY="saiyebo:reflection:v1";function loadReflections(){try{const x=JSON.parse(localStorage.getItem(REFLECTION_KEY));return Array.isArray(x)?x:[]}catch{return[]}}function bindDailyReflection(profile,date=isoLocalDate()){if(!profile)return;const owner=historyOwner(profile),existing=loadReflections().filter(x=>x&&x.owner===owner&&x.date===date).pop(),buttons=[...document.querySelectorAll("[data-reflection-mood]")],memo=document.querySelector("[data-reflection-memo]"),state=document.querySelector("[data-reflection-state]"),save=document.querySelector("[data-reflection-save]");if(!buttons.length||!memo||!save)return;let mood=existing&&["good","normal","bad"].includes(existing.mood)?existing.mood:"";memo.value=existing&&existing.memo||"";buttons.forEach(b=>{const selected=b.dataset.reflectionMood===mood;b.classList.toggle("on",selected);b.setAttribute("aria-pressed",String(selected));b.addEventListener("click",()=>{mood=b.dataset.reflectionMood;buttons.forEach(x=>{const active=x===b;x.classList.toggle("on",active);x.setAttribute("aria-pressed",String(active))});state.textContent=""})});if(existing)state.textContent="";save.addEventListener("click",()=>{if(!["good","normal","bad"].includes(mood)){state.textContent="오늘의 체감을 먼저 선택해주세요.";return}const entry={owner,date,mood,memo:String(memo.value||"").trim().slice(0,80),updatedAt:Date.now()},all=loadReflections().filter(x=>!(x&&x.owner===owner&&x.date===date));all.push(entry);try{localStorage.setItem(REFLECTION_KEY,JSON.stringify(all));state.textContent="오늘 기록에 저장했어요."}catch{state.textContent="기록을 저장할 수 없어요. 브라우저 저장 공간이나 개인정보 보호 설정을 확인해주세요."}})}
+const REFLECTION_KEY="saiyebo:reflection:v1";function loadReflections(){try{const x=JSON.parse(localStorage.getItem(REFLECTION_KEY));return Array.isArray(x)?x:[]}catch{return[]}}function bindDailyReflection(profile,date=isoLocalDate()){if(!profile)return;const owner=historyOwner(profile),existing=loadReflections().filter(x=>x&&x.owner===owner&&x.date===date).pop(),buttons=[...document.querySelectorAll("[data-reflection-mood]")],memo=document.querySelector("[data-reflection-memo]"),state=document.querySelector("[data-reflection-state]"),save=document.querySelector("[data-reflection-save]");if(!buttons.length||!memo||!save)return;let mood=existing&&["good","normal","bad"].includes(existing.mood)?existing.mood:"";memo.value=existing&&existing.memo||"";buttons.forEach(b=>{const selected=b.dataset.reflectionMood===mood;b.classList.toggle("on",selected);b.setAttribute("aria-pressed",String(selected));b.addEventListener("click",()=>{mood=b.dataset.reflectionMood;buttons.forEach(x=>{const active=x===b;x.classList.toggle("on",active);x.setAttribute("aria-pressed",String(active))});state.textContent=""})});if(existing)state.textContent="";save.addEventListener("click",()=>{if(!["good","normal","bad"].includes(mood)){state.textContent="오늘의 체감을 먼저 선택해주세요.";return}const entry={owner,date,mood,memo:String(memo.value||"").trim().slice(0,80),updatedAt:Date.now()};try{const raw=localStorage.getItem(REFLECTION_KEY),stored=raw===null?[]:JSON.parse(raw);if(!Array.isArray(stored))throw new Error("Invalid reflection records");const all=stored.filter(x=>!(x&&x.owner===owner&&x.date===date));all.push(entry);localStorage.setItem(REFLECTION_KEY,JSON.stringify(all));state.textContent="오늘 기록에 저장했어요."}catch{state.textContent="기록을 저장할 수 없어요. 브라우저 저장 공간·설정이나 기존 기록 상태를 확인해주세요. 기존 데이터는 유지돼요."}})}
 const activeCouple=loadCouple();
 const previewMode=new URLSearchParams(location.search).has("preview");
 if(!activeCouple&&!previewMode){
   location.replace("/start/");
 }else{
   const activeForecast=renderToday(activeCouple||DEMO_COUPLE);
-  if(activeCouple){const historySaved=saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple);if(!historySaved){const status=document.querySelector("[data-history-save-state]");if(status){status.hidden=false;status.textContent="브라우저 저장 공간 문제로 오늘의 사이예보를 기록하지 못했어요. 기존 기록은 유지돼요."}}bindDailyReflection(activeCouple,activeForecast.today.date)}
+  if(activeCouple){const historySaved=saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple);if(!historySaved){const status=document.querySelector("[data-history-save-state]");if(status){status.hidden=false;status.textContent="오늘의 사이예보를 저장하지 못했어요. 저장 공간이나 기존 기록 상태를 확인해주세요. 기존 데이터는 유지돼요."}}bindDailyReflection(activeCouple,activeForecast.today.date)}
   else{renderHistorySummary(activeForecast.today.date)}
   window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
   bindShare(activeCouple||DEMO_COUPLE,activeForecast);
