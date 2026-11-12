@@ -243,3 +243,11 @@
 - GitHub `main` 무변경, Cloudflare Pages 배포·병합 없음. 예전 사용자 기록·설정 데이터 삭제/마이그레이션 없음.
 - 다른 검색엔진의 색인, Googlebot의 실제 렌더링, Search Console에서 `sitemap.xml` 수집 여부는 외부 검증 필요.
 - 커밋 히스토리 일괄 squash는 원본 브랜치의 커밋과 데이터가 이미 보존된 상태에서 불필요한 강제 이력 변경 위험이 있어 이번 단계에서는 수행하지 않음. 브랜치의 `main` 대비 파일별 diff와 SHA를 기준으로 검토.
+
+## 검증 이미지 정정 — 공개 소개 SVG 누락 (2026-11-12)
+
+- 기존 독립 Chromium 검증용 `qa_saiyebo_public_entry.html`에는 Hero 이미지 `<img>`에 `src`가 없어서 320px/390px 스크린샷에 빈 사각형이 표시됐음. **검증 이미지의 제작 오류**이며 실제 배포 사이트에서 이미지 오류를 재현한 결과가 아님.
+- GitHub 브랜치의 `assets/weather/soft-3d/clear-day.svg`(blob SHA `3baf2c375d09f21d384f8fd7ccfc32a9d6cf9506`) 존재 및 SVG 구조 확인. 브랜치 `index.html`의 기존 참조 `/assets/weather/soft-3d/clear-day.svg?v=16.6`도 확인.
+- 위 GitHub SVG 내용을 검증 HTML에 데이터 URI로 포함하여 **새 검증용 화면**을 Chromium에서 재생성. 320/360/375/390/430/470/768/834/1024/1280/1440/1920px 모두 `img.complete=true` 및 `naturalWidth=150`, 가로 스크롤 없음, 시작 CTA 52px 높이 확인 PASS.
+- 새 검증 화면 320px/390px 이미지 제작 및 320px 이미지 육안 확인. 이전 빈 사각형 스크린샷은 유효한 아이콘 QA 자료가 아니므로 사용하지 않음.
+- 검증용 HTML/이미지 수정이며 사이트 원본 SVG·코드·운영 `main`에는 변경 없음. 운영 웹사이트의 HTTP 이미지 응답 및 실제 브라우저 표시 상태는 여전히 NOT VERIFIED.
