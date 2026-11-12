@@ -76,3 +76,23 @@
 - 런타임 내 도구로 `saiyebo.pages.dev` 및 `raw.githubusercontent.com` 요청을 시도했으나 DNS 확인에 실패함. 웹 도구 역시 운영 페이지 HTML 조회에 실패함.
 - **11개 목표 뷰포트의 실제 스크린샷/수평 스크롤/터치**, 실제 iOS·Android 공유 시트, 스크린리더 사용, 운영 반영 후 회귀 확인: NOT VERIFIED.
 - GitHub 브랜치의 소스 검증 PASS는 실제 운영 페이지 PASS나 배포 승인과 별개.
+
+## 후속 미검증 영역 축소 — 2026-11-12 추가
+
+### Today 기록 통계 오류 수정 및 회귀 테스트
+- 원인: Today의 `historyStats`는 중복 날짜·비정상 온도·모르는 날씨 코드를 별도로 걸러내지 않았으므로 Calendar/Report와 월간 통계가 달라질 수 있었음.
+- 조치: 화면에 표시할 때만 관계 owner/날짜/날씨/온도·강수확률·습도 범위를 검증하고 같은 owner·날짜의 마지막 유효 항목을 사용함. 기존 저장 이력은 변경/삭제하지 않음.
+- 기존 예보 생성 함수 `generateForecast`와 날씨 아이콘 경로는 수정하지 않음.
+- 실제 `app.js` 소스 함수 실행 7건: 중복 맑은 날 수, 999도 오염값, 공백 온도, 다른 관계 소유자, 3일 연속 기록, `constructor` 날씨 코드, 숫자 문자열 온도 모두 PASS.
+
+### 제한적 Chromium 구성요소 렌더링 검증
+- 문제가 있는 Today 3열 날씨 지표 컴포넌트의 HTML/CSS 규칙을 재구성한 독립 검증용 페이지를 Chromium에서 렌더링함.
+- 구형 `white-space:nowrap`에서 첫 번째 지표 텍스트가 자기 열을 넘는 양: 320px = 22px, 360px = 9px, 375px = 4px.
+- 수정 `.metrics small{white-space:normal;overflow-wrap:anywhere;word-break:keep-all}`을 브랜치 CSS에 반영. 독립 컴포넌트의 320/360/375/390/430/470/768/834/1024/1280/1440/1920px 검증에서 텍스트 겹침/가로 스크롤이 관찰되지 않음.
+- Report에 `.couple strong`의 `text-overflow:ellipsis` 및 관계 일수의 고정 공간 확보를 적용. 긴 가상 이름을 사용한 별도 Chromium 검증에서 320~1920px 9개 화면 폭 모두 관계 일수의 가로 이탈 없음.
+- **제한:** 검증 페이지는 실제 GitHub 프로젝트를 내려받아 실행한 전체 화면이 아니라 해당 HTML/CSS 조각을 재구성한 것입니다. 일부 폰트 대체가 있었고, 전 페이지 11개 화면 폭의 실제 화면 QA 또는 실제 사용자 브라우저 체험을 PASS 처리하지 않음.
+
+### 환경과 남은 검증
+- 로컬 Chromium과 Playwright는 설치됐으나 `saiyebo.pages.dev` 및 `raw.githubusercontent.com`을 로컬 컨테이너에서 DNS로 해석할 수 없었고, `--resolve` 직접 IP 연결도 실패함. 웹 읽기 경로에서도 운영 사이트 HTML fetch에 실패함.
+- 전체 실제 사이트 모바일/태블릿/PC 렌더링, 네이티브 공유 및 배포 후 회귀는 NOT VERIFIED.
+- `main` 병합·Cloudflare 배포 없음. 불채택 신규 아이콘/저장 키/원본 데이터 변경 없음.
