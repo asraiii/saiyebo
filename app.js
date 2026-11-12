@@ -118,8 +118,13 @@ function saveForecastHistory(forecast,profile){
 }
 function historyStats(history,date=isoLocalDate(),profile=null){
   const owner=profile?historyOwner(profile):null;
-  const sorted=history.filter(x=>x.date<=date&&(!owner||x.owner===owner)).sort((a,b)=>a.date.localeCompare(b.date));
-  const clearish=x=>x&&["clear","heat","partly"].includes(x.weather);
+  const validMetric=(v,min,max)=>(typeof v==="number"||(typeof v==="string"&&v.trim()!==""))&&Number.isFinite(Number(v))&&Number(v)>=min&&Number(v)<=max;
+  const valid=x=>x&&validDateString(x.date)&&x.date<=date&&(!owner||x.owner===owner)
+    &&WEATHER_KEYS.includes(x.weather)&&validMetric(x.temp,0,40)&&validMetric(x.rain,0,100)&&validMetric(x.humidity,0,100);
+  // Ignore malformed or duplicate dates in the UI without modifying any saved records.
+  const keyed=new Map((Array.isArray(history)?history:[]).filter(valid).map(x=>[String(x.owner||"")+"|"+x.date,x]));
+  const sorted=[...keyed.values()].sort((a,b)=>a.date.localeCompare(b.date));
+  const clearish=x=>["clear","heat","partly"].includes(x.weather);
   let streak=0,expected=date;
   for(let i=sorted.length-1;i>=0;i--){
     const x=sorted[i];
@@ -127,7 +132,7 @@ function historyStats(history,date=isoLocalDate(),profile=null){
     streak++;expected=addDays(expected,-1);
   }
   const month=date.slice(0,7),monthClear=sorted.filter(x=>x.date.startsWith(month)&&clearish(x)).length;
-  const hottest=sorted.reduce((best,x)=>!best||x.temp>best.temp?x:best,null);
+  const hottest=sorted.reduce((best,x)=>!best||Number(x.temp)>Number(best.temp)?x:best,null);
   return{streak,monthClear,hottest};
 }
 function renderHistorySummary(date=isoLocalDate(),profile=null){
