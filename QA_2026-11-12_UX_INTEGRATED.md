@@ -218,3 +218,28 @@
 - 첫 방문 UX와 검색 색인을 함께 재설계해야 하므로 이 단계에서는 자동 이동·페이지 인덱스 정책을 임의 변경하지 않음.
 - 운영 사이트/사이트맵의 실제 HTTP 응답 및 Search Console 상태는 접근 불가로 NOT VERIFIED.
 - 운영 `main` 병합/Cloudflare 배포 없음.
+
+## 최종 Chat 작업: 첫 방문 UX와 루트 SEO 분리 (2026-11-12)
+
+### 근거 및 결함
+- 이전 루트 `index.html`은 `index,follow`, canonical `/`였지만, `app.js`가 개인 설정이 없는 일반 방문자를 `/start/`로 JavaScript 즉시 이동시킴. `/start/`는 `noindex,follow`. 색인에 불리할 수 있는 구조이며 실제 Search Console의 사이트맵 오류 원인이라고 단정하지 않음.
+- 참고: Google Search Central의 JavaScript SEO Basics 및 Redirects and Google Search. JavaScript redirects 처리 및 렌더링의 지연·실패 가능성에 관한 공식 설명을 고려함.
+
+### 실제 수정 파일
+- `index.html`: 이미 존재하는 `main.app` 내부 앞쪽에 정적 공개 소개·이용안내·기능 설명·개인정보 저장 안내·시작 CTA·콘텐츠 탐색 링크를 제공하는 `section.public-entry` 추가. 기존 Today 구조/HTML은 유지. 캐시 버전 `styles.css?v=23.0`, `app.js?v=23.0`.
+- `app.js`: 프로필이 없고 `?preview`도 아니면 루트에서 이동하지 않으며 아무 개인 이력도 읽거나 쓰지 않음. 정상 프로필 또는 `?preview`는 `body.saiyebo-today`를 켜고 기존 예보 렌더링을 유지. 예보 생성·공유·기록 로직은 변경하지 않음.
+- `styles.css`: `body:not(.saiyebo-today)`일 때 **기존 Today 자식만** 숨기고 공개 소개 표시. 정상 사용자에서는 공개 소개만 숨기고 기존 Today 자식은 원래 CSS와 DOM 구조 그대로 사용. 소개용 독립 클래스만 추가.
+- 새 소개 영역의 서비스 링크를 `nav`로 작성하면 기존 전역 `nav` 고정 하단바 CSS가 침범하는 결함을 사전 점검에서 발견. `div role=navigation`으로 교체해 의미와 링크는 유지하며 CSS 충돌만 제거함.
+- 기존 날씨 SVG 파일 8개 중 한 개도 수정하지 않음; 소개용 그림은 기존 `clear-day.svg`를 경로 재사용.
+
+### 직접 수행한 검증
+- GitHub 실제 `app.js`를 모의 DOM/저장소에서 6개 사용자 상태로 실행: 무설정 첫 방문, 손상 프로필, 정상 프로필, 기록 저장 실패인 정상 프로필, 무설정 `?preview`, 정상 프로필 `?preview` 모두 예외 없이 예상 동선. 첫 방문은 개인 history 조회 0회, 데이터 저장 0회, 자동 리다이렉트 0회.
+- GitHub 소스 대조 18개 통합 불변조건 PASS: 정적 H1/실제 소개 문구, 시작 링크, 비식별형 콘텐츠, 색인 메타/canonical, 설정 페이지 noindex 유지, 정상 Today nav/감정 입력 보존, 엔진 main 원본과 동일, JS/CSS 캐시 버전, 날씨 SVG 경로 등.
+- JavaScript 5개 파일 문법 검사 PASS, 변경 CSS 4개 파일 중괄호 균형 PASS.
+- 새 공개 소개 HTML/CSS 일부를 재구성한 독립 Chromium 화면 320,360,375,390,430,470,768,834,1024,1280,1440,1920px: 수평 스크롤 없음, 시작 CTA 높이 52px. 새 링크 영역과 구형 전역 `nav` 스타일을 함께 실은 재검증에서도 고정 위치 충돌 없음.
+- **중요한 검증 한계:** 독립 Chromium 재구성에는 실제 SVG를 포함하지 않았음. 전체 프로젝트 파일을 로컬에서 구동하거나 브랜치 전체 화면을 렌더링하지 않았고, 배포된 도메인의 HTTP 응답/Google Search Console 접근에도 실패함. 따라서 운영 화면/검색 색인은 NOT VERIFIED.
+
+### 보류 항목과 안전
+- GitHub `main` 무변경, Cloudflare Pages 배포·병합 없음. 예전 사용자 기록·설정 데이터 삭제/마이그레이션 없음.
+- 다른 검색엔진의 색인, Googlebot의 실제 렌더링, Search Console에서 `sitemap.xml` 수집 여부는 외부 검증 필요.
+- 커밋 히스토리 일괄 squash는 원본 브랜치의 커밋과 데이터가 이미 보존된 상태에서 불필요한 강제 이력 변경 위험이 있어 이번 단계에서는 수행하지 않음. 브랜치의 `main` 대비 파일별 diff와 SHA를 기준으로 검토.
