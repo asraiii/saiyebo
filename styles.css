@@ -77,8 +77,8 @@ nav button{border:0;background:transparent;color:#5A7280;display:flex;flex-direc
 
 /* Root public entry: genuine indexable copy without a profile or JavaScript redirect.
    Existing Today hierarchy and weather SVGs are unchanged for saved profiles. */
-body:not(.saiyebo-today) .app > :not([data-public-entry]){display:none}
-body.saiyebo-today .public-entry{display:none}
+body:not(.saiyebo-today) .saiyebo-home > :not([data-public-entry]){display:none}
+body.saiyebo-today .saiyebo-home > [data-public-entry]{display:none}
 .public-entry{min-height:100vh}
 .public-entry-header{height:54px;margin:0 20px 17px;display:flex;align-items:center;justify-content:space-between;color:#fff}
 .public-entry-header strong{font-size:17px;font-weight:700}
