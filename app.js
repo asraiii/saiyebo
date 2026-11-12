@@ -143,7 +143,8 @@ function historyStats(history,date=isoLocalDate(),profile=null){
   return{streak,monthClear,hottest};
 }
 function renderHistorySummary(date=isoLocalDate(),profile=null){
-  const s=historyStats(loadHistory(),date,profile);
+  // Preview mode has no active owner: never show history from unrelated relationships.
+  const s=historyStats(profile?loadHistory():[],date,profile);
   bindText("record-streak",`${s.streak}일`);
   bindText("record-month-clear",`${s.monthClear}일`);
   bindText("record-highest",s.hottest?s.hottest.date.slice(5).replace("-","."):"—");
