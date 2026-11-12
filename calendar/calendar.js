@@ -34,7 +34,7 @@ function bindReflectionEditor(){
     const stored=read(RK,[]);
     const keep=(Array.isArray(stored)?stored:[]).filter(x=>!(x&&x.owner===id&&x.date===selected));
     keep.push(entry);
-    try{localStorage.setItem(RK,JSON.stringify(keep.slice(-800)))}
+    try{localStorage.setItem(RK,JSON.stringify(keep))}
     catch{feedback.textContent="기록을 저장할 수 없어요. 브라우저 저장 공간이나 개인정보 보호 설정을 확인해주세요.";return}
     const index=reflections.findIndex(x=>x.date===selected);
     if(index!==-1)reflections.splice(index,1);
