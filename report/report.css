@@ -8,3 +8,6 @@
 .empty-state{margin-top:12px}.empty-state strong{display:block;color:var(--ink);font-size:14px;font-weight:600;line-height:1.45}.empty-state p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.5;word-break:keep-all}
 
 @media(max-width:360px){.hero h1{font-size:26px;letter-spacing:-.045em}}
+
+/* Long display names may not push the relationship-day label outside Report. */
+.couple{min-width:0}.couple strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.couple span{flex:0 0 auto;white-space:nowrap}
