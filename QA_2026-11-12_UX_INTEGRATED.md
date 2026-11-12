@@ -96,3 +96,26 @@
 - 로컬 Chromium과 Playwright는 설치됐으나 `saiyebo.pages.dev` 및 `raw.githubusercontent.com`을 로컬 컨테이너에서 DNS로 해석할 수 없었고, `--resolve` 직접 IP 연결도 실패함. 웹 읽기 경로에서도 운영 사이트 HTML fetch에 실패함.
 - 전체 실제 사이트 모바일/태블릿/PC 렌더링, 네이티브 공유 및 배포 후 회귀는 NOT VERIFIED.
 - `main` 병합·Cloudflare 배포 없음. 불채택 신규 아이콘/저장 키/원본 데이터 변경 없음.
+
+## 후속 검수: Calendar 날짜별 체감 기록 직접 저장 기능 — 2026-11-12
+
+### 발견한 기존 기능 누락
+- `DESIGN_LOCK.md` 2026-10-05의 확정 기준은 Calendar에서 **예보 저장 날짜의 실제 감정(good/normal/bad)과 한 줄 메모를 기록**하는 기능을 요구함.
+- 이전 `calendar/calendar.js`는 기존 기록을 읽기 전용으로 보여줬고 해당 날짜의 입력·수정·저장은 제공하지 않았음.
+
+### 실제 수정
+- `calendar/index.html`: 선택일 상세 영역에 감정 3종 버튼(`aria-pressed`), 메모(최대 80자), 저장 버튼, 저장 상태 `aria-live=polite`를 추가. 예보 기록이 없는 날짜에는 입력 폼 숨김.
+- `calendar/calendar.js`: 기존 `saiyebo:reflection:v1` 기록을 읽어 선택 날짜에 미리 채우고, 기존 데이터와 동일한 `{owner,date,mood,memo,updatedAt}` 형식으로 저장. 동일 owner/date 기존 항목만 제거한 뒤 추가. 저장 성공 후 월별 수치·최근 기록·날짜 표시 실시간 갱신. 저장 실패 시 UI 집계 및 로컬 저장 데이터 불변.
+- `calendar/calendar.css`: 기존 캘린더 디자인 토큰을 따르는 44px 감정 버튼, 메모 필드, 48px 저장 버튼과 키보드 포커스 표시 추가.
+- 기존 날씨 아이콘·예보 엔진·계정별 소유자 해시 및 저장 키 미변경.
+- Calendar에 감정 기록이 없을 때 나타나는 안내문을 Calendar 내 직접 기록 가능한 동선에 맞게 교정.
+
+### 직접 수행한 검증
+- GitHub에서 읽은 실제 `calendar/calendar.js`를 모의 DOM에서 실행하여 다음 14개 체크 PASS: 초기 실행, 예보 저장일 입력 표시, 미선택 감정 기본 상태, 기존 날짜의 감정·메모 불러오기, 날짜별 새 저장, 같은 날짜 중복 제거, 월별 통계 갱신, 저장 완료 안내, 날짜 표시 갱신, 감정 미선택 저장 차단, 기록 없는 날짜 입력 숨김, 저장소 쓰기 실패 시 데이터 불변, 다른 관계 소유자의 기존 기록 보존, HTML 포함 메모 출력 이스케이프.
+- 실제 `report/report.js`와 Today의 `bindDailyReflection`를 모의 DOM에서 실행: Calendar와 동일 형식의 3일 기록에 대해 Report 기록 3일 / 좋았던 날 2일 / 67% 표시, Today의 해당 날짜 메모·감정 불러오기 확인 PASS.
+- Calendar 입력 폼의 작성된 HTML/CSS를 재구성한 **독립 Chromium 렌더링**: 320/360/375/390/430/470/768/834/1024/1280/1440/1920px 12개 화면 폭에서 입력 버튼 가로 겹침, 폼 밖 이탈, 수평 스크롤 없음. 320px 스크린샷은 별도 로컬 검증 파일로 생성 후 육안 검사.
+- 독립 입력 폼 스크린샷은 실제 운영 페이지 캡처가 아니며, 독립 렌더 결과를 전체 Calendar 페이지 PASS로 일반화하지 않음.
+
+### 남은 위험과 배포 기준
+- 실제 운영 주소에서의 전체 Calendar 화면, 실제 탭/터치/접근성 도구, localStorage 브라우저 구현, 기존 사용자 데이터로의 실제 회귀는 NOT VERIFIED.
+- 운영 `main` 병합, Cloudflare 배포, 저장 데이터 마이그레이션/삭제 없음.
