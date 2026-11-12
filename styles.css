@@ -69,3 +69,7 @@ nav button{border:0;background:transparent;color:#5A7280;display:flex;flex-direc
 
 /* Keep long weather metric labels readable within three columns at 320–470px. */
 .metrics small{white-space:normal;overflow-wrap:anywhere;word-break:keep-all}
+
+/* Disclose forecast history save failure without changing or deleting saved records. */
+.history-save-alert{margin:12px 0 0;font-size:12px;line-height:1.5;color:#8C3C1E;word-break:keep-all}
+.history-save-alert[hidden]{display:none}
