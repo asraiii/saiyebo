@@ -199,3 +199,22 @@
 - **이미 과거에 자동 절단된 자료는 이 수정만으로 복원되지 않음.**
 - 데이터 보존을 우선하므로 시간이 지나 브라우저 저장 한도에 도달할 수 있음. 이때 기존 데이터는 보존하고 새 저장이 실패하며 사용자에게 안내함. 브라우저별 저장 정책과 극단적인 장기 사용량은 NOT VERIFIED.
 - 운영 `main` 배포 및 사용자 데이터 변경 없음.
+
+## 후속 QA — 미리보기 기록 격리와 SEO 소스 점검 (2026-11-12)
+
+### 실제 재현된 결함: 소유자 없는 미리보기의 기록 혼합
+- 시나리오: 사용자의 활성 관계 프로필은 없지만 과거 `saiyebo:history:v1` 기록이 남아 있고 `/?preview`로 진입함.
+- 기존 코드 `renderHistorySummary(date)`는 `historyStats(loadHistory(), date, null)`을 호출하여 관계 owner 필터 없이 다른 관계들의 통계를 표시했음. 2개의 다른 관계 기록으로 `연속 맑음 2일 / 이번 달 맑음 2일 / 최고 온도일 11.12` 재현.
+- 수정: 프로필이 없는 미리보기에서 `historyStats([], date, null)`을 호출하여 기존 저장 기록을 화면 계산에 사용하지 않음. 활성 관계가 있으면 종전처럼 자신의 owner 기준으로만 계산.
+- 원본 `localStorage`, 예보 생성 엔진, 날씨 아이콘, 날짜별 기록 CRUD, 공유 URL 형식 등은 변경하지 않음.
+- 소스 함수 단위 검증 5종 PASS: 프로필 없는 미리보기 0일/0일/—, 정상 프로필 1건 일치, 손상 기록 미리보기, 빈 정상 프로필, 다른 소유자 기록 제외.
+- 전체 실제 `app.js` 모의 DOM 실행 4개 시나리오 PASS: 프로필 없는 미리보기(저장 0회/개인 통계 노출 없음), 프로필 없는 일반 방문(/start/ 이동), 프로필 있는 일반 방문(정상 owner 통계), 프로필 있는 ?preview(정상 owner 통계).
+- 실제 운영 브라우저/스크린리더는 NOT VERIFIED.
+
+### 사이트맵과 검색엔진 위험
+- `sitemap.xml`에 등록된 12개 URL과 GitHub HTML 파일 대조: 파일 존재 12/12, 자기 canonical 12/12, `index,follow` 12/12, 제목/메타 설명/H1 12/12 PASS. GitHub 소스 기준.
+- `robots.txt`의 sitemap 선언은 `https://saiyebo.pages.dev/sitemap.xml`.
+- **미해결 SEO 위험**: 루트 `index.html`은 `index,follow`이나 활성 프로필 없는 방문자에게 JS로 `/start/` 이동. `/start/`는 `noindex,follow`. 구글은 JS 리다이렉션을 처리하므로 루트 색인에 영향을 줄 가능성이 있음(공식 Google Search Central Redirects and Google Search 참고). 다만 실제 Google이 해당 URL을 어떻게 처리했는지 미확인; 기존 Search Console의 사이트맵 '읽을 수 없음' 원인으로 단정할 수 없음.
+- 첫 방문 UX와 검색 색인을 함께 재설계해야 하므로 이 단계에서는 자동 이동·페이지 인덱스 정책을 임의 변경하지 않음.
+- 운영 사이트/사이트맵의 실제 HTTP 응답 및 Search Console 상태는 접근 불가로 NOT VERIFIED.
+- 운영 `main` 병합/Cloudflare 배포 없음.
