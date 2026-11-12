@@ -2,8 +2,16 @@
 body{background-size:100% 600px}
 .share-result-cta{margin-top:0}
 .share-start{position:relative;z-index:1;margin-right:14px;border:1px solid rgba(255,255,255,.38);border-radius:12px;background:rgba(255,255,255,.16);color:#fff;padding:9px 12px;text-decoration:none;font-size:var(--text-sm);font-weight:600}
-.privacy{text-align:center;color:#8297A1;font-size:var(--text-sm);margin:-4px 20px 12px}
+.privacy{text-align:center;color:#516B79;font-size:var(--text-sm);margin:-4px 20px 12px}
 @media(max-width:390px){.share-start{margin-right:12px}}
 @media(max-width:360px){.share-start{padding:8px}}
 
 .site-info-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 14px;margin-top:24px;padding:0 20px 24px;font-size:var(--text-sm)}.site-info-links a{color:var(--muted);text-decoration:none}.site-info-links a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+
+/* Explain malformed or incomplete shared links without redirecting to profile setup. */
+.invalid-share{margin:24px 20px;padding:27px 22px;border-radius:22px;background:var(--forecast-surface);min-height:280px;color:var(--ink)}
+.invalid-share[hidden]{display:none}
+.invalid-share h1{margin:0 0 12px;font-size:22px;line-height:1.35}
+.invalid-share p{margin:0 0 22px;font-size:14px;color:var(--muted);line-height:1.65;word-break:keep-all}
+.invalid-share a{display:inline-flex;min-height:44px;align-items:center;padding:0 17px;border-radius:12px;background:#197DA9;color:white;font-size:14px;font-weight:600;text-decoration:none}
+.invalid-share a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
