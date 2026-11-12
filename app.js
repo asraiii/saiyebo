@@ -264,11 +264,25 @@ async function shareSaiyebo(profile,forecast){
   const advisoryHour=risky&&risky.weather!==t.weather?risky.hour:25,advisoryWeather=risky&&risky.weather!==t.weather?weatherCode[risky.weather]:"x";
   const relationCode=profile.relationshipType==="some"?"s":"d",relationDays=daysTogether(profile.startDate,t.date);const payload=[weatherCode[t.weather],t.temp,t.feels,t.low,t.high,t.rain,t.humidity,Math.round(t.wind*10),weatherCode[forecast.tomorrow.weather],forecast.tomorrow.temp,weekCode,advisoryHour,advisoryWeather,relationCode,relationDays].join(".");
   const url=new URL("/share/",location.origin);url.searchParams.set("d",payload);
+  const shareMessage=`${text}\n${url.href}`;
+  if(typeof navigator.share==="function"){
+    try{await navigator.share({title:"사이예보",text,url:url.href});return}
+    catch(error){if(error&&error.name==="AbortError")return}
+  }
+  if(navigator.clipboard&&typeof navigator.clipboard.writeText==="function"&&window.isSecureContext){
+    try{await navigator.clipboard.writeText(shareMessage);showShareFeedback("링크 복사 완료");return}
+    catch{ /* Try the legacy clipboard method below. */ }
+  }
+  let area;
   try{
-    if(navigator.share){await navigator.share({title:"사이예보",text,url:url.href});return}
-    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(`${text}\n${url.href}`);showShareFeedback("링크 복사 완료");return}
-    const area=document.createElement("textarea");area.value=`${text}\n${url.href}`;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();let copied=false;try{copied=document.execCommand("copy")}finally{area.remove()}if(!copied)throw new Error("Clipboard copy failed");showShareFeedback("링크 복사 완료");
-  }catch(error){if(error&&error.name==="AbortError")return;showShareFeedback("공유할 수 없어요")}
+    area=document.createElement("textarea");
+    area.value=shareMessage;area.setAttribute("readonly","");
+    area.style.position="fixed";area.style.opacity="0";
+    document.body.appendChild(area);area.select();
+    if(!document.execCommand("copy"))throw new Error("Clipboard copy failed");
+    showShareFeedback("링크 복사 완료");
+  }catch{showShareFeedback("공유할 수 없어요")}
+  finally{if(area)area.remove()}
 }
 function showShareFeedback(message){
   const button=document.querySelector(".share-action");if(!button)return;
