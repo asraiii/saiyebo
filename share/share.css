@@ -1,7 +1,7 @@
 /* Share-only behavior. All forecast visuals/layout come from /styles.css. */
 body{background-size:100% 600px}
 .share-result-cta{margin-top:0}
-.share-start{position:relative;z-index:1;margin-right:14px;border:1px solid rgba(255,255,255,.38);border-radius:12px;background:rgba(0,0,0,.10);color:#fff;padding:9px 12px;text-decoration:none;font-size:var(--text-sm);font-weight:600}
+.share-start{position:relative;z-index:1;margin-right:14px;border:1px solid rgba(255,255,255,.38);border-radius:12px;background:rgba(0,0,0,.10);color:#fff;display:inline-flex;align-items:center;min-height:44px;padding:9px 12px;text-decoration:none;font-size:var(--text-sm);font-weight:600}
 .privacy{text-align:center;color:#516B79;font-size:var(--text-sm);margin:-4px 20px 12px}
 @media(max-width:390px){.share-start{margin-right:12px}}
 @media(max-width:360px){.share-start{padding:8px}}
@@ -15,3 +15,6 @@ body{background-size:100% 600px}
 .invalid-share p{margin:0 0 22px;font-size:14px;color:var(--muted);line-height:1.65;word-break:keep-all}
 .invalid-share a{display:inline-flex;min-height:44px;align-items:center;padding:0 17px;border-radius:12px;background:#197DA9;color:white;font-size:14px;font-weight:600;text-decoration:none}
 .invalid-share a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+
+/* On narrow devices, keep the CTA beside a readable message rather than squeezing it into a tiny column. */
+@media(max-width:360px){.share-result-cta{grid-template-columns:minmax(0,1fr);gap:6px}.share-result-cta .share-start{justify-self:start;margin-left:14px;margin-right:0}}
