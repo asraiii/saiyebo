@@ -270,3 +270,24 @@
 ### 배포 보호
 - 모든 변경은 `fix/reflection-a11y-share-feedback-20261112` 브랜치에만 저장됨. `main` 병합·Cloudflare 배포·기존 사용자 데이터 변경 없음.
 - 기존 독립 이미지 검증은 실제 운영 화면 스크린샷이 아니며, 원격 브랜치 전체 레이아웃·운영 HTTP 응답에 대한 판정은 NOT VERIFIED.
+
+## 후속 통합 QA — 페이지 연결·공통 CSS 회귀 자동검사 (2026-11-16)
+
+### 이번에 확인한 소스 사실
+- 운영 `main`과 이전 작업 브랜치의 차이 확인: 변경 작업은 동일 브랜치 `fix/reflection-a11y-share-feedback-20261112`에만 존재함.
+- 루트 Today/공개 소개, Start, Calendar, Report, Share와 About/Guide/Privacy/Notes/Weather Guide, 404, legacy History 등 **HTML 12개**에서 `href`/`src` 내부 참조를 수집하고 해당 브랜치의 Git tree와 대조.
+- 중복을 제거한 **로컬 URL/파일 경로 31개 전부 존재**(GitHub 저장소 스냅샷 기준). 이 검사는 브라우저의 실제 HTTP 성공·리디렉션·캐시·CSP·이미지 렌더링 확인을 뜻하지 않음.
+- `app.js`, Calendar, Report, Share 등에서 사용되는 승인 날씨 아이콘 **SVG 8종 모두 Git tree에 존재**. 원본 날씨 SVG 수정 없음.
+- `styles.css`의 공개 소개 표시 전환이 `.saiyebo-home`에만 적용되고 `share/index.html`에는 이 클래스가 없음을 재확인. 홈페이지/공유 페이지의 공통 CSS 버전 `23.1` 일치.
+
+### 실제 추가한 자동 회귀 테스트
+- 새 파일: `tests/site-contracts.test.cjs`; Node.js 기본 모듈(`node:test`, `node:assert/strict`, `fs`, `path`, `vm`)만 사용. npm 추가 패키지와 유료 API가 필요하지 않음.
+- 테스트 5개 그룹: (1) 내부 링크·스크립트·이미지 경로의 저장소 파일 존재, (2) 기존 날씨 SVG 8종 존재 및 SVG 구조, (3) 홈/공유 CSS 적용 범위 및 동일 CSS 버전·Today 초기화 전환 순서, (4) 사이트맵 대상 파일과 canonical/index 메타, (5) 주요 JS 진입점의 문법.
+- 실행 명령: `node --test tests/site-contracts.test.cjs` (저장소 루트에서 실행).
+- 새 테스트 파일 문법 파싱 PASS. 해당 테스트가 검사하는 공통 CSS 범위·버전·초기화 순서 등 소스 불변조건은 현재 GitHub 파일 직접 대조 PASS.
+- **테스트 파일 자체를 Node 환경에서 전부 실행한 결과는 NOT VERIFIED.** Chat에서 저장소 전체를 로컬로 내려받아 실행할 수 없었고, 추가 비용과 외부 Actions 실행을 유발하지 않기 위해 GitHub workflow/자동 배포 트리거를 새로 만들지 않았음.
+
+### 남아 있는 위험과 실행 기준
+- 기존 사용자/신규 사용자 Today, Share, Calendar, Report, Settings의 운영 URL 실브라우저 화면·터치·스크린리더·저장소 정책 회귀 E2E는 NOT VERIFIED.
+- Search Console의 사이트맵 수집, 실제 자원 HTTP 상태와 전체 Chrome/Safari 사용자 화면은 NOT VERIFIED.
+- `main` 병합·Cloudflare 배포·실제 이용자 데이터 변경 없음. 기존 8종 날씨 아이콘 및 예보 엔진 유지.
