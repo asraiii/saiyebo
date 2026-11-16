@@ -1,0 +1,40 @@
+name: SAIYEBO isolated browser QA
+on:
+  push:
+    branches:
+      - fix/reflection-a11y-share-feedback-20261112
+    paths:
+      - .github/workflows/qa-browser.yml
+      - tests/browser-e2e.cjs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout only this branch
+        uses: actions/checkout@v4
+      - name: Node.js runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install free open-source browser automation
+        run: npm install --no-save --no-audit --no-fund playwright
+      - name: Install isolated Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run static integration contracts
+        run: node --test tests/site-contracts.test.cjs
+      - name: Serve branch files locally inside runner
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/saiyebo-qa-http.log 2>&1 &
+          for i in $(seq 1 15); do
+            curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break
+            sleep 1
+          done
+          curl --fail --silent --show-error http://127.0.0.1:4173/ >/dev/null
+      - name: Real headless browser smoke test
+        run: node tests/browser-e2e.cjs
