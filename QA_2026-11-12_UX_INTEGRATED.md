@@ -291,3 +291,23 @@
 - 기존 사용자/신규 사용자 Today, Share, Calendar, Report, Settings의 운영 URL 실브라우저 화면·터치·스크린리더·저장소 정책 회귀 E2E는 NOT VERIFIED.
 - Search Console의 사이트맵 수집, 실제 자원 HTTP 상태와 전체 Chrome/Safari 사용자 화면은 NOT VERIFIED.
 - `main` 병합·Cloudflare 배포·실제 이용자 데이터 변경 없음. 기존 8종 날씨 아이콘 및 예보 엔진 유지.
+
+## 2026-11-16 후속 실행 — 저장된 자동 테스트 5그룹 실제 함수 검증
+
+### 직접 수행한 범위
+- GitHub `fix/reflection-a11y-share-feedback-20261112`의 `tests/site-contracts.test.cjs`를 다시 읽고, 원본 테스트 콜백 5개를 별도의 JavaScript V8 실행 환경에서 실행.
+- GitHub `fetch_file`로 해당 테스트가 읽는 HTML/CSS/JS/SVG 및 `sitemap.xml`의 원본 문자열을 전달. `node:fs`, `node:path`, `node:assert/strict`, `node:vm` 등 Node built-in은 각 검사에 필요한 동작만 호환 구현해 사용.
+- GitHub tree `ca1a332c5bb86dd366fd2f1dfcaea25817450733`의 blob 목록을 내부 링크 존재 검사에 사용. 이것은 단순히 테스트 소스의 문법만 검증한 것이 아니라 테스트 함수의 본문을 실행한 결과임.
+
+### 검사별 결과
+1. `all locally linked page resources and routes exist`: PASS (12 HTML, 원격 Git tree의 파일 존재 대조).
+2. `the eight approved weather icons remain available`: PASS (GitHub에서 SVG 8종 원문 읽기, 태그 검사).
+3. `public landing visibility rules cannot blank the Share page`: PASS (작업 브랜치의 `index.html`, `share/index.html`, `styles.css`, `app.js` 검사).
+4. `indexable sitemap targets are present and canonical`: PASS (사이트맵과 등록 HTML 12개 대조).
+5. `all primary JavaScript entry points parse`: PASS (`app.js`, Start, Calendar, Report, Share 소스 문법 검사).
+
+### 검증 한계
+- 위 PASS는 **GitHub에서 읽은 소스 + V8 호환 실행 하네스**에서의 원본 테스트 콜백 통과를 뜻함. `node --test tests/site-contracts.test.cjs`를 실제 Node 프로세스에서 저장소 전체 대상으로 실행한 결과는 여전히 **NOT VERIFIED**.
+- 연결 도구와 격리 컨테이너 사이에서 저장소 전체의 원본 파일을 자동으로 내려받을 수 없었으며, 컨테이너의 GitHub 도메인 DNS 접근도 실패. 새 유료 서비스나 Actions 워크플로는 생성/실행하지 않음.
+- 실제 Cloudflare Pages 배포, 외부 HTTP 리소스 응답, 모바일 Safari/Chrome E2E, Google Search Console 반영은 전부 **NOT VERIFIED/HOLD**로 유지.
+- 이번 실행에서 사용자 사이트 코드는 수정하지 않고 QA 실행 근거만 갱신. `main` 병합 및 배포 없음.
