@@ -38,3 +38,10 @@ jobs:
           curl --fail --silent --show-error http://127.0.0.1:4173/ >/dev/null
       - name: Real headless browser smoke test
         run: node tests/browser-e2e.cjs
+      - name: Preserve Chromium QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chromium-qa-screenshots
+          path: qa-screenshots/
+          if-no-files-found: error

@@ -3,12 +3,15 @@
 // Run after: npm install --no-save playwright && npx playwright install chromium
 //             python3 -m http.server 4173 --bind 127.0.0.1
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const {chromium} = require('playwright');
 const origin = 'http://127.0.0.1:4173';
+const screenshotDir = 'qa-screenshots';
 
 async function run() {
   const browser = await chromium.launch({headless:true, args:['--no-sandbox']});
   const results = [];
+  fs.mkdirSync(screenshotDir, {recursive:true});
   const check = async (label, fn) => {
     await fn();
     results.push(label);
@@ -67,6 +70,7 @@ async function run() {
       await page.goto(origin + '/report/', {waitUntil:'load'});
       assert.equal(await page.locator('[data-ref-count]').isVisible(),true);
       assert.match(await page.locator('[data-ref-count]').textContent(),/1/);
+      await page.screenshot({path:screenshotDir+'/report-390.png', fullPage:true});
     });
 
     await check('Share creates sanitized, valid URL', async () => {
@@ -81,6 +85,7 @@ async function run() {
       await page.goto(address, {waitUntil:'load'});
       assert.equal(await page.locator('[data-invalid-share]').isVisible(),false);
       assert.equal(await page.locator('#weather-icon').evaluate(img=>img.complete&&img.naturalWidth>0),true);
+      await page.screenshot({path:screenshotDir+'/share-390.png', fullPage:true});
     });
 
     await check('Invalid shared URL has visible error state', async () => {
@@ -106,6 +111,7 @@ async function run() {
         await page.goto(origin+'/',{waitUntil:'load'});
         const overflow=await page.evaluate(() => document.documentElement.scrollWidth>innerWidth+1);
         assert.equal(overflow,false,'overflow at '+width+'px');
+        await page.screenshot({path:screenshotDir+`/today-${width}.png`, fullPage:true});
       }
     });
 
