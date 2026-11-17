@@ -1,0 +1,313 @@
+# SAIYEBO — 통합 UX/UI·공유·기록 RED TEAM 검수 (2026-11-12)
+
+## 범위와 보호 조건
+- 기준 main: `c175045b3342f9a3de0ade7c30a2def86bcb274b`
+- 작업 브랜치: `fix/reflection-a11y-share-feedback-20261112`
+- 사용자 결정: 새 날씨 아이콘 8종 시안 불채택. 기존 `assets/weather/soft-3d/` 유지, 아이콘 시안 브랜치는 운영에 반영하지 않음.
+- Cloudflare 배포, main 병합, 로컬 저장 키 변경, 예보 엔진 변경, 공유 URL 필드 순서 변경 없음.
+
+## 확정 결함 및 최소 수정
+
+### 1. 공유 URL 유효성 검증 오류 (우선순위 P1)
+- 원인: Today 예보는 실제 체감온도가 하루 최저/최고 범위를 벗어나게 생성할 수 있지만 Share 파서는 체감온도가 반드시 범위 안에 있어야 한다고 가정했음.
+- 영향: 정상적으로 생성된 링크 일부가 잘못된 공유 URL로 처리되어 갑자기 설정 화면으로 이동.
+- 수정: 체감온도 독립 범위 0–40 제한은 유지하고 최저/최고 종속 검사만 제거. 잘못된 URL은 사용자에게 오류와 복귀 링크를 보임. 필수 숫자 필드 빈 문자열·문자열을 숫자 0처럼 수용하지 않도록 형식 검증 추가.
+- 호환: 기존 13필드, 현재 15필드 페이로드를 모두 보존.
+
+### 2. Calendar 월 변경 후 날짜 상세 불일치
+- 원인: 화면에 표시하는 달(`view`)만 바꾸고 선택 날짜(`selected`)는 이전 달에 그대로 남아 있었음.
+- 수정: 월 이동 시 대상 월의 최근 저장 기록 날짜를 우선 선택, 없으면 그 달 1일로 설정. 날씨 아이콘/테마를 현재 선택일과 동기화. 선택 날짜 버튼의 음성 안내 및 상태(`aria-pressed`, `aria-current=date`) 추가.
+
+### 3. 기록 접근성·공유 복사 결과·색상 대비
+- Today: 세 선택 버튼의 접근성 상태 동기화, 메모 이름, 저장 결과 live status.
+- 구형 클립보드 복사: 실제 복사 실패 시 성공 안내가 표시되는 오류 수정.
+- Today/Settings/Calendar/Report/Share: 작은 보조 글자 및 하단 내비게이션 대비 개선.
+- Calendar/Report: 현재 페이지 내비게이션에 `aria-current=page` 추가.
+- Calendar/Report: 저장소에 다른 상태 문자열이 혼입된 경우 잘못된 감정 기록을 분석에 포함하지 않도록, 읽기 단계에서 `good/normal/bad`만 인정. 원본 저장 데이터는 삭제하거나 변경하지 않음.
+
+## 실제 수행한 검증
+1. GitHub 연결로 모든 수정 대상 파일을 읽어 별도 브랜치에 최소 수정으로 저장.
+2. 공유 소스의 조건과 현재 예보 엔진을 사용해 재현: 날짜 1,500개 샘플 중 35개가 기존 체감온도 종속 조건에 걸림 (단일 테스트 프로필).
+3. 공유 파서 모의 DOM 실행: 테스트 프로필 3개 × 날짜 400개 × 13/15필드 = 2,400건 모두 허용됨. 8가지 날씨 상태 전부 포함. 이 집합에서 27개 예보의 체감온도가 실제 저/고 범위를 벗어남.
+4. 비정상 공유 페이로드 6개(빈 강수값, 빈 풍속값, 숫자 아닌 습도, 모르는 날씨, 관계유형 오류, 필드 개수 부족) 모두 거부하고 인라인 오류 상태 표시: PASS (모의 DOM).
+5. Calendar 코드의 모의 DOM 실행: 현재 달 → 이전 달 → 빈 날 클릭 → 현재 달 이동 시 선택 날짜/현재 아이콘 동기화 확인. 날짜별 접근성 라벨 확인: PASS.
+6. Report 코드의 모의 DOM 실행: 비정상 감정값은 집계에서 제외, 배열이 아닌 기록값/기록 없음/손상된 예보값에서 런타임 오류 없이 처리됨: PASS.
+7. 선언된 대비 색상 계산: `#4A6A7B` / `#F1F6F8` = 5.30:1, `#516B79` / `#F1F6F8` = 5.17:1, `#5A7280` / `#FFFFFF` = 5.06:1.
+8. 변경된 JavaScript의 문법 검사, CSS 균형, 원본 아이콘 8종 참조 유지 여부, 브랜치 변경 범위 확인: PASS (소스 기준).
+
+## 정확한 검증 한계
+- 위 PASS는 해당 소스의 문법/정적 검사 또는 모의 브라우저 DOM 실행 범위만 의미함. 모든 실제 브라우저/기기에서 작동을 확인했다는 뜻이 아님.
+- 이 작업에서 운영 웹사이트의 실제 브라우저 렌더링 결과는 확보하지 못함. 브라우저 도구 설치 여부나 네트워크 차단 원인은 이번 재검증 범위에서 확인하지 않음.
+- 모바일 320/360/375/390/430, 태블릿 768/834/1024, PC 1280/1440/1920의 실제 픽셀/터치 QA: NOT VERIFIED.
+- 실제 모바일 공유/취소/권한거부, 로컬 저장 용량 초과, 스크린리더 직접 사용, Cloudflare 배포 및 운영 회귀: NOT VERIFIED.
+- 새로운 날씨 아이콘 제작·교체는 중단. 기존 생산 아이콘 계속 유지.
+
+## 배포 안전 판단
+- **PASS WITH ISSUES (브랜치 소스 품질)**: 조사 대상 로직 결함 수정 및 소스 기반 검사 완료, 실제 브라우저/운영 E2E는 미검증.
+- **HOLD (운영 반영)**: main 병합/Cloudflare 배포 수행하지 않음. 실제 렌더링 및 공유 기능 회귀 검증 후에만 진행.
+
+## 2026-11-12 저장소 정리
+- 초기 `QA_2026-11-12_TODAY_A11Y.md`는 이 통합 보고서에 중복되어 최신 브랜치에서 제거함.
+- 사용자에게 거절된 신규 날씨 아이콘 디자인은 진행 대상에서 제외함. 신규 아이콘을 운영에 적용하지 않음.
+- 이 브랜치의 수정 코드 14개 파일을 `main` 기준 단일 커밋으로 정리했고 내용은 정리 전 최신 파일과 동일함.
+- 기존 `main` 파일, SVG 원본, 클라이언트 저장 데이터는 변경하지 않음.
+- 남은 필수 검증: 모든 11개 화면 폭, 실제 공유/저장 동작 및 회귀, 접근성 화면 검사.
+
+## 후속 통합 QA 및 수정 — 2026-11-12
+
+### 기록 흐름 정합성 보완
+- Calendar에서 과거 달을 열어도 ‘이번 달’로 표시되던 월간 제목을 ‘선택한 달의 기록’으로 교정함.
+- Calendar/Report가 서로 다른 기준으로 손상 기록을 수용할 수 있어 날짜, 소유자, 원본 날씨 코드, 숫자 형식, 0–40 온도, 0–100 강수확률·습도 기준을 동일하게 맞춤.
+- 중복된 저장 기록은 각 화면의 **읽기 단계에서만** 날짜별 마지막 유효 기록을 사용하도록 조정. 브라우저 localStorage 원본은 변경/삭제하지 않음.
+- Report 최고온도 비교에서 숫자 문자열의 사전식 비교를 피하고 숫자 비교를 수행함.
+- Today가 중복된 하루 체감 기록 중 첫 기록을 선택하던 부분을 마지막 기록 우선으로 수정하고 허용된 세 가지 감정값만 저장할 수 있게 함.
+- Share의 원본 프로토타입 속성(`constructor`, `toString`)이 날씨 코드로 통과할 수 있던 경로를 고유 속성 검사로 막음.
+- Settings 하단 현재 페이지 링크에 `aria-current=page` 추가.
+
+### 실행한 재검증 및 PASS 범위
+- 실제 Calendar/Report 코드를 모의 DOM으로 실행하여 **중복 날짜, 잘못된 온도, 빈 온도, 범위 초과 강수확률, null 습도, 모르는 날씨 코드, 숫자 문자열 형식**이 포함된 저장소 데이터를 점검: 정상 레코드만 통계에 사용되고 Calendar/Report의 기록 수가 일치함.
+- Calendar/Report 중복 감정 기록의 최종값 사용, 잘못된 감정 코드 제외, 빈 기록 시 오류 없음 확인.
+- Today 기록 상호작용 모의 실행 5종: 최신 기록 읽기, 중복 정리 후 재저장, 비정상 감정 저장 거부, 유효 감정으로 복구, 저장소 쓰기 실패 안내 모두 PASS.
+- Settings 입력·저장 모의 실행 6종: 정상 저장, 빈 날짜, 달력상 존재하지 않는 날짜, 미래 날짜, 관계 유형 오류, 브라우저 저장 실패 모두 PASS.
+- Share 허용 날씨 코드 및 예외 입력 모의 실행: 유효 URL 허용; `constructor`, `toString`, 비정상 advisory 코드, 누락 숫자는 거부하고 안내 상태 표시 PASS.
+- 새로 변경된 JavaScript의 문법 검사 PASS. 이 결과는 모의 DOM 단위 동작 검증으로 실제 브라우저 E2E를 대체하지 않음.
+
+### 직접 확인하지 못한 것
+- 런타임 내 도구로 `saiyebo.pages.dev` 및 `raw.githubusercontent.com` 요청을 시도했으나 DNS 확인에 실패함. 웹 도구 역시 운영 페이지 HTML 조회에 실패함.
+- **11개 목표 뷰포트의 실제 스크린샷/수평 스크롤/터치**, 실제 iOS·Android 공유 시트, 스크린리더 사용, 운영 반영 후 회귀 확인: NOT VERIFIED.
+- GitHub 브랜치의 소스 검증 PASS는 실제 운영 페이지 PASS나 배포 승인과 별개.
+
+## 후속 미검증 영역 축소 — 2026-11-12 추가
+
+### Today 기록 통계 오류 수정 및 회귀 테스트
+- 원인: Today의 `historyStats`는 중복 날짜·비정상 온도·모르는 날씨 코드를 별도로 걸러내지 않았으므로 Calendar/Report와 월간 통계가 달라질 수 있었음.
+- 조치: 화면에 표시할 때만 관계 owner/날짜/날씨/온도·강수확률·습도 범위를 검증하고 같은 owner·날짜의 마지막 유효 항목을 사용함. 기존 저장 이력은 변경/삭제하지 않음.
+- 기존 예보 생성 함수 `generateForecast`와 날씨 아이콘 경로는 수정하지 않음.
+- 실제 `app.js` 소스 함수 실행 7건: 중복 맑은 날 수, 999도 오염값, 공백 온도, 다른 관계 소유자, 3일 연속 기록, `constructor` 날씨 코드, 숫자 문자열 온도 모두 PASS.
+
+### 제한적 Chromium 구성요소 렌더링 검증
+- 문제가 있는 Today 3열 날씨 지표 컴포넌트의 HTML/CSS 규칙을 재구성한 독립 검증용 페이지를 Chromium에서 렌더링함.
+- 구형 `white-space:nowrap`에서 첫 번째 지표 텍스트가 자기 열을 넘는 양: 320px = 22px, 360px = 9px, 375px = 4px.
+- 수정 `.metrics small{white-space:normal;overflow-wrap:anywhere;word-break:keep-all}`을 브랜치 CSS에 반영. 독립 컴포넌트의 320/360/375/390/430/470/768/834/1024/1280/1440/1920px 검증에서 텍스트 겹침/가로 스크롤이 관찰되지 않음.
+- Report에 `.couple strong`의 `text-overflow:ellipsis` 및 관계 일수의 고정 공간 확보를 적용. 긴 가상 이름을 사용한 별도 Chromium 검증에서 320~1920px 9개 화면 폭 모두 관계 일수의 가로 이탈 없음.
+- **제한:** 검증 페이지는 실제 GitHub 프로젝트를 내려받아 실행한 전체 화면이 아니라 해당 HTML/CSS 조각을 재구성한 것입니다. 일부 폰트 대체가 있었고, 전 페이지 11개 화면 폭의 실제 화면 QA 또는 실제 사용자 브라우저 체험을 PASS 처리하지 않음.
+
+### 환경과 남은 검증
+- 로컬 Chromium과 Playwright는 설치됐으나 `saiyebo.pages.dev` 및 `raw.githubusercontent.com`을 로컬 컨테이너에서 DNS로 해석할 수 없었고, `--resolve` 직접 IP 연결도 실패함. 웹 읽기 경로에서도 운영 사이트 HTML fetch에 실패함.
+- 전체 실제 사이트 모바일/태블릿/PC 렌더링, 네이티브 공유 및 배포 후 회귀는 NOT VERIFIED.
+- `main` 병합·Cloudflare 배포 없음. 불채택 신규 아이콘/저장 키/원본 데이터 변경 없음.
+
+## 후속 검수: Calendar 날짜별 체감 기록 직접 저장 기능 — 2026-11-12
+
+### 발견한 기존 기능 누락
+- `DESIGN_LOCK.md` 2026-10-05의 확정 기준은 Calendar에서 **예보 저장 날짜의 실제 감정(good/normal/bad)과 한 줄 메모를 기록**하는 기능을 요구함.
+- 이전 `calendar/calendar.js`는 기존 기록을 읽기 전용으로 보여줬고 해당 날짜의 입력·수정·저장은 제공하지 않았음.
+
+### 실제 수정
+- `calendar/index.html`: 선택일 상세 영역에 감정 3종 버튼(`aria-pressed`), 메모(최대 80자), 저장 버튼, 저장 상태 `aria-live=polite`를 추가. 예보 기록이 없는 날짜에는 입력 폼 숨김.
+- `calendar/calendar.js`: 기존 `saiyebo:reflection:v1` 기록을 읽어 선택 날짜에 미리 채우고, 기존 데이터와 동일한 `{owner,date,mood,memo,updatedAt}` 형식으로 저장. 동일 owner/date 기존 항목만 제거한 뒤 추가. 저장 성공 후 월별 수치·최근 기록·날짜 표시 실시간 갱신. 저장 실패 시 UI 집계 및 로컬 저장 데이터 불변.
+- `calendar/calendar.css`: 기존 캘린더 디자인 토큰을 따르는 44px 감정 버튼, 메모 필드, 48px 저장 버튼과 키보드 포커스 표시 추가.
+- 기존 날씨 아이콘·예보 엔진·계정별 소유자 해시 및 저장 키 미변경.
+- Calendar에 감정 기록이 없을 때 나타나는 안내문을 Calendar 내 직접 기록 가능한 동선에 맞게 교정.
+
+### 직접 수행한 검증
+- GitHub에서 읽은 실제 `calendar/calendar.js`를 모의 DOM에서 실행하여 다음 14개 체크 PASS: 초기 실행, 예보 저장일 입력 표시, 미선택 감정 기본 상태, 기존 날짜의 감정·메모 불러오기, 날짜별 새 저장, 같은 날짜 중복 제거, 월별 통계 갱신, 저장 완료 안내, 날짜 표시 갱신, 감정 미선택 저장 차단, 기록 없는 날짜 입력 숨김, 저장소 쓰기 실패 시 데이터 불변, 다른 관계 소유자의 기존 기록 보존, HTML 포함 메모 출력 이스케이프.
+- 실제 `report/report.js`와 Today의 `bindDailyReflection`를 모의 DOM에서 실행: Calendar와 동일 형식의 3일 기록에 대해 Report 기록 3일 / 좋았던 날 2일 / 67% 표시, Today의 해당 날짜 메모·감정 불러오기 확인 PASS.
+- Calendar 입력 폼의 작성된 HTML/CSS를 재구성한 **독립 Chromium 렌더링**: 320/360/375/390/430/470/768/834/1024/1280/1440/1920px 12개 화면 폭에서 입력 버튼 가로 겹침, 폼 밖 이탈, 수평 스크롤 없음. 320px 스크린샷은 별도 로컬 검증 파일로 생성 후 육안 검사.
+- 독립 입력 폼 스크린샷은 실제 운영 페이지 캡처가 아니며, 독립 렌더 결과를 전체 Calendar 페이지 PASS로 일반화하지 않음.
+
+### 남은 위험과 배포 기준
+- 실제 운영 주소에서의 전체 Calendar 화면, 실제 탭/터치/접근성 도구, localStorage 브라우저 구현, 기존 사용자 데이터로의 실제 회귀는 NOT VERIFIED.
+- 운영 `main` 병합, Cloudflare 배포, 저장 데이터 마이그레이션/삭제 없음.
+
+## 후속 QA — 키보드 조작·공유 일치·색상 대비 (2026-11-12)
+
+### 수정한 결함
+- **Calendar 키보드 포커스 소실**: 날짜 버튼 또는 ‘최근 기록’ 버튼을 누르면 `render()`가 달력의 버튼을 재생성하므로 활성화한 요소의 포커스가 사라지는 것을 기존 실제 `calendar/calendar.js`와 모의 DOM을 연결하여 재현함. 새 달력 DOM에서 같은 `data-date`를 가진 버튼으로 포커스를 복원하도록 수정함.
+- **텍스트 대비 부족**: Calendar의 선택 감정 버튼·최근 기록 문구·기록 표시점, Settings의 관계 유형·주요 저장 버튼, Today의 보조 지표·상태 문구·기록 선택 문구를 제한적으로 보정. 수정한 텍스트 6개 위치의 명시 배경 대비는 다음과 같음.
+  - Calendar 선택 상태: 3.81:1 → 5.44:1
+  - Calendar 최근 기록: 2.95:1 → 6.05:1
+  - Settings 선택 관계: 3.81:1 → 5.44:1
+  - Settings 저장 버튼: 3.21:1 → 6.59:1
+  - Today 보조 지표: 3.09:1 → 6.05:1
+  - Today 상태 문구: 3.26:1 → 6.34:1
+- Today 공유 버튼의 텍스트에 `aria-live=polite`와 `aria-atomic=true`를 넣어 복사 성공/실패에 따라 바뀌는 라벨의 보조기술 알림 가능성을 높임. 실제 스크린리더 전달은 검증하지 않았음.
+
+### 소스 기반 재현·검증
+- 이전 커밋 `4110e14b02513cf382965bae445ec87c46128ea1`의 Calendar JS: 날짜 선택 후 포커스 소실 / 최근 기록 선택 후 포커스 소실 재현.
+- 수정된 동일 Calendar JS: 날짜 선택 후 포커스 복귀, 최근 기록 선택 후 날짜 버튼으로 포커스 이동, 선택된 버튼의 `aria-pressed` 유지, 월 이동 버튼 포커스 유지 모두 PASS (모의 DOM).
+- 실제 Today `renderToday` + `shareSaiyebo`와 실제 `share/share.js`를 같은 테스트에서 실행: 서로 다른 관계 프로필 2개 × 날짜 360일 = 공유 URL **720건 유효**, 8가지 날씨 모두 관찰. 날씨·온도·강수·습도·풍속·상태·특보·내일·주간 기류 표시 12개 필드의 Today/Share 불일치 **0건**. 이름·생년월일·원본 관계 시작일이 공유 URL에 노출된 사례 **0건**.
+- HTML/CSS 수정은 구성요소/소스 기반 확인이며 **운영 배포 화면에서의 대비·접근성 검사는 수행하지 않음**. 동적 날씨 배경 전반의 명암 대비 및 실제 스크린리더는 NOT VERIFIED.
+
+### 운영 보호
+- 불채택 신규 아이콘은 사용하지 않음. 기존 `assets/weather/soft-3d/` 참조, `saiyebo:*:v1` 로컬 저장 구조, 예보 엔진·공유 URL 형식은 그대로 유지.
+- 별도 작업 브랜치에만 저장. `main` 병합, Cloudflare 배포 및 외부 저장 데이터 변경 없음.
+
+## 후속 QA — 공유 카드 및 공유 실패 복구 (2026-11-12 13:30 KST 이후)
+
+### 1) 날씨별 공유 카드 텍스트 대비 결함
+- 실제 작업 브랜치 `app.js`의 8개 날씨 배경색과 `styles.css`의 공유 카드 색상·반투명도를 계산.
+- 최악 사례인 맑음: 기존 흰색 카드 제목 3.24:1, 작은 문구 2.55:1, 공유 버튼 문구 2.19:1 (일반 텍스트 4.5:1 미달).
+- 해결: `.share-card::before`에 기존 `--weather-accent` 위 28% 검정 오버레이, 안내 문구 흰색 알파 0.90, 공유/시작 버튼 배경 검정 알파 0.10을 적용. 오늘 기록 저장 버튼에도 28% 오버레이 적용.
+- 수정 후 색상 계산: 8가지 날씨에서 최저 제목 **5.72:1**, 안내 문구 **4.96:1**, 공유 버튼 문구 **5.77:1**.
+- Chromium 독립 UI 렌더링: 8개 날씨 카드 × 320/360/390/430/470px. 테스트 카드에서 가로 스크롤·버튼 영역 이탈 미관찰. 실사이트 전체 렌더링은 아님.
+- 기존 SVG, 날씨 테마 원본 값, 레이아웃 구조 및 사용자 데이터는 변경하지 않음.
+
+### 2) 공유 실패 시 대체 복사 경로
+- 결함 재현: 기존 `shareSaiyebo`에서는 네이티브 공유 또는 Clipboard API 실패 뒤 기존 복사 방식으로 넘어가지 않고 즉시 실패 표시.
+- 수정: 네이티브 공유가 성공하면 종료; 사용자가 `AbortError`로 취소하면 복사하지 않음; 기능 오류일 때 Clipboard API → 레거시 `execCommand("copy")` 순서로 안전하게 대체 시도. 임시 textarea는 `finally`로 정리.
+- 실제 소스 함수의 10개 모의 환경 회귀 시험 PASS: 네이티브 성공·취소·실패, Clipboard 성공·거부, 레거시 복사 성공·거부·예외, 비보안 컨텍스트, textarea 선택 실패. 기존 공유 메시지/URL 형식 유지.
+- 실제 OS/기기 네이티브 공유창에서의 동작은 NOT VERIFIED.
+
+### 3) 좁은 화면 CTA
+- 별도 Chromium 화면: 320px에서 공유 결과 화면 문구가 좌·우 분할에 눌려 여러 줄이 되고 CTA 링크 높이가 32px이었던 상태 확인.
+- 수정: 360px 이하에서는 공유 결과 페이지 CTA를 문구 아래로 배치. 공유 버튼 및 CTA 링크 `min-height:44px` 적용.
+- 320/360/390/430/470px 독립 UI 렌더링에서 수평 스크롤 미관찰, CTA 링크 44px 높이 확인. 실사이트 전체 화면 검증 아님.
+- CSS/JS 캐시 버전 갱신: Today `styles.css?v=22.8`, `app.js?v=22.7`; Share `styles.css?v=22.8`, `share.css?v=2.7`.
+
+### 보호·한계
+- 수정은 `fix/reflection-a11y-share-feedback-20261112`에만 저장. 운영 `main` 병합/Cloudflare 배포 없음.
+- 기존 날씨 아이콘 8종, 예보 생성 방식, 저장 키 및 공유 URL 페이로드 변경 없음.
+- 실제 전체 화면·실제 기기 터치/스크린리더/운영 E2E는 NOT VERIFIED. 브랜치 소스·독립 구성 요소 검증에 한해 PASS WITH ISSUES.
+
+## 후속 RED TEAM — 장기 기록 소실·손상 데이터 덮어쓰기 방지 (2026-11-12)
+
+### 결함 재현
+- 기존 `saveForecastHistory`는 최신 400개만 남기도록 `history.slice(-400)`을 저장하므로, 기존 405개에 새 기록을 추가할 때 오래된 6개가 사라짐을 실제 소스 실행으로 재현함.
+- Today 및 Calendar의 감정 저장은 `slice(-800)`으로 제한되어, 다른 관계 소유자의 기존 800개 기록이 있을 때 신규 1개 저장 시 맨 앞 기록을 삭제함. Today 경로에서 실제 재현.
+- 기존 읽기 함수는 손상된 JSON을 빈 기록으로 대체하여, 다음 정상 저장에서 원래 원시값을 덮어쓸 수 있음. `"{UNREADABLE_HISTORY"` 샘플로 원본 덮어쓰기 재현.
+
+### 수정
+- `app.js`: 예보 400개 자동 절단과 Today 감정 800개 자동 절단 제거.
+- `calendar/calendar.js`: Calendar 감정 800개 자동 절단 제거.
+- 예보 저장·Today 감정 저장·Calendar 감정 저장 시 기존 localStorage 원시값을 별도 파싱하여 **정상 JSON 배열인 경우에만** 갱신. 손상 JSON·비배열 값은 절대 빈 배열로 덮어쓰지 않고 저장 중지.
+- 예보 이력의 비정상 배열 항목도 원본에서 삭제하지 않고 그대로 포함하되, 화면 표시에서는 기존 유효성 필터를 계속 사용.
+- Today 예보 이력 쓰기 실패 시 `index.html`의 `data-history-save-state` 경고 표시. CSS는 기존 스타일 안에 오류 문구 추가. Today/Calendar 감정 저장도 실패 이유를 포괄해 원본 보존 안내.
+- 저장 키, 소유자 계산, 예보 엔진, 공유 URL 페이로드, 원본 날씨 아이콘, 운영 `main`은 변경하지 않음. 데이터 삭제·이동·마이그레이션 없음.
+
+### 실제 수행한 소스/모의 DOM 검증
+- 예보 405개 + 신규 1개: 406개 모두 저장 PASS; 저장 공간 부족 시 원래 405개 그대로 유지 PASS.
+- Today 감정 800개 + 신규 1개: 801개 모두 저장 PASS; 쓰기 실패 시 기존 800개 보존 및 경고 PASS.
+- Calendar 감정 800개 + 신규 1개: 801개 모두 저장 PASS; 쓰기 실패 시 기존 800개 보존 PASS.
+- 정상 Today 페이지 소스 실행 + 브라우저 쓰기 실패 모의: 기존 기록 유지, 경고 요소 표시 및 텍스트 정상 적용 PASS.
+- 예보 JSON 손상/비배열/혼합 유효·비유효 항목/저장 실패 총 4개 보호 분기 PASS.
+- Today 감정 JSON 손상/비배열/정상 관계 혼합/저장 실패 4개 분기 PASS.
+- Calendar 감정 JSON 손상/비배열/정상 관계 혼합/저장 실패/실행 오류 없음 5개 분기 PASS.
+- 위 테스트는 소스 함수와 모의 DOM 실행 기준. 실제 Chrome/Safari 브라우저 저장소 한도, 모바일 기기 및 배포된 화면에 대한 검증은 NOT VERIFIED.
+
+### 운영 위험
+- **이미 과거에 자동 절단된 자료는 이 수정만으로 복원되지 않음.**
+- 데이터 보존을 우선하므로 시간이 지나 브라우저 저장 한도에 도달할 수 있음. 이때 기존 데이터는 보존하고 새 저장이 실패하며 사용자에게 안내함. 브라우저별 저장 정책과 극단적인 장기 사용량은 NOT VERIFIED.
+- 운영 `main` 배포 및 사용자 데이터 변경 없음.
+
+## 후속 QA — 미리보기 기록 격리와 SEO 소스 점검 (2026-11-12)
+
+### 실제 재현된 결함: 소유자 없는 미리보기의 기록 혼합
+- 시나리오: 사용자의 활성 관계 프로필은 없지만 과거 `saiyebo:history:v1` 기록이 남아 있고 `/?preview`로 진입함.
+- 기존 코드 `renderHistorySummary(date)`는 `historyStats(loadHistory(), date, null)`을 호출하여 관계 owner 필터 없이 다른 관계들의 통계를 표시했음. 2개의 다른 관계 기록으로 `연속 맑음 2일 / 이번 달 맑음 2일 / 최고 온도일 11.12` 재현.
+- 수정: 프로필이 없는 미리보기에서 `historyStats([], date, null)`을 호출하여 기존 저장 기록을 화면 계산에 사용하지 않음. 활성 관계가 있으면 종전처럼 자신의 owner 기준으로만 계산.
+- 원본 `localStorage`, 예보 생성 엔진, 날씨 아이콘, 날짜별 기록 CRUD, 공유 URL 형식 등은 변경하지 않음.
+- 소스 함수 단위 검증 5종 PASS: 프로필 없는 미리보기 0일/0일/—, 정상 프로필 1건 일치, 손상 기록 미리보기, 빈 정상 프로필, 다른 소유자 기록 제외.
+- 전체 실제 `app.js` 모의 DOM 실행 4개 시나리오 PASS: 프로필 없는 미리보기(저장 0회/개인 통계 노출 없음), 프로필 없는 일반 방문(/start/ 이동), 프로필 있는 일반 방문(정상 owner 통계), 프로필 있는 ?preview(정상 owner 통계).
+- 실제 운영 브라우저/스크린리더는 NOT VERIFIED.
+
+### 사이트맵과 검색엔진 위험
+- `sitemap.xml`에 등록된 12개 URL과 GitHub HTML 파일 대조: 파일 존재 12/12, 자기 canonical 12/12, `index,follow` 12/12, 제목/메타 설명/H1 12/12 PASS. GitHub 소스 기준.
+- `robots.txt`의 sitemap 선언은 `https://saiyebo.pages.dev/sitemap.xml`.
+- **미해결 SEO 위험**: 루트 `index.html`은 `index,follow`이나 활성 프로필 없는 방문자에게 JS로 `/start/` 이동. `/start/`는 `noindex,follow`. 구글은 JS 리다이렉션을 처리하므로 루트 색인에 영향을 줄 가능성이 있음(공식 Google Search Central Redirects and Google Search 참고). 다만 실제 Google이 해당 URL을 어떻게 처리했는지 미확인; 기존 Search Console의 사이트맵 '읽을 수 없음' 원인으로 단정할 수 없음.
+- 첫 방문 UX와 검색 색인을 함께 재설계해야 하므로 이 단계에서는 자동 이동·페이지 인덱스 정책을 임의 변경하지 않음.
+- 운영 사이트/사이트맵의 실제 HTTP 응답 및 Search Console 상태는 접근 불가로 NOT VERIFIED.
+- 운영 `main` 병합/Cloudflare 배포 없음.
+
+## 최종 Chat 작업: 첫 방문 UX와 루트 SEO 분리 (2026-11-12)
+
+### 근거 및 결함
+- 이전 루트 `index.html`은 `index,follow`, canonical `/`였지만, `app.js`가 개인 설정이 없는 일반 방문자를 `/start/`로 JavaScript 즉시 이동시킴. `/start/`는 `noindex,follow`. 색인에 불리할 수 있는 구조이며 실제 Search Console의 사이트맵 오류 원인이라고 단정하지 않음.
+- 참고: Google Search Central의 JavaScript SEO Basics 및 Redirects and Google Search. JavaScript redirects 처리 및 렌더링의 지연·실패 가능성에 관한 공식 설명을 고려함.
+
+### 실제 수정 파일
+- `index.html`: 이미 존재하는 `main.app` 내부 앞쪽에 정적 공개 소개·이용안내·기능 설명·개인정보 저장 안내·시작 CTA·콘텐츠 탐색 링크를 제공하는 `section.public-entry` 추가. 기존 Today 구조/HTML은 유지. 캐시 버전 `styles.css?v=23.0`, `app.js?v=23.0`.
+- `app.js`: 프로필이 없고 `?preview`도 아니면 루트에서 이동하지 않으며 아무 개인 이력도 읽거나 쓰지 않음. 정상 프로필 또는 `?preview`는 `body.saiyebo-today`를 켜고 기존 예보 렌더링을 유지. 예보 생성·공유·기록 로직은 변경하지 않음.
+- `styles.css`: `body:not(.saiyebo-today)`일 때 **기존 Today 자식만** 숨기고 공개 소개 표시. 정상 사용자에서는 공개 소개만 숨기고 기존 Today 자식은 원래 CSS와 DOM 구조 그대로 사용. 소개용 독립 클래스만 추가.
+- 새 소개 영역의 서비스 링크를 `nav`로 작성하면 기존 전역 `nav` 고정 하단바 CSS가 침범하는 결함을 사전 점검에서 발견. `div role=navigation`으로 교체해 의미와 링크는 유지하며 CSS 충돌만 제거함.
+- 기존 날씨 SVG 파일 8개 중 한 개도 수정하지 않음; 소개용 그림은 기존 `clear-day.svg`를 경로 재사용.
+
+### 직접 수행한 검증
+- GitHub 실제 `app.js`를 모의 DOM/저장소에서 6개 사용자 상태로 실행: 무설정 첫 방문, 손상 프로필, 정상 프로필, 기록 저장 실패인 정상 프로필, 무설정 `?preview`, 정상 프로필 `?preview` 모두 예외 없이 예상 동선. 첫 방문은 개인 history 조회 0회, 데이터 저장 0회, 자동 리다이렉트 0회.
+- GitHub 소스 대조 18개 통합 불변조건 PASS: 정적 H1/실제 소개 문구, 시작 링크, 비식별형 콘텐츠, 색인 메타/canonical, 설정 페이지 noindex 유지, 정상 Today nav/감정 입력 보존, 엔진 main 원본과 동일, JS/CSS 캐시 버전, 날씨 SVG 경로 등.
+- JavaScript 5개 파일 문법 검사 PASS, 변경 CSS 4개 파일 중괄호 균형 PASS.
+- 새 공개 소개 HTML/CSS 일부를 재구성한 독립 Chromium 화면 320,360,375,390,430,470,768,834,1024,1280,1440,1920px: 수평 스크롤 없음, 시작 CTA 높이 52px. 새 링크 영역과 구형 전역 `nav` 스타일을 함께 실은 재검증에서도 고정 위치 충돌 없음.
+- **중요한 검증 한계:** 독립 Chromium 재구성에는 실제 SVG를 포함하지 않았음. 전체 프로젝트 파일을 로컬에서 구동하거나 브랜치 전체 화면을 렌더링하지 않았고, 배포된 도메인의 HTTP 응답/Google Search Console 접근에도 실패함. 따라서 운영 화면/검색 색인은 NOT VERIFIED.
+
+### 보류 항목과 안전
+- GitHub `main` 무변경, Cloudflare Pages 배포·병합 없음. 예전 사용자 기록·설정 데이터 삭제/마이그레이션 없음.
+- 다른 검색엔진의 색인, Googlebot의 실제 렌더링, Search Console에서 `sitemap.xml` 수집 여부는 외부 검증 필요.
+- 커밋 히스토리 일괄 squash는 원본 브랜치의 커밋과 데이터가 이미 보존된 상태에서 불필요한 강제 이력 변경 위험이 있어 이번 단계에서는 수행하지 않음. 브랜치의 `main` 대비 파일별 diff와 SHA를 기준으로 검토.
+
+## 검증 이미지 정정 — 공개 소개 SVG 누락 (2026-11-12)
+
+- 기존 독립 Chromium 검증용 `qa_saiyebo_public_entry.html`에는 Hero 이미지 `<img>`에 `src`가 없어서 320px/390px 스크린샷에 빈 사각형이 표시됐음. **검증 이미지의 제작 오류**이며 실제 배포 사이트에서 이미지 오류를 재현한 결과가 아님.
+- GitHub 브랜치의 `assets/weather/soft-3d/clear-day.svg`(blob SHA `3baf2c375d09f21d384f8fd7ccfc32a9d6cf9506`) 존재 및 SVG 구조 확인. 브랜치 `index.html`의 기존 참조 `/assets/weather/soft-3d/clear-day.svg?v=16.6`도 확인.
+- 위 GitHub SVG 내용을 검증 HTML에 데이터 URI로 포함하여 **새 검증용 화면**을 Chromium에서 재생성. 320/360/375/390/430/470/768/834/1024/1280/1440/1920px 모두 `img.complete=true` 및 `naturalWidth=150`, 가로 스크롤 없음, 시작 CTA 52px 높이 확인 PASS.
+- 새 검증 화면 320px/390px 이미지 제작 및 320px 이미지 육안 확인. 이전 빈 사각형 스크린샷은 유효한 아이콘 QA 자료가 아니므로 사용하지 않음.
+- 검증용 HTML/이미지 수정이며 사이트 원본 SVG·코드·운영 `main`에는 변경 없음. 운영 웹사이트의 HTTP 이미지 응답 및 실제 브라우저 표시 상태는 여전히 NOT VERIFIED.
+
+## RED TEAM 회귀: 첫 방문 CSS의 공유 페이지 침범·실패 안전 화면 (2026-11-12)
+
+### 1) 실제 소스에서 발견한 공유 페이지 표시 결함
+- 최근 첫 방문 공개 소개 기능의 `styles.css`에 `body:not(.saiyebo-today) .app > :not([data-public-entry]){display:none}` 규칙이 추가되었음.
+- `share/index.html`도 `<main class="app">`와 같은 공용 `styles.css`를 사용하고, `body`에 `saiyebo-today` 클래스를 추가하지 않음. 따라서 최신 CSS가 적용되면 공유 페이지의 header/hero 등 주요 자식이 모두 `display:none`이 될 수 있는 **교차 페이지 회귀 결함** 확인.
+- 고침: `index.html` 루트만 `<main class="app saiyebo-home">`으로 표시하고 숨김 선택자를 `.saiyebo-home`으로 범위 제한. `share/index.html`의 `main.app`은 그대로 두며 공유 CSS 참조를 `/styles.css?v=23.1`로 변경. 홈페이지 CSS도 `styles.css?v=23.1`로 갱신.
+- 실제 Chromium의 독립 DOM/CSS 테스트 4가지 경우 × 320/390/768/1440px = **16건 PASS**: 구 규칙에서 공유 화면 숨김 재현, 새 규칙에서 공유 header/hero 노출, 무설정 홈에서는 소개만 노출, 정상 Today 상태에서는 Today만 노출.
+- **제한:** 공유 페이지 실제 전체 HTML·전체 CSS·브라우저 외부 리소스를 불러와 테스트한 것이 아닌 위험 선택자와 핵심 DOM을 구성한 테스트. 실제 공유 URL 운영·기기 E2E는 NOT VERIFIED.
+
+### 2) Today 초기화 실패 시 정상 화면 보존
+- 과거 초기화 순서에서는 활성 프로필이 있으면 `renderToday` 전에 `document.body.classList.add("saiyebo-today")`로 공개 소개를 숨겼음. 렌더링 중 오류를 주입했을 때 소개는 이미 숨겨지고 Today 일부만 남는 상태를 소스 실행으로 재현.
+- 고침: `renderToday`, 기존 이력 처리, 기록 이벤트 설정 및 공유 이벤트 연결이 모두 끝난 후 마지막에 `saiyebo-today` 클래스를 적용. 예보 엔진·입력 모델·저장 데이터 형식은 변경하지 않음.
+- 수정된 실제 `app.js`를 모의 DOM/저장소에서 7가지 경우로 실행하여 **7/7 PASS**: 첫 방문/손상 프로필/무설정 미리보기/정상 프로필/스토리지 용량 부족/예보 렌더 오류 주입/공유 이벤트 초기화 오류 주입. 오류를 주입한 상태에서 공개 소개가 숨겨지지 않음.
+- 새 앱 스크립트 참조 `app.js?v=23.1`. 공개 HTML/기존 Today HTML 및 모든 8종 SVG 원본은 수정하지 않음.
+
+### 배포 보호
+- 모든 변경은 `fix/reflection-a11y-share-feedback-20261112` 브랜치에만 저장됨. `main` 병합·Cloudflare 배포·기존 사용자 데이터 변경 없음.
+- 기존 독립 이미지 검증은 실제 운영 화면 스크린샷이 아니며, 원격 브랜치 전체 레이아웃·운영 HTTP 응답에 대한 판정은 NOT VERIFIED.
+
+## 후속 통합 QA — 페이지 연결·공통 CSS 회귀 자동검사 (2026-11-16)
+
+### 이번에 확인한 소스 사실
+- 운영 `main`과 이전 작업 브랜치의 차이 확인: 변경 작업은 동일 브랜치 `fix/reflection-a11y-share-feedback-20261112`에만 존재함.
+- 루트 Today/공개 소개, Start, Calendar, Report, Share와 About/Guide/Privacy/Notes/Weather Guide, 404, legacy History 등 **HTML 12개**에서 `href`/`src` 내부 참조를 수집하고 해당 브랜치의 Git tree와 대조.
+- 중복을 제거한 **로컬 URL/파일 경로 31개 전부 존재**(GitHub 저장소 스냅샷 기준). 이 검사는 브라우저의 실제 HTTP 성공·리디렉션·캐시·CSP·이미지 렌더링 확인을 뜻하지 않음.
+- `app.js`, Calendar, Report, Share 등에서 사용되는 승인 날씨 아이콘 **SVG 8종 모두 Git tree에 존재**. 원본 날씨 SVG 수정 없음.
+- `styles.css`의 공개 소개 표시 전환이 `.saiyebo-home`에만 적용되고 `share/index.html`에는 이 클래스가 없음을 재확인. 홈페이지/공유 페이지의 공통 CSS 버전 `23.1` 일치.
+
+### 실제 추가한 자동 회귀 테스트
+- 새 파일: `tests/site-contracts.test.cjs`; Node.js 기본 모듈(`node:test`, `node:assert/strict`, `fs`, `path`, `vm`)만 사용. npm 추가 패키지와 유료 API가 필요하지 않음.
+- 테스트 5개 그룹: (1) 내부 링크·스크립트·이미지 경로의 저장소 파일 존재, (2) 기존 날씨 SVG 8종 존재 및 SVG 구조, (3) 홈/공유 CSS 적용 범위 및 동일 CSS 버전·Today 초기화 전환 순서, (4) 사이트맵 대상 파일과 canonical/index 메타, (5) 주요 JS 진입점의 문법.
+- 실행 명령: `node --test tests/site-contracts.test.cjs` (저장소 루트에서 실행).
+- 새 테스트 파일 문법 파싱 PASS. 해당 테스트가 검사하는 공통 CSS 범위·버전·초기화 순서 등 소스 불변조건은 현재 GitHub 파일 직접 대조 PASS.
+- **테스트 파일 자체를 Node 환경에서 전부 실행한 결과는 NOT VERIFIED.** Chat에서 저장소 전체를 로컬로 내려받아 실행할 수 없었고, 추가 비용과 외부 Actions 실행을 유발하지 않기 위해 GitHub workflow/자동 배포 트리거를 새로 만들지 않았음.
+
+### 남아 있는 위험과 실행 기준
+- 기존 사용자/신규 사용자 Today, Share, Calendar, Report, Settings의 운영 URL 실브라우저 화면·터치·스크린리더·저장소 정책 회귀 E2E는 NOT VERIFIED.
+- Search Console의 사이트맵 수집, 실제 자원 HTTP 상태와 전체 Chrome/Safari 사용자 화면은 NOT VERIFIED.
+- `main` 병합·Cloudflare 배포·실제 이용자 데이터 변경 없음. 기존 8종 날씨 아이콘 및 예보 엔진 유지.
+
+## 2026-11-16 후속 실행 — 저장된 자동 테스트 5그룹 실제 함수 검증
+
+### 직접 수행한 범위
+- GitHub `fix/reflection-a11y-share-feedback-20261112`의 `tests/site-contracts.test.cjs`를 다시 읽고, 원본 테스트 콜백 5개를 별도의 JavaScript V8 실행 환경에서 실행.
+- GitHub `fetch_file`로 해당 테스트가 읽는 HTML/CSS/JS/SVG 및 `sitemap.xml`의 원본 문자열을 전달. `node:fs`, `node:path`, `node:assert/strict`, `node:vm` 등 Node built-in은 각 검사에 필요한 동작만 호환 구현해 사용.
+- GitHub tree `ca1a332c5bb86dd366fd2f1dfcaea25817450733`의 blob 목록을 내부 링크 존재 검사에 사용. 이것은 단순히 테스트 소스의 문법만 검증한 것이 아니라 테스트 함수의 본문을 실행한 결과임.
+
+### 검사별 결과
+1. `all locally linked page resources and routes exist`: PASS (12 HTML, 원격 Git tree의 파일 존재 대조).
+2. `the eight approved weather icons remain available`: PASS (GitHub에서 SVG 8종 원문 읽기, 태그 검사).
+3. `public landing visibility rules cannot blank the Share page`: PASS (작업 브랜치의 `index.html`, `share/index.html`, `styles.css`, `app.js` 검사).
+4. `indexable sitemap targets are present and canonical`: PASS (사이트맵과 등록 HTML 12개 대조).
+5. `all primary JavaScript entry points parse`: PASS (`app.js`, Start, Calendar, Report, Share 소스 문법 검사).
+
+### 검증 한계
+- 위 PASS는 **GitHub에서 읽은 소스 + V8 호환 실행 하네스**에서의 원본 테스트 콜백 통과를 뜻함. `node --test tests/site-contracts.test.cjs`를 실제 Node 프로세스에서 저장소 전체 대상으로 실행한 결과는 여전히 **NOT VERIFIED**.
+- 연결 도구와 격리 컨테이너 사이에서 저장소 전체의 원본 파일을 자동으로 내려받을 수 없었으며, 컨테이너의 GitHub 도메인 DNS 접근도 실패. 새 유료 서비스나 Actions 워크플로는 생성/실행하지 않음.
+- 실제 Cloudflare Pages 배포, 외부 HTTP 리소스 응답, 모바일 Safari/Chrome E2E, Google Search Console 반영은 전부 **NOT VERIFIED/HOLD**로 유지.
+- 이번 실행에서 사용자 사이트 코드는 수정하지 않고 QA 실행 근거만 갱신. `main` 병합 및 배포 없음.

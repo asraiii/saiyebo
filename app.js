@@ -110,16 +110,28 @@ function historyOwner(profile){
   const c=normalizeCouple(profile);return hash32(`${c.people.join("|")}|${c.start}|${c.type}`).toString(36);
 }
 function saveForecastHistory(forecast,profile){
-  if(!forecast||!forecast.today||!profile)return;
+  if(!forecast||!forecast.today||!profile)return false;
   const t=forecast.today,owner=historyOwner(profile),entry={owner,date:t.date,temp:t.temp,low:t.low,high:t.high,rain:t.rain,humidity:t.humidity,wind:t.wind,weather:t.weather,label:t.label};
-  const history=loadHistory().filter(x=>!(x.owner===owner&&x.date===entry.date));
-  history.push(entry);history.sort((a,b)=>a.date.localeCompare(b.date));
-  try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history.slice(-400)))}catch{ /* Storage unavailable: keep the forecast usable. */ }
+  try{
+    const raw=localStorage.getItem(HISTORY_KEY),stored=raw===null?[]:JSON.parse(raw);
+    if(!Array.isArray(stored))return false;
+    const history=stored.filter(x=>!(x&&x.owner===owner&&x.date===entry.date));
+    history.push(entry);
+    const dateOf=x=>x&&typeof x.date==="string"?x.date:"";
+    history.sort((a,b)=>dateOf(a).localeCompare(dateOf(b)));
+    localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
+    return true;
+  }catch{ /* Do not overwrite unreadable data or discard existing records on quota errors. */ return false}
 }
 function historyStats(history,date=isoLocalDate(),profile=null){
   const owner=profile?historyOwner(profile):null;
-  const sorted=history.filter(x=>x.date<=date&&(!owner||x.owner===owner)).sort((a,b)=>a.date.localeCompare(b.date));
-  const clearish=x=>x&&["clear","heat","partly"].includes(x.weather);
+  const validMetric=(v,min,max)=>(typeof v==="number"||(typeof v==="string"&&v.trim()!==""))&&Number.isFinite(Number(v))&&Number(v)>=min&&Number(v)<=max;
+  const valid=x=>x&&validDateString(x.date)&&x.date<=date&&(!owner||x.owner===owner)
+    &&WEATHER_KEYS.includes(x.weather)&&validMetric(x.temp,0,40)&&validMetric(x.rain,0,100)&&validMetric(x.humidity,0,100);
+  // Ignore malformed or duplicate dates in the UI without modifying any saved records.
+  const keyed=new Map((Array.isArray(history)?history:[]).filter(valid).map(x=>[String(x.owner||"")+"|"+x.date,x]));
+  const sorted=[...keyed.values()].sort((a,b)=>a.date.localeCompare(b.date));
+  const clearish=x=>["clear","heat","partly"].includes(x.weather);
   let streak=0,expected=date;
   for(let i=sorted.length-1;i>=0;i--){
     const x=sorted[i];
@@ -127,11 +139,12 @@ function historyStats(history,date=isoLocalDate(),profile=null){
     streak++;expected=addDays(expected,-1);
   }
   const month=date.slice(0,7),monthClear=sorted.filter(x=>x.date.startsWith(month)&&clearish(x)).length;
-  const hottest=sorted.reduce((best,x)=>!best||x.temp>best.temp?x:best,null);
+  const hottest=sorted.reduce((best,x)=>!best||Number(x.temp)>Number(best.temp)?x:best,null);
   return{streak,monthClear,hottest};
 }
 function renderHistorySummary(date=isoLocalDate(),profile=null){
-  const s=historyStats(loadHistory(),date,profile);
+  // Preview mode has no active owner: never show history from unrelated relationships.
+  const s=historyStats(profile?loadHistory():[],date,profile);
   bindText("record-streak",`${s.streak}일`);
   bindText("record-month-clear",`${s.monthClear}일`);
   bindText("record-highest",s.hottest?s.hottest.date.slice(5).replace("-","."):"—");
@@ -259,11 +272,25 @@ async function shareSaiyebo(profile,forecast){
   const advisoryHour=risky&&risky.weather!==t.weather?risky.hour:25,advisoryWeather=risky&&risky.weather!==t.weather?weatherCode[risky.weather]:"x";
   const relationCode=profile.relationshipType==="some"?"s":"d",relationDays=daysTogether(profile.startDate,t.date);const payload=[weatherCode[t.weather],t.temp,t.feels,t.low,t.high,t.rain,t.humidity,Math.round(t.wind*10),weatherCode[forecast.tomorrow.weather],forecast.tomorrow.temp,weekCode,advisoryHour,advisoryWeather,relationCode,relationDays].join(".");
   const url=new URL("/share/",location.origin);url.searchParams.set("d",payload);
+  const shareMessage=`${text}\n${url.href}`;
+  if(typeof navigator.share==="function"){
+    try{await navigator.share({title:"사이예보",text,url:url.href});return}
+    catch(error){if(error&&error.name==="AbortError")return}
+  }
+  if(navigator.clipboard&&typeof navigator.clipboard.writeText==="function"&&window.isSecureContext){
+    try{await navigator.clipboard.writeText(shareMessage);showShareFeedback("링크 복사 완료");return}
+    catch{ /* Try the legacy clipboard method below. */ }
+  }
+  let area;
   try{
-    if(navigator.share){await navigator.share({title:"사이예보",text,url:url.href});return}
-    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(`${text}\n${url.href}`);showShareFeedback("링크 복사 완료");return}
-    const area=document.createElement("textarea");area.value=`${text}\n${url.href}`;area.setAttribute("readonly","");area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();showShareFeedback("링크 복사 완료");
-  }catch(error){if(error&&error.name==="AbortError")return;showShareFeedback("공유할 수 없어요")}
+    area=document.createElement("textarea");
+    area.value=shareMessage;area.setAttribute("readonly","");
+    area.style.position="fixed";area.style.opacity="0";
+    document.body.appendChild(area);area.select();
+    if(!document.execCommand("copy"))throw new Error("Clipboard copy failed");
+    showShareFeedback("링크 복사 완료");
+  }catch{showShareFeedback("공유할 수 없어요")}
+  finally{if(area)area.remove()}
 }
 function showShareFeedback(message){
   const button=document.querySelector(".share-action");if(!button)return;
@@ -275,17 +302,20 @@ function bindShare(profile,forecast){
   document.querySelectorAll(".share,.share-action").forEach(button=>button.addEventListener("click",()=>shareSaiyebo(profile,forecast)));
 }
 
-const REFLECTION_KEY="saiyebo:reflection:v1";function loadReflections(){try{const x=JSON.parse(localStorage.getItem(REFLECTION_KEY));return Array.isArray(x)?x:[]}catch{return[]}}function bindDailyReflection(profile,date=isoLocalDate()){if(!profile)return;const owner=historyOwner(profile),existing=loadReflections().find(x=>x&&x.owner===owner&&x.date===date),buttons=[...document.querySelectorAll("[data-reflection-mood]")],memo=document.querySelector("[data-reflection-memo]"),state=document.querySelector("[data-reflection-state]"),save=document.querySelector("[data-reflection-save]");if(!buttons.length||!memo||!save)return;let mood=existing&&existing.mood||"";memo.value=existing&&existing.memo||"";buttons.forEach(b=>{b.classList.toggle("on",b.dataset.reflectionMood===mood);b.addEventListener("click",()=>{mood=b.dataset.reflectionMood;buttons.forEach(x=>x.classList.toggle("on",x===b));state.textContent=""})});if(existing)state.textContent="";save.addEventListener("click",()=>{if(!mood){state.textContent="오늘의 체감을 먼저 선택해주세요.";return}const entry={owner,date,mood,memo:String(memo.value||"").trim().slice(0,80),updatedAt:Date.now()},all=loadReflections().filter(x=>!(x&&x.owner===owner&&x.date===date));all.push(entry);try{localStorage.setItem(REFLECTION_KEY,JSON.stringify(all.slice(-800)));state.textContent="오늘 기록에 저장했어요."}catch{state.textContent="기록을 저장할 수 없어요. 브라우저 저장 공간이나 개인정보 보호 설정을 확인해주세요."}})}
+const REFLECTION_KEY="saiyebo:reflection:v1";function loadReflections(){try{const x=JSON.parse(localStorage.getItem(REFLECTION_KEY));return Array.isArray(x)?x:[]}catch{return[]}}function bindDailyReflection(profile,date=isoLocalDate()){if(!profile)return;const owner=historyOwner(profile),existing=loadReflections().filter(x=>x&&x.owner===owner&&x.date===date).pop(),buttons=[...document.querySelectorAll("[data-reflection-mood]")],memo=document.querySelector("[data-reflection-memo]"),state=document.querySelector("[data-reflection-state]"),save=document.querySelector("[data-reflection-save]");if(!buttons.length||!memo||!save)return;let mood=existing&&["good","normal","bad"].includes(existing.mood)?existing.mood:"";memo.value=existing&&existing.memo||"";buttons.forEach(b=>{const selected=b.dataset.reflectionMood===mood;b.classList.toggle("on",selected);b.setAttribute("aria-pressed",String(selected));b.addEventListener("click",()=>{mood=b.dataset.reflectionMood;buttons.forEach(x=>{const active=x===b;x.classList.toggle("on",active);x.setAttribute("aria-pressed",String(active))});state.textContent=""})});if(existing)state.textContent="";save.addEventListener("click",()=>{if(!["good","normal","bad"].includes(mood)){state.textContent="오늘의 체감을 먼저 선택해주세요.";return}const entry={owner,date,mood,memo:String(memo.value||"").trim().slice(0,80),updatedAt:Date.now()};try{const raw=localStorage.getItem(REFLECTION_KEY),stored=raw===null?[]:JSON.parse(raw);if(!Array.isArray(stored))throw new Error("Invalid reflection records");const all=stored.filter(x=>!(x&&x.owner===owner&&x.date===date));all.push(entry);localStorage.setItem(REFLECTION_KEY,JSON.stringify(all));state.textContent="오늘 기록에 저장했어요."}catch{state.textContent="기록을 저장할 수 없어요. 브라우저 저장 공간·설정이나 기존 기록 상태를 확인해주세요. 기존 데이터는 유지돼요."}})}
 const activeCouple=loadCouple();
 const previewMode=new URLSearchParams(location.search).has("preview");
 if(!activeCouple&&!previewMode){
-  location.replace("/start/");
+  // Keep the root page indexable and useful before visitors opt into local personalization.
+  // Public entry is static HTML; unrelated saved history is not read or displayed.
 }else{
   const activeForecast=renderToday(activeCouple||DEMO_COUPLE);
-  if(activeCouple){saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple);bindDailyReflection(activeCouple,activeForecast.today.date)}
+  if(activeCouple){const historySaved=saveForecastHistory(activeForecast,activeCouple);renderHistorySummary(activeForecast.today.date,activeCouple);if(!historySaved){const status=document.querySelector("[data-history-save-state]");if(status){status.hidden=false;status.textContent="오늘의 사이예보를 저장하지 못했어요. 저장 공간이나 기존 기록 상태를 확인해주세요. 기존 데이터는 유지돼요."}}bindDailyReflection(activeCouple,activeForecast.today.date)}
   else{renderHistorySummary(activeForecast.today.date)}
   window.SAIYEBO_ACTIVE_FORECAST=activeForecast;
   bindShare(activeCouple||DEMO_COUPLE,activeForecast);
+  // Only hide the public fallback once the personalized page has initialized successfully.
+  document.body.classList.add("saiyebo-today");
 }
 window.SAIYEBO_PROFILE={load:loadCouple,save:saveCouple,key:STORAGE_KEY,demo:DEMO_COUPLE};
 window.SAIYEBO_HISTORY={load:loadHistory,stats:historyStats,key:HISTORY_KEY,owner:historyOwner};
