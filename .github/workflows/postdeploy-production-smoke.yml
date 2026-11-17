@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   live-check:
@@ -26,6 +27,7 @@ jobs:
           npm install --no-save --no-package-lock --no-audit --no-fund playwright
           npx playwright install --with-deps chromium
       - name: Verify live HTTP, robots, sitemap and indexable pages
+        id: live_http
         run: |
           node <<'NODE'
           const assert = require('node:assert/strict');
@@ -73,6 +75,7 @@ jobs:
           })().catch(error => {console.error('PRODUCTION HTTP QA FAIL',error);process.exitCode=1});
           NODE
       - name: Run full browser E2E against actual production origin
+        id: live_browser
         run: |
           node <<'NODE'
           const fs = require('node:fs');
@@ -93,3 +96,22 @@ jobs:
           name: production-chromium-qa-screenshots
           path: production-qa-screenshots/
           if-no-files-found: warn
+      - name: Record post-deploy QA outcome on merged PR #2
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HTTP_OUTCOME: ${{ steps.live_http.outcome }}
+          BROWSER_OUTCOME: ${{ steps.live_browser.outcome }}
+        run: |
+          {
+            echo "## Production read-only QA (automated runner)"
+            echo "- Run: https://github.com/asraiii/saiyebo/actions/runs/$GITHUB_RUN_ID"
+            echo "- Runner commit: $GITHUB_SHA (QA branch; main unchanged)"
+            echo "- Live HTTP/SEO/SVG: **$HTTP_OUTCOME**"
+            echo "- Live Chromium user journey: **$BROWSER_OUTCOME**"
+            echo "- Target: https://saiyebo.pages.dev/"
+            echo "- Isolated browser localStorage only; no server-side data changes"
+            echo "- Actual Google Search Console account status: **NOT VERIFIED** (requires authorized account access)"
+            echo "- PASS only if both outcome fields are success; inspect logs for failures."
+          } > /tmp/saiyebo-live-qa.md
+          gh issue comment 2 --repo asraiii/saiyebo --body-file /tmp/saiyebo-live-qa.md
