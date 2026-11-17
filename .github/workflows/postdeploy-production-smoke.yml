@@ -1,15 +1,9 @@
 name: SAIYEBO production smoke QA (no deploy)
 on:
-  push:
-    branches:
-      - fix/reflection-a11y-share-feedback-20261112
-    paths:
-      - .github/workflows/postdeploy-production-smoke.yml
   workflow_dispatch:
 
 permissions:
   contents: read
-  issues: write
 
 jobs:
   live-check:
@@ -96,22 +90,18 @@ jobs:
           name: production-chromium-qa-screenshots
           path: production-qa-screenshots/
           if-no-files-found: warn
-      - name: Record post-deploy QA outcome on merged PR #2
+      - name: Summarize post-deploy QA outcome without write permissions
         if: always()
         env:
-          GH_TOKEN: ${{ github.token }}
           HTTP_OUTCOME: ${{ steps.live_http.outcome }}
           BROWSER_OUTCOME: ${{ steps.live_browser.outcome }}
         run: |
           {
-            echo "## Production read-only QA (automated runner)"
-            echo "- Run: https://github.com/asraiii/saiyebo/actions/runs/$GITHUB_RUN_ID"
-            echo "- Runner commit: $GITHUB_SHA (QA branch; main unchanged)"
+            echo "## SAIYEBO production QA"
+            echo "- Target: https://saiyebo.pages.dev/"
             echo "- Live HTTP/SEO/SVG: **$HTTP_OUTCOME**"
             echo "- Live Chromium user journey: **$BROWSER_OUTCOME**"
-            echo "- Target: https://saiyebo.pages.dev/"
-            echo "- Isolated browser localStorage only; no server-side data changes"
-            echo "- Actual Google Search Console account status: **NOT VERIFIED** (requires authorized account access)"
-            echo "- PASS only if both outcome fields are success; inspect logs for failures."
-          } > /tmp/saiyebo-live-qa.md
-          gh issue comment 2 --repo asraiii/saiyebo --body-file /tmp/saiyebo-live-qa.md
+            echo "- No production source or user-data mutation"
+            echo "- Search Console internal status: NOT VERIFIED"
+            echo "- PASS only if both outcomes are success"
+          } >> "$GITHUB_STEP_SUMMARY"
