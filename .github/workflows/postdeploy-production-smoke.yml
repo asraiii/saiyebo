@@ -1,0 +1,95 @@
+name: SAIYEBO production smoke QA (no deploy)
+on:
+  push:
+    branches:
+      - fix/reflection-a11y-share-feedback-20261112
+    paths:
+      - .github/workflows/postdeploy-production-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout QA scripts only
+        uses: actions/checkout@v4
+      - name: Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test dependencies on ephemeral runner
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Verify live HTTP, robots, sitemap and indexable pages
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const base = 'https://saiyebo.pages.dev';
+          async function get(path) {
+            const response = await fetch(base + path, {signal:AbortSignal.timeout(15000)});
+            assert.equal(response.status, 200, path + ' HTTP ' + response.status);
+            const text = await response.text();
+            console.log('HTTP PASS', path, response.status, response.headers.get('content-type'));
+            return {text, type: response.headers.get('content-type') || ''};
+          }
+          (async () => {
+            const root = await get('/');
+            assert.match(root.text, /data-public-entry/, 'public landing must be served');
+            assert.match(root.text, /<meta name="robots" content="index,follow">/);
+            assert.match(root.text, /app\.js\?v=23\.1/);
+            const robots = await get('/robots.txt');
+            assert.match(robots.text, /Sitemap:\s*https:\/\/saiyebo\.pages\.dev\/sitemap\.xml/i);
+            const sitemap = await get('/sitemap.xml');
+            assert.ok(sitemap.type.includes('xml'), 'sitemap must have XML content-type');
+            const locs = [...sitemap.text.matchAll(/<loc>(https:\/\/saiyebo\.pages\.dev\/[^<]*)<\/loc>/g)]
+              .map(m => m[1]);
+            assert.equal(locs.length, 12, 'sitemap must list 12 expected URLs');
+            assert.equal(new Set(locs).size, 12, 'sitemap must not duplicate URLs');
+            for (const url of locs) {
+              const path = new URL(url).pathname;
+              const page = path === '/' ? root : await get(path);
+              assert.match(page.text, /<meta name="robots" content="index,follow">/, path);
+              assert.ok(page.text.includes('rel="canonical" href="' + url + '"'),
+                path + ' canonical mismatch');
+              assert.match(page.text, /<h1\b/, path);
+            }
+            for (const p of ['/start/','/calendar/','/report/','/share/?d=invalid']) {
+              const page = await get(p);
+              assert.match(page.text, /noindex,follow/, p);
+            }
+            for (const name of [
+              'clear-day','sun-hot','partly-cloudy-day','overcast',
+              'rain','extreme-rain','snow','extreme-snow'
+            ]) {
+              const file = await get('/assets/weather/soft-3d/' + name + '.svg');
+              assert.match(file.text, /<svg\b/, name);
+            }
+            console.log('PRODUCTION HTTP/SEO/SVG PASS — 12 sitemap URLs + 4 personal pages + 8 SVGs');
+          })().catch(error => {console.error('PRODUCTION HTTP QA FAIL',error);process.exitCode=1});
+          NODE
+      - name: Run full browser E2E against actual production origin
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const input = fs.readFileSync('tests/browser-e2e.cjs','utf8');
+          const localOrigin = "const origin = 'http://127.0.0.1:4173';";
+          const localScreens = "const screenshotDir = 'qa-screenshots';";
+          if (!input.includes(localOrigin) || !input.includes(localScreens))
+            throw new Error('QA source has changed; refuse unsafe blind rewrite');
+          const out = input.replace(localOrigin, "const origin = 'https://saiyebo.pages.dev';")
+            .replace(localScreens, "const screenshotDir = 'production-qa-screenshots';");
+          fs.writeFileSync('tests/browser-e2e-production.cjs',out);
+          NODE
+          node tests/browser-e2e-production.cjs
+      - name: Retain non-sensitive live QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-chromium-qa-screenshots
+          path: production-qa-screenshots/
+          if-no-files-found: warn
